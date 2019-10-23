@@ -34,10 +34,11 @@ public:
 	LPDIRECTINPUT8 GetInput(void);
 	LPDIRECTINPUTDEVICE8 GetDevKeyboard(void);
 
+protected:
+	static LPDIRECTINPUT8 m_pInput;
 private:
 
-	static LPDIRECTINPUT8 m_pInput;
-	static LPDIRECTINPUTDEVICE8 m_pDevKeyboard;
+	LPDIRECTINPUTDEVICE8 m_pDevKeyboard;
 };
 
 #endif

@@ -14,6 +14,7 @@
 
 class CRenderer;
 class CKeybord;
+class CPad;
 class CTitle;
 class CGame;
 class CResult;
@@ -59,7 +60,7 @@ public:
 
 	static CRenderer *GetRenderer(void);
 	static CKeybord *GetKeybord(void);
-
+	static CPad *GetPad(void);
 
 	static MODE GetMode(void);
 
@@ -69,6 +70,7 @@ private:
 
 	 static CRenderer *m_pRenderer;
 	 static CKeybord *m_pKeybord;
+	 static CPad *m_pPad;
 	 static CTitle *pTitle;
 	 static CGame *pGame;
 	 static CResult *pResult;

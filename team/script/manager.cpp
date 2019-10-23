@@ -13,6 +13,7 @@
 #include "Result.h"
 #include "Gameover.h"
 #include "tutorial.h"
+#include "pad.h"
 
 //====================================================================================================
 // ƒ}ƒNƒ’è‹`
@@ -28,6 +29,7 @@
 //====================================================================================================
 CRenderer *CManager::m_pRenderer = NULL;
 CKeybord *CManager::m_pKeybord = NULL;
+CPad *CManager::m_pPad = NULL;
 CTitle *CManager::pTitle = NULL;
 CGame *CManager::pGame = NULL;
 CResult *CManager::pResult = NULL;
@@ -51,6 +53,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 {
 	m_pRenderer = new CRenderer;
 	m_pKeybord = new CKeybord;
+	m_pPad = new CPad;
 
 	//‰Šú‰»ˆ—
 	if (FAILED(m_pRenderer->Init(hWnd, TRUE)))
@@ -62,6 +65,11 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	if (FAILED(m_pKeybord->Init(hInstance, hWnd)))
 	{
 		m_pKeybord->Uninit();
+		return-1;
+	}
+	if (FAILED(m_pPad->Init(hInstance, hWnd)))
+	{
+		m_pPad->Uninit();
 		return-1;
 	}
 
@@ -113,6 +121,13 @@ void CManager::Uninit(void)
 		m_pKeybord = NULL;
 	}
 
+	if (m_pPad != NULL)
+	{
+		m_pPad->Uninit();
+		delete m_pPad;
+		m_pPad = NULL;
+	}
+
 	switch (m_mode)
 	{
 	case MODE_TITLE:
@@ -145,6 +160,8 @@ void CManager::Update(void)
 	m_pRenderer->Update();
 
 	m_pKeybord->Update();
+
+	m_pPad->Update();
 
 	switch (m_mode)
 	{
@@ -218,6 +235,11 @@ CRenderer *CManager::GetRenderer(void)
 CKeybord *CManager::GetKeybord(void)
 {
 	return m_pKeybord;
+}
+
+CPad * CManager::GetPad(void)
+{
+	return m_pPad;
 }
 
 //====================================================================================================

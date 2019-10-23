@@ -13,6 +13,7 @@
 #include "manager.h"
 #include "renderer.h"
 #include "keybord.h"
+#include "pad.h"
 
 //====================================================================================================
 // マクロ定義
@@ -252,6 +253,20 @@ void CPlayer::PlayerMove(void)
 		{// 左上
 			m_move.y += cosf(pCamera->rot.y + D3DX_PI*1.0f) * PLAYER_SPEED;
 		}
+	}	
+	
+	CPad *pPad = CManager::GetPad();
+
+	// 入力された X、Y
+	float fH, fV;
+	pPad->GetJoypadStickLeft(0, &fH, &fV);
+
+	//ゲームパッド
+	if (fH != 0 || fV != 0)
+	{
+		// 移動
+		m_move.x += sinf(atan2f(fH, fV)) * PLAYER_SPEED;
+		m_move.z += cosf(atan2f(fH, fV)) * PLAYER_SPEED;
 	}
 
 		//慣性処理
