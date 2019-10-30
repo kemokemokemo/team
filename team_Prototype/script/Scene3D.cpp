@@ -327,9 +327,15 @@ void CScene3D::ModelInit(void)
 			D3DXVECTOR3 vtx = *(D3DXVECTOR3*)pVertexBuffer;
 
 			// 全ての頂点情報を比較して最大値・最小値を抜き出す
+<<<<<<< HEAD:team_Prototype/script/Scene3D.cpp
 			D3DXVec3Minimize(&m_vtxMin, &vtx, &m_vtxMin);
 
 			D3DXVec3Maximize(&m_vtxMax, &vtx, &m_vtxMax);
+=======
+			D3DXVec3Minimize(&vtxMin, &vtx, &vtxMin);
+
+			D3DXVec3Maximize(&vtxMax, &vtx, &vtxMax);
+>>>>>>> 9b731fce417e264f98bacdf04841822bd737d7b0:team/script/Scene3D.cpp
 
 			pVertexBuffer += sizeFVF;//	サイズ分ポインタを進める
 		}
@@ -338,6 +344,7 @@ void CScene3D::ModelInit(void)
 	}
 }
 
+<<<<<<< HEAD:team_Prototype/script/Scene3D.cpp
 
 //=============================================================================
 // 当たり判定(球とカプセル)
@@ -380,6 +387,51 @@ bool CScene3D::ShapeCapsuleCollision(D3DXVECTOR3 *pPosStart, D3DXVECTOR3 *pPosEn
 	return true;
 }
 
+=======
+/*
+//=============================================================================
+// 当たり判定(球とカプセル)
+//=============================================================================
+bool CollisionBullet(D3DXVECTOR3 *pPosStart, D3DXVECTOR3 *pPosEnd, float Radius, D3DXVECTOR3 *pBulletPos)
+{
+//カプセルのベクトル
+D3DXVECTOR3 CoreWire = *pPosEnd - *pPosStart;
+
+float fRadius = BULLET_SIZE * 0.5f + Radius;
+
+//距離のベクトル
+D3DXVECTOR3 Vec = *pBulletPos - *pPosStart;
+
+if (D3DXVec3Dot(&CoreWire, &Vec) < 0)
+{
+if (D3DXVec3Dot(&Vec, &Vec) > fRadius * fRadius)
+{// startの方の半円
+return false;
+}
+}
+
+//距離のベクトル
+Vec = *pPosEnd - *pBulletPos;
+
+if (D3DXVec3Dot(&CoreWire, &Vec) < 0)
+{
+if (D3DXVec3Dot(&Vec, &Vec) > fRadius * fRadius)
+{// endの方の半円
+return false;
+}
+}
+
+D3DXVec3Cross(&Vec, &CoreWire, &Vec);
+
+if (D3DXVec3Dot(&Vec, &Vec) / D3DXVec3Dot(&CoreWire, &CoreWire) > fRadius * fRadius)
+{// 真ん中の円柱
+return false;
+}
+
+return true;
+}
+*/
+>>>>>>> 9b731fce417e264f98bacdf04841822bd737d7b0:team/script/Scene3D.cpp
 
 //====================================================================================================
 // モデルの取得
