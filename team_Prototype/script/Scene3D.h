@@ -65,10 +65,16 @@ public:
 	D3DXVECTOR3 GetPos(void);
 	void SetPos(D3DXVECTOR3 pos);
 	D3DXVECTOR3 GetRot(void);
+	static int GetLife(void);
+
 	void SetRot(D3DXVECTOR3 rot);
 	void SetType(MODELTYPE Type);
 
+	void SetLife(int nLife);
+
 private:
+
+	static int m_Life;
 
 	VERTEX_3D m_Vertex[4];
 	LPDIRECT3DTEXTURE9 m_pTexturePolygon;

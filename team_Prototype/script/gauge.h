@@ -15,9 +15,10 @@
 #include "player.h"
 
 
-//class CPlayer;
+class CScene3D;
 
 #define MAX_TEXGAUGE (1)	//読み込むテクスチャファイル名
+
 
 //================================================================
 // レンダリングクラス
@@ -39,8 +40,6 @@ public:
 	void Update(void);
 	void Draw(void);
 
-	void SetLife(int nLife);
-	int GetLife();
 	static CGauge *Create(D3DXVECTOR3 pos);
 	static HRESULT Load(void);
 	static void Unload(void);

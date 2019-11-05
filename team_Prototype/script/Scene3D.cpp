@@ -18,13 +18,13 @@
 #define Bm_POS_Y	(0)			    //ポリゴンの表示位置(左上Y)
 #define Bm_SIZE_X	(1280)			//ポリゴンのサイズ(横幅)
 #define Bm_SIZE_Y	(720)			//ポリゴンのサイズ(立幅)
-#define POLTGON0_TEX "DATA/TEX/IMm_2227.JPG"				//読み込むテクスチャファイル名
+#define POLTGON0_TEX "DATA/TEX/IMG_2227.JPG"				//読み込むテクスチャファイル名
 
 
 //====================================================================================================
 // メンバ変数初期化
 //====================================================================================================
-
+int CScene3D::m_Life=NULL;
 //====================================================================================================
 // コンストラクタ
 //====================================================================================================
@@ -326,16 +326,16 @@ void CScene3D::ModelInit(void)
 		{
 			D3DXVECTOR3 vtx = *(D3DXVECTOR3*)pVertexBuffer;
 
-			// 全ての頂点情報を比較して最大値・最小値を抜き出す
-<<<<<<< HEAD:team_Prototype/script/Scene3D.cpp
+//			// 全ての頂点情報を比較して最大値・最小値を抜き出す
+//<<<<<<< HEAD:team_Prototype/script/Scene3D.cpp
 			D3DXVec3Minimize(&m_vtxMin, &vtx, &m_vtxMin);
-
+//
 			D3DXVec3Maximize(&m_vtxMax, &vtx, &m_vtxMax);
-=======
-			D3DXVec3Minimize(&vtxMin, &vtx, &vtxMin);
-
-			D3DXVec3Maximize(&vtxMax, &vtx, &vtxMax);
->>>>>>> 9b731fce417e264f98bacdf04841822bd737d7b0:team/script/Scene3D.cpp
+//=======
+//			D3DXVec3Minimize(&vtxMin, &vtx, &vtxMin);
+//
+//			D3DXVec3Maximize(&vtxMax, &vtx, &vtxMax);
+//>>>>>>> 9b731fce417e264f98bacdf04841822bd737d7b0:team/script/Scene3D.cpp
 
 			pVertexBuffer += sizeFVF;//	サイズ分ポインタを進める
 		}
@@ -344,7 +344,7 @@ void CScene3D::ModelInit(void)
 	}
 }
 
-<<<<<<< HEAD:team_Prototype/script/Scene3D.cpp
+//<<<<<<< HEAD:team_Prototype/script/Scene3D.cpp
 
 //=============================================================================
 // 当たり判定(球とカプセル)
@@ -387,7 +387,7 @@ bool CScene3D::ShapeCapsuleCollision(D3DXVECTOR3 *pPosStart, D3DXVECTOR3 *pPosEn
 	return true;
 }
 
-=======
+//=======
 /*
 //=============================================================================
 // 当たり判定(球とカプセル)
@@ -431,7 +431,7 @@ return false;
 return true;
 }
 */
->>>>>>> 9b731fce417e264f98bacdf04841822bd737d7b0:team/script/Scene3D.cpp
+//>>>>>>> 9b731fce417e264f98bacdf04841822bd737d7b0:team/script/Scene3D.cpp
 
 //====================================================================================================
 // モデルの取得
@@ -449,6 +449,14 @@ void CScene3D::BindModel(DWORD NumMat, LPD3DXMESH Mesh, LPD3DXBUFFER BuffMat)
 D3DXVECTOR3 CScene3D::GetPos(void)
 {
 	return m_pos;
+}
+
+//========================================================================================================
+// 体力の取得
+//========================================================================================================
+int CScene3D::GetLife(void)
+{
+	return m_Life;
 }
 
 //====================================================================================================
@@ -489,4 +497,11 @@ void CScene3D::SetType(MODELTYPE Type)
 CScene3D::~CScene3D()
 {
 
+}
+//========================================================================================================
+// life処理
+//========================================================================================================
+void CScene3D::SetLife(int nLife)
+{
+	m_Life = nLife;
 }

@@ -50,6 +50,7 @@ HRESULT CScene2D::Init(void)
 	//初期化
 	int m_nCounterAnim = 0;
 	int m_nPatternAnim = 0;
+	int m_Life = 0;
 	float m_TexMove = 0.0f;
 	float m_Speed = 0.0f;
 	float m_fHeight = 0.0f;
@@ -328,9 +329,9 @@ void CScene2D::UIUpdate(int nLife, int size)
 	// 頂点データの範囲をロックし、頂点バッファへのポインタを取得
 	m_pVtxBuffScene->Lock(0, 0, (void**)&pVtx, 0);
 
-		pVtx[0].pos = D3DXVECTOR3(m_pos.x - size, m_pos.y - size, 0.0f);
-		pVtx[1].pos = D3DXVECTOR3(m_pos.x + (nLife * size), m_pos.y - size, 0.0f);
-		pVtx[2].pos = D3DXVECTOR3(m_pos.x - size, m_pos.y + size, 0.0f);
+		pVtx[0].pos = D3DXVECTOR3(m_pos.x, m_pos.y, 0.0f);
+		pVtx[1].pos = D3DXVECTOR3(m_pos.x + (nLife * size), m_pos.y, 0.0f);
+		pVtx[2].pos = D3DXVECTOR3(m_pos.x , m_pos.y + size, 0.0f);
 		pVtx[3].pos = D3DXVECTOR3(m_pos.x + (nLife * size), m_pos.y + size, 0.0f);
 
 		pVtx[0].col = m_Col;

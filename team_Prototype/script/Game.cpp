@@ -68,6 +68,7 @@ HRESULT CGame::Init(void)
 
 	CPlayer::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::MODELTYPE_CAT, CPlayer::PLAYER_02);
 
+	CGauge::Create(D3DXVECTOR3(200.0f, 600.0f, 0.0f));
 
 	//CPolygon::Create();
 
