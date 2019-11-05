@@ -15,13 +15,14 @@
 #include "keybord.h"
 #include "pad.h"
 #include "gauge.h"
+#include "Scene2D.h"
 
 //=============================================================================
 // マクロ定義
 //=============================================================================
-#define PLAYER_SPEED	(10.0f)						//プレイヤーの速さ
+#define PLAYER_SPEED	(2.0f)						//プレイヤーの速さ
 #define MODELFILE1		"DATA/MODEL/car_000.x"		// 読み込むモデル
-#define MODELFILE2		"DATA/MODEL/cat.x"		// 読み込むモデル
+#define MODELFILE2		"DATA/MODEL/cat.x"			// 読み込むモデル
 
 //=============================================================================
 //  メンバ変数初期化
@@ -72,18 +73,20 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, MODELTYPE type, PLAYERNU
 
 	m_PlayerNum = PlayerNum;
 
-	m_PlayerStateCount = PLAYERSTATE_NORMAL;
+	m_PlayerStateCount = 0;
+
+	m_PlayerState = PLAYERSTATE_NORMAL;
 
 	switch (type)
 	{
 	case MODELTYPE_CAR:
-		m_nLife = 10;
+		m_nLife = 3;
 		//pLifeGauge = CGauge::Create(D3DXVECTOR3(200.0f, 600.0f, 0.0f));
 		break;
 
 	case MODELTYPE_CAT:
-		m_nLife = 100;
-		pLifeGauge = CGauge::Create(D3DXVECTOR3(200.0f, 600.0f, 0.0f));
+		m_nLife = 5;
+		//pLifeGauge = CGauge::Create(D3DXVECTOR3(200.0f, 600.0f, 0.0f));
 		break;
 	}
 
@@ -123,16 +126,21 @@ void CPlayer::Update(void)
 		//PlayerMove();
 		break;
 	}
-
-	if (m_PlayerStateCount == PLAYERSTATE_DAMAGE)
+	switch (m_PlayerState)
 	{
-		m_PlayerStateCount--;
+	case PLAYERSTATE_NORMAL:
 
-		if (m_PlayerStateCount <= 0)
-		{
-			m_PlayerStateCount = PLAYERSTATE_NORMAL;
-		}
+		break;
+	case PLAYERSTATE_DAMAGE:
+			m_PlayerStateCount--;
+			if (m_PlayerStateCount <= 0)
+			{
+				m_PlayerState = PLAYERSTATE_NORMAL;
+			}
+		break;
 	}
+
+	SetLife(m_nLife);
 
 	GetPlayerPos();
 
@@ -181,9 +189,6 @@ void CPlayer::PlayerMove(void)
 {
 	CKeybord *pKetybord = CManager::GetKeybord();
 
-	//カメラの取得
-	CCamera::CAMERA *pCamera;
-	pCamera = CCamera::GetCamera();
 
 	D3DXVECTOR3 pos;
 	D3DXVECTOR3 rot;
@@ -198,14 +203,15 @@ void CPlayer::PlayerMove(void)
 	{
 		if (pKetybord->GetKeyboardPress(DIK_A))
 		{//  A キー操作
-			m_move.x += cosf(pCamera->rot.y + D3DX_PI*1.0f) * PLAYER_SPEED;
-			m_fDiffrot.y = pCamera->rot.y + D3DX_PI*0.5f;
+			m_move.x += D3DX_PI*-0.5f* PLAYER_SPEED;
+
+			m_fDiffrot.y = D3DX_PI*0.5f;
 		}
 
 		else if (pKetybord->GetKeyboardPress(DIK_D))
 		{//  D キー操作
-			m_move.x += sinf(pCamera->rot.y + D3DX_PI*0.5f) * PLAYER_SPEED;
-			m_fDiffrot.y = pCamera->rot.y + D3DX_PI*-0.5f;
+			m_move.x += D3DX_PI*0.5f * PLAYER_SPEED;
+			m_fDiffrot.y = D3DX_PI*-0.5f;
 		}
 
 		else if (pKetybord->GetKeyboardTrigger(DIK_W))
@@ -223,14 +229,14 @@ void CPlayer::PlayerMove(void)
 	{
 		if (pKetybord->GetKeyboardPress(DIK_LEFTARROW))
 		{//  A キー操作
-			m_move.x += cosf(pCamera->rot.y + D3DX_PI*1.0f) * PLAYER_SPEED;
-			m_fDiffrot.y = pCamera->rot.y + D3DX_PI*0.5f;
+			m_move.x += D3DX_PI*-0.5f* PLAYER_SPEED;
+			m_fDiffrot.y = D3DX_PI*0.5f;
 		}
 
 		else if (pKetybord->GetKeyboardPress(DIK_RIGHTARROW))
 		{//  D キー操作
-			m_move.x += sinf(pCamera->rot.y + D3DX_PI*0.5f) * PLAYER_SPEED;
-			m_fDiffrot.y = pCamera->rot.y + D3DX_PI*-0.5f;
+			m_move.x += D3DX_PI*0.5f * PLAYER_SPEED;
+			m_fDiffrot.y = D3DX_PI*-0.5f;
 		}
 
 		else if (pKetybord->GetKeyboardTrigger(DIK_UPARROW))
@@ -312,15 +318,13 @@ void CPlayer::Damage(int nDamage)
 {
 	if (m_PlayerState == PLAYERSTATE_NORMAL)
 	{
+		
 		m_nLife -= nDamage;
 		m_PlayerState = PLAYERSTATE_DAMAGE;
 		m_PlayerStateCount = 60;
-
-		//pLifeGauge->UIUpdate(m_nLife, 10);
 	}
-	else
+	else if (m_nLife <= 0)
 	{
-		//CFade::SetFade(CManager::MODE_GAMEOVER);
 		Release();
 	}
 }
@@ -329,8 +333,6 @@ void CPlayer::Damage(int nDamage)
 //========================================================================================================
 void CPlayer::PlayerCollision()
 {
-
-
 	//半径
 	float fRadiusPL01 = 20;
 	float fRadiusPL02 = 20;

@@ -91,6 +91,7 @@ public:
 	void SetInitTex(float fHeight, float fWidht);
 	void SetRadius(float fRadius);
 
+
 private:
 
 	VERTEX_2D m_Vertex[4];
