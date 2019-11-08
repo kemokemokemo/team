@@ -24,13 +24,14 @@
 //====================================================================================================
 // メンバ変数初期化
 //====================================================================================================
-
+int CScene3D::m_Life=NULL;
 //====================================================================================================
 // コンストラクタ
 //====================================================================================================
 CScene3D::CScene3D(OBJTYPE nPriority) : CScene(nPriority)
 {
-
+	 m_PosPolygon = D3DXVECTOR3(0.0f, 0.0f, 0.0f);					//ポリゴンの位置
+	 m_rotPolygon = D3DXVECTOR3(0.0f, 0.0f, 0.0f);					//ポリゴンの向き
 }
 
 //=============================================================================
@@ -41,45 +42,49 @@ HRESULT CScene3D::Init(void)
 	CRenderer *pRenderer = CManager::GetRenderer();
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
 
-	// 初期設定
-	for (int nCntModel = 0; nCntModel < MAX_MODEL; nCntModel++)
-	{
-		m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	}
+	 VERTEX_3D *pVtx;
 
-	// モデルの頂点数の最大値・最小値の設定
-	int		nNumVertices;							// 頂点数
-	DWORD	sizeFVF;								// 頂点フォーマットのサイズ
-	BYTE	*pVertexBuffer;
+	 D3DXCreateTextureFromFile(
+		 pDevice,
+		 POLTGON0_TEX,
+		 &m_pTexturePolygon);
 
-	for (int nCntModel = 0; nCntModel < MAX_MODEL; nCntModel++)
-	{
-		m_vtxMax = D3DXVECTOR3(-1000.0f, -1000.0f, -1000.0f);
-		m_vtxMin = D3DXVECTOR3(1000.0f, 1000.0f, 1000.0f);
+	// オブジェクトの頂点バッファを生成
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * 4,
+		D3DUSAGE_WRITEONLY,
+		FVF_VERTEX_3D,
+		D3DPOOL_MANAGED,
+		&m_pVtxBuffScene,
+		NULL);
 
-		// 頂点数を取得
-		nNumVertices = m_Model[nCntModel].pMesh->GetNumVertices();
+	// 頂点データの範囲をロックし、頂点バッファへのポインタを取得
+	m_pVtxBuffScene->Lock(0, 0, (void**)&pVtx, 0);
 
-		// 頂点フォーマットのサイズを取得
-		sizeFVF = D3DXGetFVFVertexSize(m_Model[nCntModel].pMesh->GetFVF());
+	pVtx[0].pos = m_pos + D3DXVECTOR3(-10.0f, 0.0f, 10.0f);
+	pVtx[1].pos = m_pos + D3DXVECTOR3(10.0f, 0.0f, 10.0f);
+	pVtx[2].pos = m_pos + D3DXVECTOR3(-10.0f, 0.0f, -10.0f);
+	pVtx[3].pos = m_pos + D3DXVECTOR3(10.0f, 0.0f, -10.0f);
 
-		// 頂点バッファをロック
-		m_Model[nCntModel].pMesh->LockVertexBuffer(D3DLOCK_READONLY, (void**)&pVertexBuffer);
+	pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	pVtx[1].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	pVtx[2].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	pVtx[3].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
-		for (int nCntVtx = 0; nCntVtx < nNumVertices; nCntVtx++)
-		{
-			D3DXVECTOR3 vtx = *(D3DXVECTOR3*)pVertexBuffer;
+	pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
-			// 全ての頂点情報を比較して最大値・最小値を抜き出す
-			D3DXVec3Minimize(&m_vtxMin, &vtx, &m_vtxMin);
-			D3DXVec3Maximize(&m_vtxMax, &vtx, &m_vtxMax);
+	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
+	pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
+	pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
 
-			pVertexBuffer += sizeFVF;//	サイズ分ポインタを進める
-		}
-		// アンロック
-		m_Model[nCntModel].pMesh->UnlockVertexBuffer();
-	}
+	// 頂点データをアンロックする
+	m_pVtxBuffScene->Unlock();
+
+	//モデルの初期化
+	ModelInit();
 
 	return S_OK;
 }
@@ -89,7 +94,12 @@ HRESULT CScene3D::Init(void)
 //===================================================================================================
 void CScene3D::Uninit(void)
 {
-
+	// 頂点バッファの開放
+	if (m_pVtxBuffScene != NULL)
+	{
+		m_pVtxBuffScene->Release();
+		m_pVtxBuffScene = NULL;
+	}
 }
 
 //====================================================================================================
@@ -97,7 +107,21 @@ void CScene3D::Uninit(void)
 //=====================================================================================================
 void CScene3D::Update(void)
 {
+	VERTEX_3D *pVtx;
 
+	// 頂点データの範囲をロックし、頂点バッファへのポインタを取得
+	m_pVtxBuffScene->Lock(0, 0, (void**)&pVtx, 0);
+
+	for (int nCntModel = 0; nCntModel < MAX_MODEL; nCntModel++)
+	{
+		pVtx[0].pos = m_pos + D3DXVECTOR3(-10.0f, 0.0f, 10.0f);
+		pVtx[1].pos = m_pos + D3DXVECTOR3(10.0f, 0.0f, 10.0f);
+		pVtx[2].pos = m_pos + D3DXVECTOR3(-10.0f, 0.0f, -10.0f);
+		pVtx[3].pos = m_pos + D3DXVECTOR3(10.0f, 0.0f, -10.0f);
+	}
+
+	// 頂点データをアンロックする
+	m_pVtxBuffScene->Unlock();
 }
 
 //========================================================================================================
@@ -105,74 +129,222 @@ void CScene3D::Update(void)
 //========================================================================================================
 void CScene3D::Draw(void)
 {
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	CRenderer *pRenderer = CManager::GetRenderer();
+	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
+
+	D3DXMATRIX mtxRot, mtxTrans;				//計算用マトリックス
+
+	// ワールドマトリックスの初期化
+	D3DXMatrixIdentity(&m_mtxWorldPolygon);
+
+	// 回転を反映
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rotPolygon.y, m_rotPolygon.x, m_rotPolygon.z);
+	D3DXMatrixMultiply(&m_mtxWorldPolygon, &m_mtxWorldPolygon, &mtxRot);
+
+	// 位置を反映
+	D3DXMatrixTranslation(&mtxTrans, m_PosPolygon.x, m_PosPolygon.y, m_PosPolygon.z);
+	D3DXMatrixMultiply(&m_mtxWorldPolygon, &m_mtxWorldPolygon, &mtxTrans);
+
+	// ワールドマトリックスの設定
+	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorldPolygon);
+
+	// 頂点バッファをデータストリームに設定
+	pDevice->SetStreamSource(0, m_pVtxBuffScene, 0, sizeof(VERTEX_3D));
+
+	//頂点フォーマットの設定
+	pDevice->SetFVF(FVF_VERTEX_3D);
+
+	// テクスチャの設定
+	pDevice->SetTexture(0, m_pTexturePolygon);
+
+	// ポリゴンの描画
+	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 4);//D3DPT_TRIANGLESTRIPは反時計回りにする
+}
+
+////========================================================================================================
+//// 描画処理
+////========================================================================================================
+//void CScene3D::DrawModel(void)
+//{
+//	CRenderer *pRenderer = CManager::GetRenderer();
+//	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
+//
+//	D3DXMATRIX mtxRot, mtxTrans;				// 計算用マトリックス
+//	D3DXMATERIAL *pMat;							// 現在のマテリアル保存用
+//	D3DMATERIAL9 matDef;						// マテリアルデータへのポインタ
+//	D3DXMATRIX	mtxParent;						// 親のマトリックス
+//
+//												// ワールドマトリックスの初期化
+//	D3DXMatrixIdentity(&m_mtxWorld);
+//
+//	// 回転を反映
+//	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
+//	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
+//
+//	// 位置を反映
+//	D3DXMatrixTranslation(&mtxTrans, m_pos.x, m_pos.y, m_pos.z);
+//	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
+//
+//	// ワールドマトリックスの設定
+//	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
+//
+//
+//	for (int nCntModel = 0; nCntModel < MAX_MODEL; nCntModel++)
+//	{
+//
+//		if (m_Parent[nCntModel].nIdxModelParent == -1)
+//		{
+//			mtxParent = m_mtxWorld;
+//		}
+//		else
+//		{
+//			mtxParent = m_Parent[m_Parent[nCntModel].nIdxModelParent].mtxWorld;
+//		}
+//		// ワールドマトリックスの初期化
+//		D3DXMatrixIdentity(&m_mtxWorld);
+//
+//		// 回転を反映
+//		D3DXMatrixRotationYawPitchRoll(&mtxRot, m_Parent[nCntModel].rot.y, m_Parent[nCntModel].rot.x, m_Parent[nCntModel].rot.z);
+//		D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
+//
+//		// 位置を反映
+//		D3DXMatrixTranslation(&mtxTrans, m_Parent[nCntModel].pos.x, m_Parent[nCntModel].pos.y, m_Parent[nCntModel].pos.z);
+//		D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
+//
+//		// 親モデルのマトリックスをかけ合わせる
+//		D3DXMatrixMultiply(&m_Parent[nCntModel].mtxWorld,
+//			&m_Parent[nCntModel].mtxWorld, &mtxParent);
+//
+//		// ワールドマトリックスの設定
+//		pDevice->SetTransform(D3DTS_WORLD, &m_Parent[nCntModel].mtxWorld);
+//
+//		// 現在のマテリアルを取得
+//		pDevice->GetMaterial(&matDef);
+//
+//		// マテリアル情報に対するポインタを取得
+//		pMat = (D3DXMATERIAL*)pBuffMat->GetBufferPointer();
+//
+//		for (int nCntMat = 0; nCntMat < (int)nNumMat; nCntMat++)
+//		{
+//			// マテリアルの設定
+//			pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
+//
+//			// 描画
+//			pMesh->DrawSubset(nCntMat);
+//		}
+//
+//		// マテリアルをデフォルトに戻す
+//		pDevice->SetMaterial(&matDef);
+//	}
+//}
+
+//========================================================================================================
+// 描画処理
+//========================================================================================================
+void CScene3D::DrawModel(void)
+{
+	CRenderer *pRenderer = CManager::GetRenderer();
+	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
 
 	D3DXMATRIX mtxRot, mtxTrans;				// 計算用マトリックス
 	D3DXMATERIAL *pMat;							// 現在のマテリアル保存用
 	D3DMATERIAL9 matDef;						// マテリアルデータへのポインタ
-	D3DXMATRIX	mtxModel;						// 親のマトリックス
-
-	// ワールドマトリックスの初期化
-	D3DXMatrixIdentity(&m_mtxWorld);
-
-	// 回転を反映
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
-
-	// 位置を反映
-	D3DXMatrixTranslation(&mtxTrans, m_pos.x, m_pos.y, m_pos.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
-
-	// ワールドマトリックスの設定
-	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
 
 	for (int nCntModel = 0; nCntModel < MAX_MODEL; nCntModel++)
 	{
-		if (m_Model[nCntModel].nIdxModelModel == -1)
-		{
-			mtxModel = m_mtxWorld;
-		}
-		else
-		{
-			mtxModel = m_Model[m_Model[nCntModel].nIdxModelModel].mtxWorld;
-		}
-
 		// ワールドマトリックスの初期化
 		D3DXMatrixIdentity(&m_mtxWorld);
 
 		// 回転を反映
-		D3DXMatrixRotationYawPitchRoll(&mtxRot, m_Model[nCntModel].rot.y, m_Model[nCntModel].rot.x, m_Model[nCntModel].rot.z);
+		D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
 		D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
 
 		// 位置を反映
-		D3DXMatrixTranslation(&mtxTrans, m_Model[nCntModel].pos.x, m_Model[nCntModel].pos.y, m_Model[nCntModel].pos.z);
+		D3DXMatrixTranslation(&mtxTrans, m_pos.x, m_pos.y, m_pos.z);
 		D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
 
-		// 親モデルのマトリックスをかけ合わせる
-		D3DXMatrixMultiply(&m_Model[nCntModel].mtxWorld, &m_Model[nCntModel].mtxWorld, &mtxModel);
-
 		// ワールドマトリックスの設定
-		pDevice->SetTransform(D3DTS_WORLD, &m_Model[nCntModel].mtxWorld);
+		pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
 
 		// 現在のマテリアルを取得
 		pDevice->GetMaterial(&matDef);
 
 		// マテリアル情報に対するポインタを取得
-		pMat = (D3DXMATERIAL*)m_Model[nCntModel].pBuffMat->GetBufferPointer();
+		pMat = (D3DXMATERIAL*)pBuffMat->GetBufferPointer();
 
-		for (int nCntMat = 0; nCntMat < (int)m_Model[nCntModel].nNumMat; nCntMat++)
+		for (int nCntMat = 0; nCntMat < (int)nNumMat; nCntMat++)
 		{
 			// マテリアルの設定
 			pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
 
-			// 描画
-			m_Model[nCntModel].pMesh->DrawSubset(nCntMat);
-		}
+			// テクスチャの反映
+			pDevice->SetTexture(0, 0);
 
+			// 描画
+			pMesh->DrawSubset(nCntMat);
+		}
 		// マテリアルをデフォルトに戻す
 		pDevice->SetMaterial(&matDef);
 	}
 }
+
+//====================================================================================================
+// モデルの初期化
+//====================================================================================================
+void CScene3D::ModelInit(void)
+{
+	CRenderer *pRenderer = CManager::GetRenderer();
+	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
+
+	// 初期設定
+	for (int nCntModel = 0; nCntModel < MAX_MODEL; nCntModel++)
+	{
+		m_pos = D3DXVECTOR3(0.0f,0.0f,0.0f);
+		m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	}
+
+	// モデルの頂点数の最大値・最小値の設定
+	int		nNumVertices;							// 頂点数
+	DWORD	sizeFVF;								// 頂点フォーマットのサイズ
+	BYTE	*pVertexBuffer;
+
+	for (int nCntModel = 0; nCntModel < MODELTYPE_MAX; nCntModel++)
+	{
+		m_vtxMax = D3DXVECTOR3(-1000.0f, -1000.0f, -1000.0f);
+		m_vtxMin = D3DXVECTOR3(1000.0f, 1000.0f, 1000.0f);
+
+		// 頂点数を取得
+		nNumVertices = pMesh->GetNumVertices();
+
+		// 頂点フォーマットのサイズを取得
+		sizeFVF = D3DXGetFVFVertexSize(pMesh->GetFVF());
+
+		// 頂点バッファをロック
+		pMesh->LockVertexBuffer(D3DLOCK_READONLY, (void**)&pVertexBuffer);
+
+		for (int nCntVtx = 0; nCntVtx < nNumVertices; nCntVtx++)
+		{
+			D3DXVECTOR3 vtx = *(D3DXVECTOR3*)pVertexBuffer;
+
+//			// 全ての頂点情報を比較して最大値・最小値を抜き出す
+//<<<<<<< HEAD:team_Prototype/script/Scene3D.cpp
+			D3DXVec3Minimize(&m_vtxMin, &vtx, &m_vtxMin);
+//
+			D3DXVec3Maximize(&m_vtxMax, &vtx, &m_vtxMax);
+//=======
+//			D3DXVec3Minimize(&vtxMin, &vtx, &vtxMin);
+//
+//			D3DXVec3Maximize(&vtxMax, &vtx, &vtxMax);
+//>>>>>>> 9b731fce417e264f98bacdf04841822bd737d7b0:team/script/Scene3D.cpp
+
+			pVertexBuffer += sizeFVF;//	サイズ分ポインタを進める
+		}
+		// アンロック
+		pMesh->UnlockVertexBuffer();
+	}
+}
+
+//<<<<<<< HEAD:team_Prototype/script/Scene3D.cpp
 
 //=============================================================================
 // 当たり判定(球とカプセル)
@@ -264,14 +436,11 @@ return true;
 //====================================================================================================
 // モデルの取得
 //====================================================================================================
-void CScene3D::BindModel(const MODELNUM *type)
+void CScene3D::BindModel(DWORD NumMat, LPD3DXMESH Mesh, LPD3DXBUFFER BuffMat)
 {
-	for (int nCnt = 0; nCnt < type->m_nMaxModel; nCnt++, type++)
-	{
-		m_Model[nCnt].nNumMat = type->NumModel->nNumMat;
-		m_Model[nCnt].pMesh = type->NumModel->pMesh;
-		m_Model[nCnt].pBuffMat = type->NumModel->pBuffMat;
-	}
+	nNumMat = NumMat;
+	pMesh = Mesh;
+	pBuffMat = BuffMat;
 }
 
 //====================================================================================================
@@ -280,6 +449,14 @@ void CScene3D::BindModel(const MODELNUM *type)
 D3DXVECTOR3 CScene3D::GetPos(void)
 {
 	return m_pos;
+}
+
+//========================================================================================================
+// 体力の取得
+//========================================================================================================
+int CScene3D::GetLife(void)
+{
+	return m_Life;
 }
 
 //====================================================================================================
@@ -307,9 +484,24 @@ void CScene3D::SetRot(D3DXVECTOR3 rot)
 }
 
 //====================================================================================================
+// 種類のセット
+//====================================================================================================
+void CScene3D::SetType(MODELTYPE Type)
+{
+	m_type = Type;
+}
+
+//====================================================================================================
 // デストラクタ
 //====================================================================================================
 CScene3D::~CScene3D()
 {
 
+}
+//========================================================================================================
+// life処理
+//========================================================================================================
+void CScene3D::SetLife(int nLife)
+{
+	m_Life = nLife;
 }

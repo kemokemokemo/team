@@ -17,7 +17,6 @@
 #include "gauge.h"
 #include "Scene2D.h"
 
-
 //=============================================================================
 // マクロ定義
 //=============================================================================
@@ -28,7 +27,9 @@
 //=============================================================================
 //  メンバ変数初期化
 //=============================================================================
-CScene3D::MODELNUM CPlayer::m_PlayerType[PLAYERTYPE_MAX] = {};
+DWORD			CPlayer::nNumMat[MODELTYPE_MAX] = {};
+LPD3DXMESH		CPlayer::pMesh[MODELTYPE_MAX] = {};
+LPD3DXBUFFER	CPlayer::pBuffMat[MODELTYPE_MAX] = {};
 
 //=============================================================================
 // コンストラクタ
@@ -50,13 +51,11 @@ CPlayer::~CPlayer()
 //=============================================================================
 // モデルの生成
 //=============================================================================
-CPlayer * CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERTYPE type, PLAYERNUM PlayerNum)
+CPlayer * CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, MODELTYPE type, PLAYERNUM PlayerNum)
 {
 	CPlayer *pPlayer;
 	pPlayer = new CPlayer(OBJTYPE_PLAYER);
-
-	pPlayer->BindModel(&m_PlayerType[type]);
-
+	pPlayer->BindModel(nNumMat[type], pMesh[type], pBuffMat[type]);
 	pPlayer->Init(pos, rot, type, PlayerNum);
 	return pPlayer;
 }
@@ -64,11 +63,13 @@ CPlayer * CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERTYPE type, PLA
 //=============================================================================
 // 初期化処理
 //=============================================================================
-HRESULT CPlayer::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERTYPE type, PLAYERNUM PlayerNum)
+HRESULT CPlayer::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, MODELTYPE type, PLAYERNUM PlayerNum)
 {
 	CScene3D::Init();
 
 	CScene3D::SetPos(pos);
+
+	CScene3D::SetType(type);
 
 	m_PlayerNum = PlayerNum;
 
@@ -76,18 +77,18 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERTYPE type, PLAYERN
 
 	m_PlayerState = PLAYERSTATE_NORMAL;
 
-	//switch (type)
-	//{
-	//case MODELTYPE_CAR:
-	//	m_nLife = 3;
-	//	//pLifeGauge = CGauge::Create(D3DXVECTOR3(200.0f, 600.0f, 0.0f));
-	//	break;
+	switch (type)
+	{
+	case MODELTYPE_CAR:
+		m_nLife = 3;
+		//pLifeGauge = CGauge::Create(D3DXVECTOR3(200.0f, 600.0f, 0.0f));
+		break;
 
-	//case MODELTYPE_CAT:
-	//	m_nLife = 5;
-	//	//pLifeGauge = CGauge::Create(D3DXVECTOR3(200.0f, 600.0f, 0.0f));
-	//	break;
-	//}
+	case MODELTYPE_CAT:
+		m_nLife = 5;
+		//pLifeGauge = CGauge::Create(D3DXVECTOR3(200.0f, 600.0f, 0.0f));
+		break;
+	}
 
 	return S_OK;
 }
@@ -139,6 +140,7 @@ void CPlayer::Update(void)
 		break;
 	}
 
+	SetLife(m_nLife);
 
 	GetPlayerPos();
 
@@ -151,7 +153,7 @@ void CPlayer::Update(void)
 //=============================================================================
 void CPlayer::Draw(void)
 {
-	CScene3D::Draw();
+	CScene3D::DrawModel();
 }
 
 //=============================================================================
@@ -375,71 +377,25 @@ int CPlayer::GetLife(void)
 {
 	return m_nLife;
 }
-
-#include <sstream>
-#include <fstream>
-
 //========================================================================================================
 // モデルの読み込み処理
 //========================================================================================================
 HRESULT CPlayer::Load(void)
 {
-	for (int nCnt = 0; nCnt < PLAYERTYPE_MAX; nCnt++)
-	{
-		std::ifstream fin("DATA/motion_Kangaroo.txt");
+	CRenderer *pRenderer = CManager::GetRenderer();
+	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
 
-		if (!fin)
-			return -1;
+	// Xファイルの読み込み
+	D3DXLoadMeshFromX(MODELFILE1, D3DXMESH_SYSTEMMEM, pDevice, NULL,
+		&pBuffMat[MODELTYPE_CAR], NULL,
+		&nNumMat[MODELTYPE_CAR],
+		&pMesh[MODELTYPE_CAR]);
 
-		std::string sLine;
-
-		int nCount = 0;
-
-		while (std::getline(fin, sLine))
-		{
-			// ＝がなかったら
-			if (sLine.find('=') == std::string::npos)
-				continue;
-
-			// 文字列の操作（追加、取り出しなど）
-			std::stringstream sString(sLine);
-			std::string sName;
-
-			sString >> sName;
-			sString.ignore(sLine.size(), '=');
-
-			if (sName == "NUM_MODEL")
-			{
-				sString >> m_PlayerType[nCnt].m_nMaxModel;
-			}
-			else if (sName == "MODEL_FILENAME")
-			{
-				sString >> sName;
-				if (sName.size() < 256)
-				{
-					// ファイル名をchar型にコピー
-					std::char_traits<char>::copy(m_PlayerType[nCnt].NumModel[nCount].cFileName, sName.c_str(), sName.size() + 1);
-				}
-				else
-				{
-					return -1;
-				}
-				nCount++;
-			}
-		}
-
-		CRenderer *pRenderer = CManager::GetRenderer();
-		LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
-
-		for (int nCntModel = 0; nCntModel < m_PlayerType[nCnt].m_nMaxModel; nCntModel++)
-		{
-			// Xファイルの読み込み
-			D3DXLoadMeshFromX(m_PlayerType[nCnt].NumModel[nCntModel].cFileName, D3DXMESH_SYSTEMMEM, pDevice, NULL,
-				&m_PlayerType[nCnt].NumModel[nCntModel].pBuffMat, NULL,
-				&m_PlayerType[nCnt].NumModel[nCntModel].nNumMat,
-				&m_PlayerType[nCnt].NumModel[nCntModel].pMesh);
-		}
-	}
+	// Xファイルの読み込み
+	D3DXLoadMeshFromX(MODELFILE2, D3DXMESH_SYSTEMMEM, pDevice, NULL,
+		&pBuffMat[MODELTYPE_CAT], NULL,
+		&nNumMat[MODELTYPE_CAT],
+		&pMesh[MODELTYPE_CAT]);
 
 	return S_OK;
 }
@@ -449,13 +405,23 @@ HRESULT CPlayer::Load(void)
 //========================================================================================================
 void CPlayer::Unload(void)
 {
-	for (int nCntType = 0; nCntType < PLAYERTYPE_MAX; nCntType++)
+	for (int nCnt = 0; nCnt < MODELTYPE_MAX; nCnt++)
 	{
-		for (int nCnt = 0; nCnt < MAX_MODEL; nCnt++)
+		if (pBuffMat[nCnt])
 		{
-			m_PlayerType[nCntType].NumModel[nCnt].nNumMat = NULL;
-			m_PlayerType[nCntType].NumModel[nCnt].pBuffMat = NULL;
-			m_PlayerType[nCntType].NumModel[nCnt].pMesh = NULL;
+			pBuffMat[nCnt]->Release();
+			pBuffMat[nCnt] = NULL;
+		}
+
+		if (nNumMat[nCnt])
+		{
+			nNumMat[nCnt] = NULL;
+		}
+
+		if (pMesh[nCnt])
+		{
+			pMesh[nCnt]->Release();
+			pMesh[nCnt] = NULL;
 		}
 	}
 }

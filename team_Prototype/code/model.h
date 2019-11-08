@@ -33,11 +33,6 @@
 class CModel : public CScene3D
 {
 public:
-	enum UNITTYPE
-	{
-		UNITTYPE_FLOOR,
-		UNITTYPE_MAX
-	};
 
 	//=============================================================================
 	// プロトタイプ宣言
@@ -45,9 +40,9 @@ public:
 	CModel(OBJTYPE type);
 	~CModel();
 
-	static CModel *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, UNITTYPE type);
+	static CModel *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, MODELTYPE type);
 
-	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, UNITTYPE type);
+	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, MODELTYPE type);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
@@ -58,10 +53,12 @@ public:
 	//bool CollisionModel(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 size);
 
 private:
-	static MODELNUM m_Unit[UNITTYPE_MAX];
 
 	LPDIRECT3DTEXTURE9	m_pTextureModel[MAX_TEXTURE] = {};			// テクスチャへのポインタ
 	D3DXVECTOR3 m_pos;
 
+	static DWORD		nNumMat;						// マテリアル情報の数
+	static LPD3DXMESH	pMesh;						// メッシュ情報へのポインタ
+	static LPD3DXBUFFER	pBuffMat;					// マテリアル情報へのポインタ
 };
 #endif

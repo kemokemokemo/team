@@ -16,7 +16,7 @@
 //====================================================================================================
 // マクロ定義
 //==================================================================================================== 
-#define MAX_MODEL		(64)									// モデルの数
+#define MAX_MODEL		(128)									// モデルの数
 
 //================================================================
 // レンダリングクラス
@@ -24,26 +24,28 @@
 class CScene3D : public CScene
 {
 public:
+	//=============================================================================
+	// モデルの種類
+	//=============================================================================
+	typedef enum
+	{
+		MODELTYPE_BILL0 = 0,		// ビル0			[0]
+		MODELTYPE_CAR,
+		MODELTYPE_CAT,
+		MODELTYPE_MAX				// 種類の最大数
+	} MODELTYPE;
 
 	//=============================================================================
 	// モデルの種類
 	//=============================================================================
 	typedef struct
 	{
-		DWORD nNumMat;							// マテリアル情報の数
-		LPD3DXMESH pMesh;						// メッシュ情報へのポインタ
-		LPD3DXBUFFER pBuffMat;					// マテリアル情報へのポインタ
-
-		D3DXMATRIX mtxWorld;
-
-		D3DXVECTOR3 startpos;							// ポリゴンの初期位置(オフセット値)
+		D3DXMATRIX  mtxWorld;
 		D3DXVECTOR3 pos;								// ポリゴンの位置
 		D3DXVECTOR3 rot;								// ポリゴンの向き
-		int nIdxModelModel;
-
-		char cFileName[256];
-
-	} MODEL;
+		int nIdxModelParent;
+		int nType;
+	} PARENT;
 
 	//================================================================
 	// プロトタイプ宣言
@@ -55,36 +57,44 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
+	void DrawModel(void);
+	void ModelInit(void);
 
-	bool ShapeCapsuleCollision(D3DXVECTOR3 *pPosStart, D3DXVECTOR3 *pPosEnd, float Radius, D3DXVECTOR3 *pPos);
-
-	void SetPos(D3DXVECTOR3 pos);
-	void SetRot(D3DXVECTOR3 rot);
-
+	void BindModel(DWORD NumMat, LPD3DXMESH Mesh, LPD3DXBUFFER BuffMat);
+	bool CScene3D::ShapeCapsuleCollision(D3DXVECTOR3 *pPosStart, D3DXVECTOR3 *pPosEnd, float Radius, D3DXVECTOR3 *pPos);
 	D3DXVECTOR3 GetPos(void);
+	void SetPos(D3DXVECTOR3 pos);
 	D3DXVECTOR3 GetRot(void);
-protected:
+	static int GetLife(void);
 
-	struct MODELNUM
-	{
-		MODEL NumModel[MAX_MODEL];
-		int m_nMaxModel;							// モデル数
-	};
-	void BindModel(const MODELNUM *type);
+	void SetRot(D3DXVECTOR3 rot);
+	void SetType(MODELTYPE Type);
+
+	void SetLife(int nLife);
 
 private:
 
+	static int m_Life;
 
+	VERTEX_3D m_Vertex[4];
 	LPDIRECT3DTEXTURE9 m_pTexturePolygon;
+	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuffScene;		// 頂点バッファへのポインタ
+	D3DXVECTOR3 m_rotPolygon;
+	D3DXMATRIX m_mtxWorldPolygon;
+	D3DXVECTOR3 m_PosPolygon;
 
 	D3DXVECTOR3 m_pos;						// ポリゴンの位置
 	D3DXVECTOR3 m_rot;						// ポリゴンの向き
 	D3DXVECTOR3	m_move;						// 移動量
 	D3DXMATRIX  m_mtxWorld;					// ワールドマトリックス
 
-	MODEL m_Model[MAX_MODEL];				// 親子パーツ
+	PARENT m_Parent[MAX_MODEL];				// 親子パーツ
 
-	//MODELNUM	m_type;						// 種類
+	MODELTYPE	m_type;						// 種類
+
+	DWORD		nNumMat;					// マテリアル情報の数
+	LPD3DXMESH	pMesh;						// メッシュ情報へのポインタ
+	LPD3DXBUFFER	pBuffMat;				// マテリアル情報へのポインタ
 
 	D3DXVECTOR3		m_vtxMin;				//最小値
 	D3DXVECTOR3		m_vtxMax;				//最大値 
