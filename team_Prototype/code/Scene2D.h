@@ -94,7 +94,6 @@ public:
 
 private:
 
-	VERTEX_2D m_Vertex[4];
 	LPDIRECT3DTEXTURE9 m_pTexturePolygon;
 	D3DXVECTOR3 m_pos = D3DXVECTOR3(0.0f,0.0f,0.0f);	//ƒ|ƒWƒVƒ‡ƒ“
 	D3DXVECTOR3 m_posmove;

@@ -64,7 +64,7 @@ void CGauge::Uninit(void)
 //=====================================================================================================
 void CGauge::Update(void)
 {
-	m_nLife = CScene3D::GetLife();
+	m_nLife ;
 	CScene2D::Update();
 	if (m_nLife <= 0)
 	{

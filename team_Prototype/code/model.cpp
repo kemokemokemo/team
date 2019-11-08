@@ -16,9 +16,7 @@
 //=============================================================================
 // メンバ変数初期化
 //=============================================================================
-DWORD			CModel::nNumMat = NULL;
-LPD3DXMESH		CModel::pMesh = NULL;
-LPD3DXBUFFER	CModel::pBuffMat = NULL;
+CScene3D::MODELNUM CModel::m_Unit[UNITTYPE_MAX] = {};
 
 //=============================================================================
 // コンストラクタ
@@ -37,11 +35,11 @@ CModel::~CModel()
 //=============================================================================
 // モデルの生成
 //=============================================================================
-CModel * CModel::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, MODELTYPE type)
+CModel * CModel::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, UNITTYPE type)
 {
 	CModel *pModel;
 	pModel = new CModel(OBJTYPE_BG);
-	pModel->BindModel(nNumMat, pMesh, pBuffMat);
+	pModel->BindModel(&m_Unit[type]);
 	pModel->Init(pos, rot, type);
 
 	return pModel;
@@ -50,7 +48,7 @@ CModel * CModel::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, MODELTYPE type)
 //=============================================================================
 // 初期化処理
 //=============================================================================
-HRESULT CModel::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, MODELTYPE type)
+HRESULT CModel::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, UNITTYPE type)
 {
 	CScene3D::Init();
 
@@ -86,7 +84,7 @@ void CModel::Update(void)
 //=============================================================================
 void CModel::Draw(void)
 {
-	CScene3D::DrawModel();
+	CScene3D::Draw();
 }
 
 //========================================================================================================
@@ -97,11 +95,11 @@ HRESULT CModel::Load(void)
 	CRenderer *pRenderer = CManager::GetRenderer();
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
 
-	// Xファイルの読み込み
-	D3DXLoadMeshFromX(MODELFILE0, D3DXMESH_SYSTEMMEM, pDevice, NULL,
-		&pBuffMat, NULL,
-		&nNumMat,
-		&pMesh);
+	//// Xファイルの読み込み
+	//D3DXLoadMeshFromX(MODELFILE0, D3DXMESH_SYSTEMMEM, pDevice, NULL,
+	//	&pBuffMat, NULL,
+	//	&nNumMat,
+	//	&pMesh);
 
 	return S_OK;
 }

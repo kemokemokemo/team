@@ -51,8 +51,20 @@ public:
 		PLAYER_01= 0,
 		PLAYER_02,
 		PLAYER_03,
-		PLAYER_04,			// 種類の最大数
+		PLAYER_04,			// 人の最大数
 	} PLAYERNUM;
+
+	//=============================================================================
+	// プレイヤー種類
+	//=============================================================================
+	typedef enum
+	{
+		PLAYERTYPE_1 = 0,
+		PLAYERTYPE_2,
+		PLAYERTYPE_3,
+		PLAYERTYPE_4,			// 種類の最大数
+		PLAYERTYPE_MAX
+	} PLAYERTYPE;
 
 	//=============================================================================
 	// プロトタイプ宣言
@@ -60,9 +72,9 @@ public:
 	CPlayer(OBJTYPE type);
 	~CPlayer();
 
-	static CPlayer *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, MODELTYPE type, PLAYERNUM PlayerNum);
+	static CPlayer *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERTYPE type, PLAYERNUM PlayerNum);
 
-	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, MODELTYPE type, PLAYERNUM PlayerNum);
+	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERTYPE type, PLAYERNUM PlayerNum);
 
 	void Uninit(void);
 	void Update(void);
@@ -82,6 +94,7 @@ public:
 	//bool CollisionModel(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 size);
 
 private:
+	static MODELNUM m_PlayerType[PLAYERTYPE_MAX];
 
 	D3DXVECTOR3	m_move;							// 移動量
 	PLAYERNUM	m_PlayerNum;					// プレイヤーの人数
@@ -95,9 +108,5 @@ private:
 
 	D3DXVECTOR3 m_fDistance;
 	D3DXVECTOR3 m_fDiffrot;
-
-	static DWORD		nNumMat[MODELTYPE_MAX];						// マテリアル情報の数
-	static LPD3DXMESH	pMesh[MODELTYPE_MAX];						// メッシュ情報へのポインタ
-	static LPD3DXBUFFER	pBuffMat[MODELTYPE_MAX];					// マテリアル情報へのポインタ
 };
 #endif
