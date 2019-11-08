@@ -1,0 +1,26 @@
+﻿  tutorial.cpp
+  Title.cpp
+  Scene3D.cpp
+  Scene2D.cpp
+  Scene.cpp
+  Result.cpp
+  renderer.cpp
+  polygon.cpp
+  player.cpp
+  pad.cpp
+  model.cpp
+  manager.cpp
+  main.cpp
+  light.cpp
+  keybord.cpp
+  input.cpp
+  gauge.cpp
+  Gameover.cpp
+  Game.cpp
+  fade.cpp
+  コードを生成中...
+  コンパイル中...
+  camera.cpp
+  コードを生成中...
+  team_Prototype.vcxproj -> C:\Users\S-Jobi18-051\Documents\GitHub\team\team_Prototype\Debug\team_Prototype.exe
+  team_Prototype.vcxproj -> C:\Users\S-Jobi18-051\Documents\GitHub\team\team_Prototype\Debug\team_Prototype.pdb (Full PDB)
