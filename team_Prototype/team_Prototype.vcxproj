@@ -18,6 +18,52 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="code\camera.cpp" />
+    <ClCompile Include="code\fade.cpp" />
+    <ClCompile Include="code\Game.cpp" />
+    <ClCompile Include="code\Gameover.cpp" />
+    <ClCompile Include="code\gauge.cpp" />
+    <ClCompile Include="code\input.cpp" />
+    <ClCompile Include="code\keybord.cpp" />
+    <ClCompile Include="code\light.cpp" />
+    <ClCompile Include="code\main.cpp" />
+    <ClCompile Include="code\manager.cpp" />
+    <ClCompile Include="code\model.cpp" />
+    <ClCompile Include="code\pad.cpp" />
+    <ClCompile Include="code\player.cpp" />
+    <ClCompile Include="code\polygon.cpp" />
+    <ClCompile Include="code\renderer.cpp" />
+    <ClCompile Include="code\Result.cpp" />
+    <ClCompile Include="code\Scene.cpp" />
+    <ClCompile Include="code\Scene2D.cpp" />
+    <ClCompile Include="code\Scene3D.cpp" />
+    <ClCompile Include="code\Title.cpp" />
+    <ClCompile Include="code\tutorial.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="code\camera.h" />
+    <ClInclude Include="code\fade.h" />
+    <ClInclude Include="code\Game.h" />
+    <ClInclude Include="code\Gameover.h" />
+    <ClInclude Include="code\gauge.h" />
+    <ClInclude Include="code\input.h" />
+    <ClInclude Include="code\keybord.h" />
+    <ClInclude Include="code\light.h" />
+    <ClInclude Include="code\main.h" />
+    <ClInclude Include="code\manager.h" />
+    <ClInclude Include="code\model.h" />
+    <ClInclude Include="code\pad.h" />
+    <ClInclude Include="code\player.h" />
+    <ClInclude Include="code\polygon.h" />
+    <ClInclude Include="code\renderer.h" />
+    <ClInclude Include="code\Result.h" />
+    <ClInclude Include="code\Scene.h" />
+    <ClInclude Include="code\Scene2D.h" />
+    <ClInclude Include="code\Scene3D.h" />
+    <ClInclude Include="code\Title.h" />
+    <ClInclude Include="code\tutorial.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5F3286BE-E866-4681-9355-01330CBFD1EC}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -149,52 +195,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="script\camera.cpp" />
-    <ClCompile Include="script\fade.cpp" />
-    <ClCompile Include="script\Game.cpp" />
-    <ClCompile Include="script\Gameover.cpp" />
-    <ClCompile Include="script\gauge.cpp" />
-    <ClCompile Include="script\input.cpp" />
-    <ClCompile Include="script\keybord.cpp" />
-    <ClCompile Include="script\light.cpp" />
-    <ClCompile Include="script\main.cpp" />
-    <ClCompile Include="script\manager.cpp" />
-    <ClCompile Include="script\model.cpp" />
-    <ClCompile Include="script\pad.cpp" />
-    <ClCompile Include="script\player.cpp" />
-    <ClCompile Include="script\polygon.cpp" />
-    <ClCompile Include="script\renderer.cpp" />
-    <ClCompile Include="script\Result.cpp" />
-    <ClCompile Include="script\Scene.cpp" />
-    <ClCompile Include="script\Scene2D.cpp" />
-    <ClCompile Include="script\Scene3D.cpp" />
-    <ClCompile Include="script\Title.cpp" />
-    <ClCompile Include="script\tutorial.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="script\camera.h" />
-    <ClInclude Include="script\fade.h" />
-    <ClInclude Include="script\Game.h" />
-    <ClInclude Include="script\Gameover.h" />
-    <ClInclude Include="script\gauge.h" />
-    <ClInclude Include="script\input.h" />
-    <ClInclude Include="script\keybord.h" />
-    <ClInclude Include="script\light.h" />
-    <ClInclude Include="script\main.h" />
-    <ClInclude Include="script\manager.h" />
-    <ClInclude Include="script\model.h" />
-    <ClInclude Include="script\pad.h" />
-    <ClInclude Include="script\player.h" />
-    <ClInclude Include="script\polygon.h" />
-    <ClInclude Include="script\renderer.h" />
-    <ClInclude Include="script\Result.h" />
-    <ClInclude Include="script\Scene.h" />
-    <ClInclude Include="script\Scene2D.h" />
-    <ClInclude Include="script\Scene3D.h" />
-    <ClInclude Include="script\Title.h" />
-    <ClInclude Include="script\tutorial.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
