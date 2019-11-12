@@ -17,7 +17,6 @@
 #include "gauge.h"
 #include "Scene2D.h"
 
-
 //=============================================================================
 // マクロ定義
 //=============================================================================
@@ -376,9 +375,6 @@ int CPlayer::GetLife(void)
 	return m_nLife;
 }
 
-#include <sstream>
-#include <fstream>
-
 //========================================================================================================
 // モデルの読み込み処理
 //========================================================================================================
@@ -386,16 +382,30 @@ HRESULT CPlayer::Load(void)
 {
 	for (int nCnt = 0; nCnt < PLAYERTYPE_MAX; nCnt++)
 	{
-		std::ifstream fin("DATA/motion_Kangaroo.txt");
+		std::ifstream File("DATA/motion_Kangaroo.txt");
 
-		if (!fin)
+		if (!File)
 			return -1;
 
 		std::string sLine;
 
-		int nCount = 0;
+		int nCount[2] = {};
 
-		while (std::getline(fin, sLine))
+		// モデル数
+		std::string sWord = { "NUM_MODEL" };
+		m_PlayerType[nCnt].nMaxModel = std::stoi(CScene3D::WordLoad(&File, sWord));
+
+		// モデルのファイル名
+		sWord = { "MODEL_FILENAME" };
+		for (int nCount = 0; nCount < m_PlayerType[nCnt].nMaxModel; nCount++)
+		{
+			std::string sFile = CScene3D::WordLoad(&File, sWord);
+
+			// char型にコピー
+			std::char_traits<char>::copy(m_PlayerType[nCnt].NumModel[nCount].cFileName, sFile.c_str(), sFile.size() + 1);
+		}
+
+		while (std::getline(File, sLine))
 		{
 			// ＝がなかったら
 			if (sLine.find('=') == std::string::npos)
@@ -410,28 +420,28 @@ HRESULT CPlayer::Load(void)
 
 			if (sName == "NUM_MODEL")
 			{
-				sString >> m_PlayerType[nCnt].m_nMaxModel;
+				sString >> m_PlayerType[nCnt].nMaxModel;
 			}
 			else if (sName == "MODEL_FILENAME")
 			{
 				sString >> sName;
 				if (sName.size() < 256)
 				{
-					// ファイル名をchar型にコピー
-					std::char_traits<char>::copy(m_PlayerType[nCnt].NumModel[nCount].cFileName, sName.c_str(), sName.size() + 1);
+					// char型にコピー
+					std::char_traits<char>::copy(m_PlayerType[nCnt].NumModel[nCount[0]].cFileName, sName.c_str(), sName.size() + 1);
 				}
 				else
 				{
 					return -1;
 				}
-				nCount++;
+				nCount[0]++;
 			}
 		}
 
 		CRenderer *pRenderer = CManager::GetRenderer();
 		LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
 
-		for (int nCntModel = 0; nCntModel < m_PlayerType[nCnt].m_nMaxModel; nCntModel++)
+		for (int nCntModel = 0; nCntModel < m_PlayerType[nCnt].nMaxModel; nCntModel++)
 		{
 			// Xファイルの読み込み
 			D3DXLoadMeshFromX(m_PlayerType[nCnt].NumModel[nCntModel].cFileName, D3DXMESH_SYSTEMMEM, pDevice, NULL,

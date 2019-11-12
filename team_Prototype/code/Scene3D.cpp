@@ -42,7 +42,7 @@ HRESULT CScene3D::Init(void)
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
 
 	// 初期設定
-	for (int nCntModel = 0; nCntModel < MAX_MODEL; nCntModel++)
+	for (int nCntModel = 0; nCntModel < m_Model.nMaxModel; nCntModel++)
 	{
 		m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
@@ -53,19 +53,19 @@ HRESULT CScene3D::Init(void)
 	DWORD	sizeFVF;								// 頂点フォーマットのサイズ
 	BYTE	*pVertexBuffer;
 
-	for (int nCntModel = 0; nCntModel < MAX_MODEL; nCntModel++)
+	for (int nCntModel = 0; nCntModel < m_Model.nMaxModel; nCntModel++)
 	{
 		m_vtxMax = D3DXVECTOR3(-1000.0f, -1000.0f, -1000.0f);
 		m_vtxMin = D3DXVECTOR3(1000.0f, 1000.0f, 1000.0f);
 
 		// 頂点数を取得
-		nNumVertices = m_Model[nCntModel].pMesh->GetNumVertices();
+		nNumVertices = m_Model.NumModel[nCntModel].pMesh->GetNumVertices();
 
 		// 頂点フォーマットのサイズを取得
-		sizeFVF = D3DXGetFVFVertexSize(m_Model[nCntModel].pMesh->GetFVF());
+		sizeFVF = D3DXGetFVFVertexSize(m_Model.NumModel[nCntModel].pMesh->GetFVF());
 
 		// 頂点バッファをロック
-		m_Model[nCntModel].pMesh->LockVertexBuffer(D3DLOCK_READONLY, (void**)&pVertexBuffer);
+		m_Model.NumModel[nCntModel].pMesh->LockVertexBuffer(D3DLOCK_READONLY, (void**)&pVertexBuffer);
 
 		for (int nCntVtx = 0; nCntVtx < nNumVertices; nCntVtx++)
 		{
@@ -78,7 +78,7 @@ HRESULT CScene3D::Init(void)
 			pVertexBuffer += sizeFVF;//	サイズ分ポインタを進める
 		}
 		// アンロック
-		m_Model[nCntModel].pMesh->UnlockVertexBuffer();
+		m_Model.NumModel[nCntModel].pMesh->UnlockVertexBuffer();
 	}
 
 	return S_OK;
@@ -126,47 +126,47 @@ void CScene3D::Draw(void)
 	// ワールドマトリックスの設定
 	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
 
-	for (int nCntModel = 0; nCntModel < MAX_MODEL; nCntModel++)
+	for (int nCntModel = 0; nCntModel < m_Model.nMaxModel; nCntModel++)
 	{
-		if (m_Model[nCntModel].nIdxModelModel == -1)
+		if (m_Model.NumModel[nCntModel].nIdxModelModel == -1)
 		{
 			mtxModel = m_mtxWorld;
 		}
 		else
 		{
-			mtxModel = m_Model[m_Model[nCntModel].nIdxModelModel].mtxWorld;
+			mtxModel = m_Model.NumModel[m_Model.NumModel[nCntModel].nIdxModelModel].mtxWorld;
 		}
 
 		// ワールドマトリックスの初期化
 		D3DXMatrixIdentity(&m_mtxWorld);
 
 		// 回転を反映
-		D3DXMatrixRotationYawPitchRoll(&mtxRot, m_Model[nCntModel].rot.y, m_Model[nCntModel].rot.x, m_Model[nCntModel].rot.z);
+		D3DXMatrixRotationYawPitchRoll(&mtxRot, m_Model.NumModel[nCntModel].rot.y, m_Model.NumModel[nCntModel].rot.x, m_Model.NumModel[nCntModel].rot.z);
 		D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
 
 		// 位置を反映
-		D3DXMatrixTranslation(&mtxTrans, m_Model[nCntModel].pos.x, m_Model[nCntModel].pos.y, m_Model[nCntModel].pos.z);
+		D3DXMatrixTranslation(&mtxTrans, m_Model.NumModel[nCntModel].pos.x, m_Model.NumModel[nCntModel].pos.y, m_Model.NumModel[nCntModel].pos.z);
 		D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
 
 		// 親モデルのマトリックスをかけ合わせる
-		D3DXMatrixMultiply(&m_Model[nCntModel].mtxWorld, &m_Model[nCntModel].mtxWorld, &mtxModel);
+		D3DXMatrixMultiply(&m_Model.NumModel[nCntModel].mtxWorld, &m_Model.NumModel[nCntModel].mtxWorld, &mtxModel);
 
 		// ワールドマトリックスの設定
-		pDevice->SetTransform(D3DTS_WORLD, &m_Model[nCntModel].mtxWorld);
+		pDevice->SetTransform(D3DTS_WORLD, &m_Model.NumModel[nCntModel].mtxWorld);
 
 		// 現在のマテリアルを取得
 		pDevice->GetMaterial(&matDef);
 
 		// マテリアル情報に対するポインタを取得
-		pMat = (D3DXMATERIAL*)m_Model[nCntModel].pBuffMat->GetBufferPointer();
+		pMat = (D3DXMATERIAL*)m_Model.NumModel[nCntModel].pBuffMat->GetBufferPointer();
 
-		for (int nCntMat = 0; nCntMat < (int)m_Model[nCntModel].nNumMat; nCntMat++)
+		for (int nCntMat = 0; nCntMat < (int)m_Model.NumModel[nCntModel].nNumMat; nCntMat++)
 		{
 			// マテリアルの設定
 			pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
 
 			// 描画
-			m_Model[nCntModel].pMesh->DrawSubset(nCntMat);
+			m_Model.NumModel[nCntModel].pMesh->DrawSubset(nCntMat);
 		}
 
 		// マテリアルをデフォルトに戻す
@@ -266,12 +266,45 @@ return true;
 //====================================================================================================
 void CScene3D::BindModel(const MODELNUM *type)
 {
-	for (int nCnt = 0; nCnt < type->m_nMaxModel; nCnt++, type++)
+	m_Model.nMaxModel = type->nMaxModel;
+	for (int nCnt = 0; nCnt < m_Model.nMaxModel; nCnt++)
 	{
-		m_Model[nCnt].nNumMat = type->NumModel->nNumMat;
-		m_Model[nCnt].pMesh = type->NumModel->pMesh;
-		m_Model[nCnt].pBuffMat = type->NumModel->pBuffMat;
+		m_Model.NumModel[nCnt].nNumMat = type->NumModel[nCnt].nNumMat;
+		m_Model.NumModel[nCnt].pMesh = type->NumModel[nCnt].pMesh;
+		m_Model.NumModel[nCnt].pBuffMat = type->NumModel[nCnt].pBuffMat;
 	}
+}
+
+std::string CScene3D::WordLoad(std::ifstream *file, std::string word)
+{
+	std::string sWord;
+	std::string sLine;
+
+	while (std::getline(*file, sLine))
+	{
+		// 文字列の操作（追加、取り出しなど）
+		std::stringstream sString(sLine);
+		std::string sName;
+
+		sString >> sName;
+
+		if (sName == word)
+		{
+			// ＝がなかったら
+			if (sLine.find('=') == std::string::npos)
+			{
+				sWord = sName;
+				break;
+			}
+
+			sString.ignore(sLine.size(), '=');
+
+			sString >> sWord;
+			break;
+		}
+	}
+
+	return sWord;
 }
 
 //====================================================================================================

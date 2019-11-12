@@ -13,6 +13,9 @@
 #include"main.h"
 #include"Scene.h"
 
+#include <sstream>
+#include <fstream>
+
 //====================================================================================================
 // マクロ定義
 //==================================================================================================== 
@@ -68,9 +71,10 @@ protected:
 	struct MODELNUM
 	{
 		MODEL NumModel[MAX_MODEL];
-		int m_nMaxModel;							// モデル数
+		int nMaxModel;							// モデル数
 	};
 	void BindModel(const MODELNUM *type);
+	static std::string WordLoad(std::ifstream *file, std::string word);
 
 private:
 
@@ -82,7 +86,7 @@ private:
 	D3DXVECTOR3	m_move;						// 移動量
 	D3DXMATRIX  m_mtxWorld;					// ワールドマトリックス
 
-	MODEL m_Model[MAX_MODEL];				// 親子パーツ
+	MODELNUM m_Model;						// 親子パーツ
 
 	//MODELNUM	m_type;						// 種類
 

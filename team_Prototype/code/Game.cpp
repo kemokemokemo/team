@@ -64,7 +64,7 @@ HRESULT CGame::Init(void)
 
 	//CModel::Create(D3DXVECTOR3(640.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CModel::MODELTYPE_BILL0);
 
-	//CPlayer::Create(D3DXVECTOR3(640.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::MODELTYPE_CAR, CPlayer::PLAYER_01);
+	CPlayer::Create(D3DXVECTOR3(640.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYERTYPE_1, CPlayer::PLAYER_01);
 
 	//CPlayer::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::MODELTYPE_CAT, CPlayer::PLAYER_02);
 
