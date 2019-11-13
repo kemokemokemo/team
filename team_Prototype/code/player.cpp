@@ -17,7 +17,6 @@
 #include "gauge.h"
 #include "Scene2D.h"
 
-
 //=============================================================================
 // マクロ定義
 //=============================================================================
@@ -56,6 +55,7 @@ CPlayer * CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERTYPE type, PLA
 	pPlayer = new CPlayer(OBJTYPE_PLAYER);
 
 	pPlayer->BindModel(&m_PlayerType[type]);
+
 
 	pPlayer->Init(pos, rot, type, PlayerNum);
 	return pPlayer;
@@ -262,7 +262,7 @@ void CPlayer::PlayerMove(void)
 	}
 
 	rot.y += m_fDistance.y * 0.2f;
-	
+
 	CPad *pPad = CManager::GetPad();
 
 	// 入力された X、Y
@@ -293,7 +293,7 @@ void CPlayer::PlayerDamage(void)
 	{
 	case PLAYER_01:
 		Damage(1);
-			break;
+		break;
 
 	case PLAYER_02:
 		Damage(1);
@@ -376,9 +376,6 @@ int CPlayer::GetLife(void)
 	return m_nLife;
 }
 
-#include <sstream>
-#include <fstream>
-
 //========================================================================================================
 // モデルの読み込み処理
 //========================================================================================================
@@ -386,52 +383,69 @@ HRESULT CPlayer::Load(void)
 {
 	for (int nCnt = 0; nCnt < PLAYERTYPE_MAX; nCnt++)
 	{
-		std::ifstream fin("DATA/motion_Kangaroo.txt");
+		std::ifstream File("DATA/motion_Kangaroo.txt");
 
-		if (!fin)
+		if (!File)
 			return -1;
 
 		std::string sLine;
 
-		int nCount = 0;
+		int nCount[2] = {};
 
-		while (std::getline(fin, sLine))
+		// モデル数
+		std::string sWord = { "NUM_MODEL" };
+		m_PlayerType[nCnt].nMaxModel = std::stoi(CScene3D::WordLoad(&File, sWord));
+
+		// モデルのファイル名
+		sWord = { "MODEL_FILENAME" };
+		for (int nCount = 0; nCount < m_PlayerType[nCnt].nMaxModel; nCount++)
 		{
-			// ＝がなかったら
-			if (sLine.find('=') == std::string::npos)
-				continue;
+			std::string sFile = CScene3D::WordLoad(&File, sWord);
 
-			// 文字列の操作（追加、取り出しなど）
-			std::stringstream sString(sLine);
-			std::string sName;
+			// char型にコピー
+			std::char_traits<char>::copy(m_PlayerType[nCnt].NumModel[nCount].cFileName, sFile.c_str(), sFile.size() + 1);
+		}
+		// モデルのファイル名
+		sWord = { "CHARACTERSET" };
+		sLine = CScene3D::WordLoad(&File, sWord);
+		
 
-			sString >> sName;
-			sString.ignore(sLine.size(), '=');
-
-			if (sName == "NUM_MODEL")
+		if (sWord == sLine)
+		{
+			for (int nCount = 0; nCount < m_PlayerType[nCnt].nMaxModel; nCount++)
 			{
-				sString >> m_PlayerType[nCnt].m_nMaxModel;
-			}
-			else if (sName == "MODEL_FILENAME")
-			{
-				sString >> sName;
-				if (sName.size() < 256)
+				sWord = { "PARTSSET" };
+				sLine = CScene3D::WordLoad(&File, sWord);
+
+				sWord = { "INDEX" };
+				m_PlayerType[nCnt].NumModel[nCount].nType = std::stoi(CScene3D::WordLoad(&File, sWord));
+
+				sWord = { "PARENT" };
+				m_PlayerType[nCnt].NumModel[nCount].nIdxModelModel = std::stoi(CScene3D::WordLoad(&File, sWord));
+
+				sWord = { "POS" };
+				sLine = CScene3D::WordLoad(&File, sWord);
+
+				Vector3Load(sLine, &m_PlayerType[nCnt].NumModel[nCount].pos);
+
+				sWord = { "ROT" };
+				sLine = CScene3D::WordLoad(&File, sWord);
+
+				for (int nCntModel = 0; nCntModel < 1; nCntModel++)
 				{
-					// ファイル名をchar型にコピー
-					std::char_traits<char>::copy(m_PlayerType[nCnt].NumModel[nCount].cFileName, sName.c_str(), sName.size() + 1);
+					Vector3Load(sLine, &m_PlayerType[nCnt].NumModel[nCntModel].rot);
 				}
-				else
-				{
-					return -1;
-				}
-				nCount++;
+
+				sWord = { "END_PARTSSET" };
+				sLine = CScene3D::WordLoad(&File, sWord);
+
 			}
 		}
 
 		CRenderer *pRenderer = CManager::GetRenderer();
 		LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
 
-		for (int nCntModel = 0; nCntModel < m_PlayerType[nCnt].m_nMaxModel; nCntModel++)
+		for (int nCntModel = 0; nCntModel < m_PlayerType[nCnt].nMaxModel; nCntModel++)
 		{
 			// Xファイルの読み込み
 			D3DXLoadMeshFromX(m_PlayerType[nCnt].NumModel[nCntModel].cFileName, D3DXMESH_SYSTEMMEM, pDevice, NULL,

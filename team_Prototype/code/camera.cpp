@@ -57,7 +57,7 @@ CCamera * CCamera::Create()
 void CCamera::Init(void)
 {
 
-	m_Camera.posV = D3DXVECTOR3(0.0f, 700.0f, -1700.0f);
+	m_Camera.posV = D3DXVECTOR3(0.0f, 500.0f, -1200.0f);
 	m_Camera.posVDest = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_Camera.posR = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_Camera.posRDest = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
@@ -70,7 +70,6 @@ void CCamera::Init(void)
 
 	// ãóó£
 	m_fDistance = sqrtf(fDiffpos.y * fDiffpos.y + fDiffpos.z* fDiffpos.z);
-
 }
 //=============================================================================
 // ÉJÉÅÉâÇÃèIóπèàóù

@@ -13,6 +13,9 @@
 #include"main.h"
 #include"Scene.h"
 
+#include <sstream>
+#include <fstream>
+
 //====================================================================================================
 // マクロ定義
 //==================================================================================================== 
@@ -40,6 +43,7 @@ public:
 		D3DXVECTOR3 pos;								// ポリゴンの位置
 		D3DXVECTOR3 rot;								// ポリゴンの向き
 		int nIdxModelModel;
+		int nType;
 
 		char cFileName[256];
 
@@ -60,6 +64,8 @@ public:
 
 	void SetPos(D3DXVECTOR3 pos);
 	void SetRot(D3DXVECTOR3 rot);
+	void SetLoad(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxModelModel, int nType);
+
 
 	D3DXVECTOR3 GetPos(void);
 	D3DXVECTOR3 GetRot(void);
@@ -68,9 +74,11 @@ protected:
 	struct MODELNUM
 	{
 		MODEL NumModel[MAX_MODEL];
-		int m_nMaxModel;							// モデル数
+		int nMaxModel;							// モデル数
 	};
 	void BindModel(const MODELNUM *type);
+	static std::string WordLoad(std::ifstream *file, std::string word);
+	static void Vector3Load(std::string word,D3DXVECTOR3 *Vec3);
 
 private:
 
@@ -82,13 +90,12 @@ private:
 	D3DXVECTOR3	m_move;						// 移動量
 	D3DXMATRIX  m_mtxWorld;					// ワールドマトリックス
 
-	MODEL m_Model[MAX_MODEL];				// 親子パーツ
+	MODELNUM m_Model;						// 親子パーツ
 
 	//MODELNUM	m_type;						// 種類
 
 	D3DXVECTOR3		m_vtxMin;				//最小値
 	D3DXVECTOR3		m_vtxMax;				//最大値 
-
 };
 
 //====================================================================================================

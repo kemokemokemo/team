@@ -95,11 +95,15 @@ HRESULT CModel::Load(void)
 	CRenderer *pRenderer = CManager::GetRenderer();
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
 
-	//// Xファイルの読み込み
-	//D3DXLoadMeshFromX(MODELFILE0, D3DXMESH_SYSTEMMEM, pDevice, NULL,
-	//	&pBuffMat, NULL,
-	//	&nNumMat,
-	//	&pMesh);
+	// Xファイルの読み込み
+	D3DXLoadMeshFromX(MODELFILE0, D3DXMESH_SYSTEMMEM, pDevice, NULL,
+		&m_Unit->NumModel->pBuffMat, NULL,
+		&m_Unit->NumModel->nNumMat,
+		&m_Unit->NumModel->pMesh);
+
+	m_Unit->NumModel->nType = 0;
+	m_Unit->NumModel->nIdxModelModel = -1;
+	m_Unit->nMaxModel = 1;
 
 	return S_OK;
 }

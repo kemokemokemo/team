@@ -14,23 +14,21 @@ NUM_MODEL = 8
 #------------------------------------------------------------------------------
 # モデルファイル名
 #------------------------------------------------------------------------------
-MODEL_FILENAME = data/MODEL/Kangaroo/Body.x					# [0]体
-MODEL_FILENAME = data/MODEL/Kangaroo/Head.x					# [1]頭
-MODEL_FILENAME = data/MODEL/Kangaroo/Arm_Left_Glove.x		# [2]左腕
-MODEL_FILENAME = data/MODEL/Kangaroo/Arm_Right_Glove.x		# [3]右腕
-MODEL_FILENAME = data/MODEL/Kangaroo/Leg_Left.x				# [4]左足
-MODEL_FILENAME = data/MODEL/Kangaroo/Leg_Right.x			# [5]右足
-MODEL_FILENAME = data/MODEL/Kangaroo/Teil_0.x				# [6]しっぽ根本
-MODEL_FILENAME = data/MODEL/Kangaroo/Teil_1.x				# [7]しっぽ先端
+MODEL_FILENAME = DATA/MODEL/Kangaroo/Body.x					# [0]体
+MODEL_FILENAME = DATA/MODEL/Kangaroo/Head.x					# [1]頭
+MODEL_FILENAME = DATA/MODEL/Kangaroo/Arm_Left_Glove.x		# [2]左腕
+MODEL_FILENAME = DATA/MODEL/Kangaroo/Arm_Right_Glove.x		# [3]右腕
+MODEL_FILENAME = DATA/MODEL/Kangaroo/Leg_Left.x				# [4]左足
+MODEL_FILENAME = DATA/MODEL/Kangaroo/Leg_Right.x			# [5]右足
+MODEL_FILENAME = DATA/MODEL/Kangaroo/Teil_0.x				# [6]しっぽ根本
+MODEL_FILENAME = DATA/MODEL/Kangaroo/Teil_1.x				# [7]しっぽ先端
 
 #------------------------------------------------------------------------------
 # キャラクター情報
 #------------------------------------------------------------------------------
 CHARACTERSET
-	MOVE = 3.0						# 移動量
-	JUMP = 10.25					# ジャンプ量
-	RADIUS = 20.0					# 半径
-	NUM_PARTS = 8					# パーツ数
+
+	NUM_PARTS = 8					# パーツ数(同じパーツを使うときにモデル数より増える)
 
 	PARTSSET						# [0]体
 		INDEX = 0
@@ -87,8 +85,7 @@ CHARACTERSET
 		POS = -0.6 -24.6 74.5
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
-	
-	
+
 END_CHARACTERSET
 
 #------------------------------------------------------------------------------
