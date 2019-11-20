@@ -39,10 +39,25 @@ public:
 	{
 		PLAYERSTATE_NORMAL = 0,
 		PLAYERSTATE_DAMAGE,
-		PLAYERSTATE_DEATH,
+		PLAYERSTATE_ATK,
 		PLAYERSTATE_RANNING,
 		PLAYERSTATE_MAX,
 	} PLAYERSTATE;
+
+	//=============================================================================
+	// モーションの種類
+	//=============================================================================
+	typedef enum
+	{
+		MOTIONSTATE_WAIT = 0,	// ニュートラル
+		MOTIONSTATE_RUN,		// ランニング
+		MOTIONSTATE_LIGHT0,		// 弱攻撃1段目
+		MOTIONSTATE_LIGHT1,		// 2段目
+		MOTIONSTATE_LIGHT2,		// 3段目
+		MOTIONSTATE_JUMP,		// ジャンプ
+		MOTIONSTATE_BLOWAWAY,	// 吹き飛ぶ
+		MOTIONSTATE_MAX			// モーションの最大数
+	} MOTIONSTATE;
 
 	//=============================================================================
 	// プレイヤー人数
@@ -103,6 +118,7 @@ private:
 	D3DXVECTOR3	m_move;							// 移動量
 	PLAYERNUM	m_PlayerNum;					// プレイヤーの人数
 	PLAYERSTATE m_PlayerState;					//プレイヤーの状態
+	MOTIONSTATE m_MotionState;
 
 	int m_nLife;
 	int m_PlayerStateCount;

@@ -78,7 +78,7 @@ HRESULT CPlayerBase::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERTYPE type, PLA
 
 	m_PlayerState = PLAYERSTATE_NORMAL;
 
-	m_TypeSelect.motionType = MOTIONTYPE_NEUTRAL;
+	m_TypeSelect.motionType = MOTIONTYPE_WAIT;
 
 	for (int nCntModel = 0; nCntModel < MAX_MODEL; nCntModel++)
 	{
@@ -160,6 +160,27 @@ void CPlayerBase::Update(void)
 		break;
 	}
 
+	switch (m_MotionState)
+	{
+	case MOTIONSTATE_WAIT:
+		MotionChangePlayer(MOTIONTYPE_WAIT, 0);
+		break;
+	case MOTIONSTATE_RUN:
+		MotionChangePlayer(MOTIONTYPE_RUN, 0);
+		break;
+	case MOTIONSTATE_LIGHT0:
+		MotionChangePlayer(MOTIONTYPE_LIGHT0, 0);
+		break;
+	case MOTIONSTATE_LIGHT1:
+		MotionChangePlayer(MOTIONTYPE_LIGHT1, 0);
+		break;
+	case MOTIONSTATE_LIGHT2:
+		MotionChangePlayer(MOTIONTYPE_LIGHT2, 0);
+		break;
+	case MOTIONSTATE_JUMP:
+		MotionChangePlayer(MOTIONTYPE_JUMP, 0);
+		break;
+	}
 	GetPlayerPos();
 
 	MoveLimit();	
@@ -221,20 +242,19 @@ void CPlayerBase::PlayerMove(void)
 		if (pKetybord->GetKeyboardPress(DIK_A))
 		{//  A キー操作
 			m_move.x += D3DX_PI*-0.5f* PLAYER_SPEED;
-
 			m_fDiffrot.y = D3DX_PI*0.5f;
-			MotionChangePlayer(MOTIONTYPE_RUNNING, 0);
+			m_MotionState = MOTIONSTATE_RUN;
 		}
 		else if (pKetybord->GetKeyboardPress(DIK_D))
 		{//  D キー操作
 			m_move.x += D3DX_PI*0.5f * PLAYER_SPEED;
 			m_fDiffrot.y = D3DX_PI*-0.5f;
-			MotionChangePlayer(MOTIONTYPE_RUNNING, 0);
+			m_MotionState = MOTIONSTATE_RUN;
 		}
-		else if (m_TypeSelect.motionType == MOTIONTYPE_RUNNING)
+		else if (m_MotionState == MOTIONSTATE_RUN)
 		{// 移動をやめた場合
 		 // モーションの切り替え
-			MotionChangePlayer(MOTIONTYPE_NEUTRAL, 0);
+			m_MotionState = MOTIONSTATE_WAIT;
 		}
 
 		if (pKetybord->GetKeyboardTrigger(DIK_W))
@@ -245,10 +265,32 @@ void CPlayerBase::PlayerMove(void)
 		if (pKetybord->GetKeyboardTrigger(DIK_SPACE))
 		{//  Zキー操作 攻撃
 			//PlayerCollision();
-			if (m_TypeSelect.motionType != MOTIONTYPE_ACTION)
+			//switch (m_TypeSelect.motionType)
+			//{
+			//case MOTIONTYPE_WAIT:
+			//	m_TypeSelect.motionType = MOTIONTYPE_LIGHT0;
+			//	break;
+			//case MOTIONTYPE_LIGHT0:
+			//	m_TypeSelect.motionType = MOTIONTYPE_LIGHT1;
+			//	break;
+			//case MOTIONTYPE_LIGHT1:
+			//	m_TypeSelect.motionType = MOTIONTYPE_LIGHT2;
+			//	break;
+			//}
+
+			if (m_MotionState == MOTIONSTATE_LIGHT0)
 			{
-				MotionChangePlayer(MOTIONTYPE_ACTION, 0);
+				m_MotionState = MOTIONSTATE_LIGHT1;
 			}
+			else if (m_MotionState == MOTIONSTATE_LIGHT1)
+			{
+				m_MotionState = MOTIONSTATE_LIGHT2;
+			}
+			else
+			{
+				m_MotionState = MOTIONSTATE_LIGHT0;
+			}
+			
 		}
 	}
 
@@ -260,18 +302,18 @@ void CPlayerBase::PlayerMove(void)
 			m_move.x += D3DX_PI*-0.5f* PLAYER_SPEED;
 			m_fDiffrot.y = D3DX_PI*0.5f;
 
-			MotionChangePlayer(MOTIONTYPE_RUNNING, 0);
+			MotionChangePlayer(MOTIONTYPE_RUN, 0);
 		}
 		else if (pKetybord->GetKeyboardPress(DIK_RIGHTARROW))
 		{//  D キー操作
 			m_move.x += D3DX_PI*0.5f * PLAYER_SPEED;
 			m_fDiffrot.y = D3DX_PI*-0.5f;
-			MotionChangePlayer(MOTIONTYPE_RUNNING, 0);
+			MotionChangePlayer(MOTIONTYPE_RUN, 0);
 		}
-		else if (m_TypeSelect.motionType == MOTIONTYPE_RUNNING)
+		else if (m_TypeSelect.motionType == MOTIONTYPE_RUN)
 		{// 移動をやめた場合
 		  //モーションの切り替え
-			MotionChangePlayer(MOTIONTYPE_NEUTRAL, 0);
+			MotionChangePlayer(MOTIONTYPE_WAIT, 0);
 		}
 
 		else if (pKetybord->GetKeyboardTrigger(DIK_UPARROW))
@@ -281,9 +323,9 @@ void CPlayerBase::PlayerMove(void)
 
 		if (pKetybord->GetKeyboardTrigger(DIK_RETURN))
 		{//  Xキー操作 攻撃
-			if (m_TypeSelect.motionType != MOTIONTYPE_ACTION)
+			if (m_TypeSelect.motionType != MOTIONTYPE_LIGHT0)
 			{
-				MotionChangePlayer(MOTIONTYPE_ACTION, 0);
+				MotionChangePlayer(MOTIONTYPE_LIGHT0, 0);
 			}
 		}
 	}
@@ -410,6 +452,7 @@ void CPlayerBase::PlayerCollision()
 //=============================================================================
 void CPlayerBase::MotionPlayer(int nCnt)
 {
+	D3DXVECTOR3 Distance;
 		MOTION_INFO* pInfo = &m_TypeSelect.aMotionInfo[m_TypeSelect.motionType];
 		// モーション
 		for (int nCntModel = 0; nCntModel < m_TypeSelect.nMaxModel; nCntModel++)
@@ -433,9 +476,29 @@ void CPlayerBase::MotionPlayer(int nCnt)
 			m_TypeSelect.NumModel[nCntModel].pos = m_TypeSelect.NumModel[nCntModel].startpos + pKeyInfo->pos + (pNextKey->pos - pKeyInfo->pos)*
 				(float)pInfo->nCntFrame / (float)pInfo->aKeyInfo[pInfo->nNumKey].nNumKyeFrame;
 
+			Distance = pNextKey->rot - pKeyInfo ->rot;
+
+			if (D3DX_PI < Distance.y)
+			{
+				Distance.y -= D3DX_PI * 2;
+			}
+			else if (-D3DX_PI > Distance.y)
+			{
+				Distance.y += D3DX_PI * 2;
+			}
+			if (D3DX_PI < Distance.x)
+			{
+				Distance.x -= D3DX_PI * 2;
+			}
+			else if (-D3DX_PI > Distance.x)
+			{
+				Distance.x += D3DX_PI * 2;
+			}
 			// パーツの向き設定
-			m_TypeSelect.NumModel[nCntModel].rot = pKeyInfo->rot + (pNextKey->rot - pKeyInfo->rot)*
+			m_TypeSelect.NumModel[nCntModel].rot = pKeyInfo->rot + Distance*
 				(float)pInfo->nCntFrame / (float)pInfo->aKeyInfo[pInfo->nNumKey].nNumKyeFrame;
+
+
 		}
 		pInfo->nCntFrame++;
 
@@ -451,7 +514,7 @@ void CPlayerBase::MotionPlayer(int nCnt)
 			{// ジャンプ以外
 				pInfo->nNumKey = 0;
 				pInfo->nCntFrame = 0;
-				m_TypeSelect.motionType = MOTIONTYPE_NEUTRAL;// 待機状態に変更
+				m_MotionState = MOTIONSTATE_WAIT;
 			}
 		}
 		else if (pInfo->nNumKey == pInfo->nMaxKey && m_TypeSelect.motionType != MOTIONTYPE_JUMP)
@@ -467,6 +530,11 @@ void CPlayerBase::MotionPlayer(int nCnt)
 //=============================================================================
 void CPlayerBase::MotionChangePlayer(MOTIONTYPE motionType, int nCnt)
 {
+	if (m_TypeSelect.motionType != motionType)
+	{
+		m_TypeSelect.aMotionInfo[m_TypeSelect.motionType].nNumKey = 0;
+		m_TypeSelect.aMotionInfo[m_TypeSelect.motionType].nCntFrame = 0;
+	}
 	m_TypeSelect.motionType = motionType;
 }
 

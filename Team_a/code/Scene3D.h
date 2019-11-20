@@ -57,11 +57,12 @@ public:
 	//=============================================================================
 	typedef enum
 	{
-		MOTIONTYPE_NEUTRAL = 0,	// ニュートラル
-		MOTIONTYPE_RUNNING,		// ランニング
-		MOTIONTYPE_ACTION,		// アクション
+		MOTIONTYPE_WAIT = 0,	// ニュートラル
+		MOTIONTYPE_RUN,			// ランニング
+		MOTIONTYPE_LIGHT0,		// 弱攻撃1段目
+		MOTIONTYPE_LIGHT1,		// 2段目
+		MOTIONTYPE_LIGHT2,		// 3段目
 		MOTIONTYPE_JUMP,		// ジャンプ
-		MOTIONTYPE_LAND,		// ランド
 		MOTIONTYPE_BLOWAWAY,	// 吹き飛ぶ
 		MOTIONTYPE_MAX			// モーションの最大数
 	} MOTIONTYPE;
