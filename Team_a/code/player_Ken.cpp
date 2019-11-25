@@ -61,8 +61,12 @@ CPlayer_KEN * CPlayer_KEN::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERTYPE t
 //=============================================================================
 HRESULT CPlayer_KEN::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERTYPE type, PLAYERNUM PlayerNum)
 {
-	CPlayerBase::Create(pos, rot, type, PlayerNum);
 	CPlayerBase::Init(pos, rot, type, PlayerNum);
+
+	m_nLife = 3;
+
+	m_fRadius = 50.0f;
+	m_fAttack = 20.0f;
 
 	return S_OK;
 }

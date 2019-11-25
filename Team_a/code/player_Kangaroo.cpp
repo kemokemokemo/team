@@ -61,8 +61,12 @@ CPlayer_Kangaroo * CPlayer_Kangaroo::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PL
 //=============================================================================
 HRESULT CPlayer_Kangaroo::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERTYPE type, PLAYERNUM PlayerNum)
 {
-	CPlayerBase::Create(pos, rot, type, PlayerNum);
 	CPlayerBase::Init(pos, rot, type, PlayerNum);
+
+	m_nLife = 5;
+
+	m_fRadius = 100.0f;
+	m_fAttack = 50.0f;
 
 	return S_OK;
 }

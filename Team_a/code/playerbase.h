@@ -86,16 +86,14 @@ public:
 	CPlayerBase(OBJTYPE type);
 	~CPlayerBase();
 
-	static CPlayerBase *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERTYPE type, PLAYERNUM PlayerNum);
-
 	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERTYPE type, PLAYERNUM PlayerNum);
 
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
-	void PlayerMove(void);
-	void PlayerDamage(void);
-	void Damage(int nDamage);
+	void Uninit();
+	void Update();
+	void Draw();
+	void PlayerMove();
+	void PlayerDamage(CPlayerBase *pPlayer);
+	void Damage(CPlayerBase *pPlayer, int nDamage);
 	void MoveLimit(void);
 	void MotionPlayer(int nCnt);
 	void MotionChangePlayer(MOTIONTYPE motionType, int nCnt);
@@ -106,13 +104,18 @@ public:
 	static HRESULT Load(void);
 	static HRESULT MotionLoad(std::ifstream *file, int nCnt);
 	static void Unload(void);
-	void PlayerCollision();
 
 	//bool CollisionModel(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 size);
 
+protected:
+	void PlayerCollision();
+
+	float m_fRadius;
+	float m_fAttack;
+
+	int m_nLife;
+
 private:
-
-
 	static MODELNUM m_PlayerType[PLAYERTYPE_MAX];
 
 	D3DXVECTOR3	m_move;							// à⁄ìÆó 
@@ -120,14 +123,12 @@ private:
 	PLAYERSTATE m_PlayerState;					//ÉvÉåÉCÉÑÅ[ÇÃèÛë‘
 	MOTIONSTATE m_MotionState;
 
-	int m_nLife;
 	int m_PlayerStateCount;
 
 	static char *TextLoad[PLAYERTYPE_MAX];
 
 	CGauge *pLifeGauge;
-	D3DXVECTOR3 Pos01;
-	D3DXVECTOR3 Pos02;
+	D3DXVECTOR3 m_pos;
 
 	MODELNUM m_TypeSelect;
 	D3DXVECTOR3 m_fDistance;

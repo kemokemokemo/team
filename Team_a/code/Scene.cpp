@@ -25,15 +25,13 @@ CScene *CScene::m_apScene[OBJTYPE_MAX][MAX_POLYGON] = {};
 //====================================================================================================
 CScene::CScene(OBJTYPE nPriority)
 {
-	m_bID = 0;
-
 	for (int nCount = 0; nCount < MAX_POLYGON; nCount++)
 	{
 		if (m_apScene[nPriority][nCount] == NULL)
 		{
 			m_apScene[nPriority][nCount] = this;
 			nNumAll++;
-			m_bID = nCount;
+			m_nID = nCount;
 			objType = nPriority;
 			break;
 		}
@@ -111,7 +109,7 @@ void CScene::Release(void)
 {
 	int nID;
 	OBJTYPE nPriority;
-	nID = m_bID;
+	nID = m_nID;
 	nPriority = objType;
 
     if (m_apScene[nPriority][nID] != NULL)

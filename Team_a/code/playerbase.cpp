@@ -48,24 +48,12 @@ CPlayerBase::~CPlayerBase()
 }
 
 //=============================================================================
-// モデルの生成
-//=============================================================================
-CPlayerBase * CPlayerBase::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERTYPE type, PLAYERNUM PlayerNum)
-{
-	CPlayerBase *pPlayerBase;
-	pPlayerBase = new CPlayerBase(OBJTYPE_PLAYER);
-
-	pPlayerBase->BindModel(&m_PlayerType[type]);
-
-	pPlayerBase->Init(pos, rot, type, PlayerNum);
-	return pPlayerBase;
-}
-
-//=============================================================================
 // 初期化処理
 //=============================================================================
 HRESULT CPlayerBase::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERTYPE type, PLAYERNUM PlayerNum)
 {
+	BindModel(&m_PlayerType[type]);
+
 	CScene3D::Init();
 
 	CScene3D::SetPos(pos);
@@ -84,19 +72,6 @@ HRESULT CPlayerBase::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERTYPE type, PLA
 	{
 		m_TypeSelect.NumModel[nCntModel].startpos = m_TypeSelect.NumModel[nCntModel].pos;
 	}
-
-	//switch (type)
-	//{
-	//case MODELTYPE_CAR:
-	//	m_nLife = 3;
-	//	//pLifeGauge = CGauge::Create(D3DXVECTOR3(200.0f, 600.0f, 0.0f));
-	//	break;
-
-	//case MODELTYPE_CAT:
-	//	m_nLife = 5;
-	//	//pLifeGauge = CGauge::Create(D3DXVECTOR3(200.0f, 600.0f, 0.0f));
-	//	break;
-	//}
 
 	return S_OK;
 }
@@ -264,19 +239,7 @@ void CPlayerBase::PlayerMove(void)
 
 		if (pKetybord->GetKeyboardTrigger(DIK_SPACE))
 		{//  Zキー操作 攻撃
-			//PlayerCollision();
-			//switch (m_TypeSelect.motionType)
-			//{
-			//case MOTIONTYPE_WAIT:
-			//	m_TypeSelect.motionType = MOTIONTYPE_LIGHT0;
-			//	break;
-			//case MOTIONTYPE_LIGHT0:
-			//	m_TypeSelect.motionType = MOTIONTYPE_LIGHT1;
-			//	break;
-			//case MOTIONTYPE_LIGHT1:
-			//	m_TypeSelect.motionType = MOTIONTYPE_LIGHT2;
-			//	break;
-			//}
+			PlayerCollision();
 
 			if (m_MotionState == MOTIONSTATE_LIGHT0)
 			{
@@ -369,16 +332,16 @@ void CPlayerBase::PlayerMove(void)
 //====================================================================================================
 // プレイヤーのダメージ処理
 //=====================================================================================================
-void CPlayerBase::PlayerDamage(void)
+void CPlayerBase::PlayerDamage(CPlayerBase *pPlayer)
 {
 	switch (m_PlayerNum)
 	{
 	case PLAYER_01:
-		Damage(1);
+		Damage(pPlayer, 1);
 		break;
 
 	case PLAYER_02:
-		Damage(1);
+		Damage(pPlayer, 1);
 		break;
 
 	case PLAYER_03:
@@ -394,17 +357,18 @@ void CPlayerBase::PlayerDamage(void)
 //====================================================================================================
 // プレイヤーのダメージ処理
 //=====================================================================================================
-void CPlayerBase::Damage(int nDamage)
+void CPlayerBase::Damage(CPlayerBase *pPlayer, int nDamage)
 {
-	if (m_PlayerState == PLAYERSTATE_NORMAL)
+	if (pPlayer->m_PlayerState == PLAYERSTATE_NORMAL)
 	{
-		m_nLife -= nDamage;
-		m_PlayerState = PLAYERSTATE_DAMAGE;
-		m_PlayerStateCount = 60;
+		pPlayer->m_nLife -= nDamage;
+		pPlayer->m_PlayerState = PLAYERSTATE_DAMAGE;
+		pPlayer->m_PlayerStateCount = 60;
 	}
-	else if (m_nLife <= 0)
+	
+	if (pPlayer->m_nLife <= 0)
 	{
-		Release();
+		pPlayer->Release();
 	}
 }
 //========================================================================================================
@@ -412,37 +376,24 @@ void CPlayerBase::Damage(int nDamage)
 //========================================================================================================
 void CPlayerBase::PlayerCollision()
 {
-	//半径
-	float fRadiusPL01 = 20;
-	float fRadiusPL02 = 20;
-
-	for (int nCntScene = 0; nCntScene < 256; nCntScene++)
+	for (int nCntScene = 0; nCntScene < MAX_POLYGON; nCntScene++)
 	{
 		CScene *pScene;
 
 		pScene = CScene::GetScene(OBJTYPE_PLAYER, nCntScene);
 
-		if (pScene != NULL)
-		{
-			CScene::OBJTYPE objtype;
-			objtype = pScene->GetObjType();
+		if (!pScene || nCntScene == GetID())
+			continue;
 
-			if (objtype == CScene::OBJTYPE_PLAYER)
-			{
-				if (m_PlayerNum == PLAYER_01)
-				{
-					Pos01 = ((CPlayerBase*)pScene)->GetPlayerPos();
-				}
-				if (m_PlayerNum == PLAYER_02)
-				{
-					Pos02 = ((CPlayerBase*)pScene)->GetPlayerPos();
-				}
-				//円の当たり判定
-				if (D3DXVec3LengthSq(&(Pos01 - Pos02)) <= (fRadiusPL01 + fRadiusPL02) * (fRadiusPL01 + fRadiusPL02))
-				{
- 					PlayerDamage();
-				}
-			}
+		CPlayerBase *pPlayer = (CPlayerBase*)pScene;
+
+		float fLength = D3DXVec3LengthSq(&(pPlayer->GetPos() - GetPos()));
+		float fRadius = m_fRadius + pPlayer->m_fAttack;
+
+		//円の当たり判定
+		if (fLength <= fRadius * fRadius)
+		{
+			PlayerDamage(pPlayer);
 		}
 	}
 }
@@ -453,76 +404,77 @@ void CPlayerBase::PlayerCollision()
 void CPlayerBase::MotionPlayer(int nCnt)
 {
 	D3DXVECTOR3 Distance;
-		MOTION_INFO* pInfo = &m_TypeSelect.aMotionInfo[m_TypeSelect.motionType];
-		// モーション
-		for (int nCntModel = 0; nCntModel < m_TypeSelect.nMaxModel; nCntModel++)
+
+	MOTION_INFO* pInfo = &m_TypeSelect.aMotionInfo[m_TypeSelect.motionType];
+	// モーション
+	for (int nCntModel = 0; nCntModel < m_TypeSelect.nMaxModel; nCntModel++)
+	{
+		KEY *pKeyInfo, *pNextKey;
+
+		// 現在のキー
+		pKeyInfo = &pInfo->aKeyInfo[pInfo->nNumKey].aKey[nCntModel];
+
+		// 次のキー
+		if (pInfo->nNumKey + 1 == pInfo->nMaxKey)
 		{
-			KEY *pKeyInfo, *pNextKey; 
-
-			// 現在のキー
-			pKeyInfo = &pInfo->aKeyInfo[pInfo->nNumKey].aKey[nCntModel];
-
-			// 次のキー
-			if (pInfo->nNumKey + 1 == pInfo->nMaxKey)
-			{
-				pNextKey = &pInfo->aKeyInfo[0].aKey[nCntModel];
-			}
-			else
-			{
-				pNextKey = &pInfo->aKeyInfo[pInfo->nNumKey + 1].aKey[nCntModel];
-			}
-
-			// パーツの位置設定
-			m_TypeSelect.NumModel[nCntModel].pos = m_TypeSelect.NumModel[nCntModel].startpos + pKeyInfo->pos + (pNextKey->pos - pKeyInfo->pos)*
-				(float)pInfo->nCntFrame / (float)pInfo->aKeyInfo[pInfo->nNumKey].nNumKyeFrame;
-
-			Distance = pNextKey->rot - pKeyInfo ->rot;
-
-			if (D3DX_PI < Distance.y)
-			{
-				Distance.y -= D3DX_PI * 2;
-			}
-			else if (-D3DX_PI > Distance.y)
-			{
-				Distance.y += D3DX_PI * 2;
-			}
-			if (D3DX_PI < Distance.x)
-			{
-				Distance.x -= D3DX_PI * 2;
-			}
-			else if (-D3DX_PI > Distance.x)
-			{
-				Distance.x += D3DX_PI * 2;
-			}
-			// パーツの向き設定
-			m_TypeSelect.NumModel[nCntModel].rot = pKeyInfo->rot + Distance*
-				(float)pInfo->nCntFrame / (float)pInfo->aKeyInfo[pInfo->nNumKey].nNumKyeFrame;
-
-
+			pNextKey = &pInfo->aKeyInfo[0].aKey[nCntModel];
 		}
-		pInfo->nCntFrame++;
-
-		if (pInfo->nCntFrame == pInfo->aKeyInfo[pInfo->nNumKey].nNumKyeFrame)
+		else
 		{
-			pInfo->nNumKey++;
-			pInfo->nCntFrame = 0;
+			pNextKey = &pInfo->aKeyInfo[pInfo->nNumKey + 1].aKey[nCntModel];
 		}
 
-		if (!pInfo->bLoop && pInfo->nNumKey + 1 == pInfo->nMaxKey)
-		{// モーションがループしない場合
-			if (m_PlayerType[nCnt].motionType != MOTIONTYPE_JUMP)
-			{// ジャンプ以外
-				pInfo->nNumKey = 0;
-				pInfo->nCntFrame = 0;
-				m_MotionState = MOTIONSTATE_WAIT;
-			}
+		// パーツの位置設定
+		m_TypeSelect.NumModel[nCntModel].pos = m_TypeSelect.NumModel[nCntModel].startpos + pKeyInfo->pos + (pNextKey->pos - pKeyInfo->pos)*
+			(float)pInfo->nCntFrame / (float)pInfo->aKeyInfo[pInfo->nNumKey].nNumKyeFrame;
+
+		Distance = pNextKey->rot - pKeyInfo->rot;
+
+		if (D3DX_PI < Distance.y)
+		{
+			Distance.y -= D3DX_PI * 2;
 		}
-		else if (pInfo->nNumKey == pInfo->nMaxKey && m_TypeSelect.motionType != MOTIONTYPE_JUMP)
-		{// モーションが終了した場合
+		else if (-D3DX_PI > Distance.y)
+		{
+			Distance.y += D3DX_PI * 2;
+		}
+		if (D3DX_PI < Distance.x)
+		{
+			Distance.x -= D3DX_PI * 2;
+		}
+		else if (-D3DX_PI > Distance.x)
+		{
+			Distance.x += D3DX_PI * 2;
+		}
+		// パーツの向き設定
+		m_TypeSelect.NumModel[nCntModel].rot = pKeyInfo->rot + Distance*
+			(float)pInfo->nCntFrame / (float)pInfo->aKeyInfo[pInfo->nNumKey].nNumKyeFrame;
+
+
+	}
+	pInfo->nCntFrame++;
+
+	if (pInfo->nCntFrame == pInfo->aKeyInfo[pInfo->nNumKey].nNumKyeFrame)
+	{
+		pInfo->nNumKey++;
+		pInfo->nCntFrame = 0;
+	}
+
+	if (!pInfo->bLoop && pInfo->nNumKey + 1 == pInfo->nMaxKey)
+	{// モーションがループしない場合
+		if (m_PlayerType[nCnt].motionType != MOTIONTYPE_JUMP)
+		{// ジャンプ以外
 			pInfo->nNumKey = 0;
+			pInfo->nCntFrame = 0;
+			m_MotionState = MOTIONSTATE_WAIT;
 		}
+	}
+	else if (pInfo->nNumKey == pInfo->nMaxKey && m_TypeSelect.motionType != MOTIONTYPE_JUMP)
+	{// モーションが終了した場合
+		pInfo->nNumKey = 0;
+	}
 
-		SetPosParts(&m_TypeSelect);
+	SetPosParts(&m_TypeSelect);
 }
 
 //=============================================================================

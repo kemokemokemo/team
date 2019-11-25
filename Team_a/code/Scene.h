@@ -73,6 +73,7 @@ public:
 	static void UpdateAll(void);
 	static void DrawAll(void);
 
+	int GetID() { return m_nID; }
 	OBJTYPE GetObjType(void);
 	void Release(void);
 
@@ -91,7 +92,7 @@ private:
 	OBJTYPE objType;
 
 	//•Ï”
-	int m_bID;	//©•ª‚Ì”Ô†
+	int m_nID;	//©•ª‚Ì”Ô†
 
 	int m_nPriority;	//—Dæ‡ˆÊ
 
