@@ -18,6 +18,7 @@
 #include "polygon.h"
 #include "model.h"
 #include "player_ken.h"
+#include "player_sword.h"
 #include "player_Kangaroo.h"
 #include "gauge.h"
 
@@ -60,13 +61,15 @@ HRESULT CGame::Init(void)
 
 	CGauge::Load();
 
-	CModel::Create(D3DXVECTOR3(200.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CModel::UNITTYPE_FLOOR);
+	CModel::Create(D3DXVECTOR3(000.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CModel::UNITTYPE_FLOOR);
 
 	//CModel::Create(D3DXVECTOR3(640.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CModel::MODELTYPE_BILL0);
 
-	CPlayer_KEN::Create(D3DXVECTOR3(100.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer_KEN::PLAYERTYPE_KEN, CPlayer_KEN::PLAYER_01);
+	CPlayer_KEN::Create(D3DXVECTOR3(-100.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer_KEN::PLAYER_01);
 
-	CPlayer_Kangaroo::Create(D3DXVECTOR3(300.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer_Kangaroo::PLAYERTYPE_KANGAROO, CPlayer_Kangaroo::PLAYER_02);
+	CPlayer_SWORD::Create(D3DXVECTOR3(100.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer_Kangaroo::PLAYER_02);
+
+	CPlayer_Kangaroo::Create(D3DXVECTOR3(0.0f, 0.0f, 150.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer_Kangaroo::PLAYER_03);
 
 	CGauge::Create(D3DXVECTOR3(200.0f, 600.0f, 0.0f));
 

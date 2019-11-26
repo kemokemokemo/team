@@ -47,21 +47,22 @@ CPlayer_KEN::~CPlayer_KEN()
 //=============================================================================
 // ÉÇÉfÉãÇÃê∂ê¨
 //=============================================================================
-CPlayer_KEN * CPlayer_KEN::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERTYPE type, PLAYERNUM PlayerNum)
+CPlayer_KEN * CPlayer_KEN::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERNUM PlayerNum)
 {
 	CPlayer_KEN *pPlayer;
 	pPlayer = new CPlayer_KEN(OBJTYPE_PLAYER);
 
-	pPlayer->Init(pos, rot, type, PlayerNum);
+	pPlayer->Init(pos, rot, PlayerNum);
 	return pPlayer;
 }
 
 //=============================================================================
 // èâä˙âªèàóù
 //=============================================================================
-HRESULT CPlayer_KEN::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERTYPE type, PLAYERNUM PlayerNum)
+HRESULT CPlayer_KEN::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERNUM PlayerNum)
 {
-	CPlayerBase::Init(pos, rot, type, PlayerNum);
+	m_TypeChara = CPlayer_KEN::PLAYERTYPE_KEN;
+	CPlayerBase::Init(pos, rot, PlayerNum);
 
 	m_nLife = 3;
 

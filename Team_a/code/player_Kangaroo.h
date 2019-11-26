@@ -39,9 +39,9 @@ public:
 	CPlayer_Kangaroo(OBJTYPE type);
 	~CPlayer_Kangaroo();
 
-	static CPlayer_Kangaroo *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERTYPE type, PLAYERNUM PlayerNum);
+	static CPlayer_Kangaroo *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERNUM PlayerNum);
 
-	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERTYPE type, PLAYERNUM PlayerNum);
+	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERNUM PlayerNum);
 
 	void Uninit(void);
 	void Update(void);

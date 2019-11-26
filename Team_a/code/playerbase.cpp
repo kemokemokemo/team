@@ -22,7 +22,8 @@
 //=============================================================================
 #define PLAYER_SPEED	(1.0f)						//プレイヤーの速さ
 #define MODELFILE1		"DATA/motion_ken.txt"		// 読み込むモデル
-#define MODELFILE2		"DATA/motion_Kangaroo.txt"			// 読み込むモデル
+#define MODELFILE2		"DATA/motion_Kangaroo.txt"	// 読み込むモデル
+#define MODELFILE3		"DATA/motion_sword.txt"	// 読み込むモデル
 
 //=============================================================================
 // メンバ変数初期化
@@ -50,9 +51,9 @@ CPlayerBase::~CPlayerBase()
 //=============================================================================
 // 初期化処理
 //=============================================================================
-HRESULT CPlayerBase::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERTYPE type, PLAYERNUM PlayerNum)
+HRESULT CPlayerBase::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERNUM PlayerNum)
 {
-	BindModel(&m_PlayerType[type]);
+	BindModel(&m_PlayerType[m_TypeChara]);
 
 	CScene3D::Init();
 
@@ -62,7 +63,7 @@ HRESULT CPlayerBase::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERTYPE type, PLA
 
 	m_PlayerStateCount = 0;
 
-	m_TypeSelect = m_PlayerType[type];
+	m_TypeSelect = m_PlayerType[m_TypeChara];
 
 	m_PlayerState = PLAYERSTATE_NORMAL;
 
@@ -123,13 +124,17 @@ void CPlayerBase::Update(void)
 		break;
 
 	case PLAYERSTATE_DAMAGE:
-			m_PlayerStateCount--;
-			if (m_PlayerStateCount <= 0)
-			{
-				m_PlayerState = PLAYERSTATE_NORMAL;
-			}
-		break;
+			m_MotionState = MOTIONSTATE_DAMAGE;
+			m_PlayerState = PLAYERSTATE_UNDYING;
 
+		break;
+	case PLAYERSTATE_UNDYING:
+		m_PlayerStateCount--;
+		if (m_PlayerStateCount <= 0)
+		{
+			m_PlayerState = PLAYERSTATE_NORMAL;
+		}
+		break;
 	case PLAYERSTATE_RANNING:
 		//MotionChangePlayer(MOTIONTYPE_RUNNING, 0);
 		break;
@@ -138,6 +143,7 @@ void CPlayerBase::Update(void)
 	switch (m_MotionState)
 	{
 	case MOTIONSTATE_WAIT:
+		m_PlayerState = PLAYERSTATE_NORMAL;
 		MotionChangePlayer(MOTIONTYPE_WAIT, 0);
 		break;
 	case MOTIONSTATE_RUN:
@@ -151,6 +157,32 @@ void CPlayerBase::Update(void)
 		break;
 	case MOTIONSTATE_LIGHT2:
 		MotionChangePlayer(MOTIONTYPE_LIGHT2, 0);
+		break;
+	case MOTIONSTATE_DASHATK:
+		if (m_fDiffrot.y == D3DX_PI*0.5f)
+		{
+			m_move.x -= 0.5f;
+		}
+		else
+		{
+			m_move.x += 0.5f;
+		}
+		m_PlayerState = PLAYERSTATE_ATK;
+		MotionChangePlayer(MOTIONTYPE_DASHATK, 0);
+		break;
+	case MOTIONSTATE_UPATK:
+		m_PlayerState = PLAYERSTATE_ATK;
+		MotionChangePlayer(MOTIONTYPE_UPATK, 0);
+		break;
+	case MOTIONSTATE_CROUCHATK:
+		m_PlayerState = PLAYERSTATE_ATK;
+		MotionChangePlayer(MOTIONTYPE_CROUCHATK, 0);
+		break;
+	case MOTIONSTATE_CROUCHWAIT:
+		MotionChangePlayer(MOTIONTYPE_CROUCHWAIT, 0);
+		break;
+	case MOTIONSTATE_DAMAGE:
+		MotionChangePlayer(MOTIONTYPE_DAMAGE, 0);
 		break;
 	case MOTIONSTATE_JUMP:
 		MotionChangePlayer(MOTIONTYPE_JUMP, 0);
@@ -201,7 +233,7 @@ D3DXVECTOR3 CPlayerBase::GetPlayerPos(void)
 //=============================================================================
 void CPlayerBase::PlayerMove(void)
 {
-	CKeybord *pKetybord = CManager::GetKeybord();
+	CKeybord *pKeyboard = CManager::GetKeybord();
 
 	D3DXVECTOR3 pos;
 	D3DXVECTOR3 rot;
@@ -214,85 +246,155 @@ void CPlayerBase::PlayerMove(void)
 
 	if (m_PlayerNum == PLAYER_01)
 	{
-		if (pKetybord->GetKeyboardPress(DIK_A))
-		{//  A キー操作
-			m_move.x += D3DX_PI*-0.5f* PLAYER_SPEED;
-			m_fDiffrot.y = D3DX_PI*0.5f;
-			m_MotionState = MOTIONSTATE_RUN;
-		}
-		else if (pKetybord->GetKeyboardPress(DIK_D))
-		{//  D キー操作
-			m_move.x += D3DX_PI*0.5f * PLAYER_SPEED;
-			m_fDiffrot.y = D3DX_PI*-0.5f;
-			m_MotionState = MOTIONSTATE_RUN;
-		}
-		else if (m_MotionState == MOTIONSTATE_RUN)
-		{// 移動をやめた場合
-		 // モーションの切り替え
-			m_MotionState = MOTIONSTATE_WAIT;
-		}
-
-		if (pKetybord->GetKeyboardTrigger(DIK_W))
-		{// W キー操作
-			m_move.y += 50;
-		}
-
-		if (pKetybord->GetKeyboardTrigger(DIK_SPACE))
-		{//  Zキー操作 攻撃
-			PlayerCollision();
-
-			if (m_MotionState == MOTIONSTATE_LIGHT0)
-			{
-				m_MotionState = MOTIONSTATE_LIGHT1;
+		if (m_PlayerState != PLAYERSTATE_ATK)
+		{
+			if (pKeyboard->GetKeyboardPress(DIK_A))
+			{//  A キー操作
+				m_move.x += D3DX_PI*-0.5f* PLAYER_SPEED;
+				m_fDiffrot.y = D3DX_PI*0.5f;
+				m_MotionState = MOTIONSTATE_RUN;
+				if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+				{
+					m_MotionState = MOTIONSTATE_DASHATK;
+				}
 			}
-			else if (m_MotionState == MOTIONSTATE_LIGHT1)
-			{
-				m_MotionState = MOTIONSTATE_LIGHT2;
+			else if (pKeyboard->GetKeyboardPress(DIK_D))
+			{//  D キー操作
+				m_move.x += D3DX_PI*0.5f * PLAYER_SPEED;
+				m_fDiffrot.y = D3DX_PI*-0.5f;
+				m_MotionState = MOTIONSTATE_RUN;
+				if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+				{
+					m_MotionState = MOTIONSTATE_DASHATK;
+				}
 			}
-			else
-			{
-				m_MotionState = MOTIONSTATE_LIGHT0;
+			else if (m_MotionState == MOTIONSTATE_RUN)
+			{// 移動をやめた場合
+			 // モーションの切り替え
+				m_MotionState = MOTIONSTATE_WAIT;
 			}
-			
+
+			else if (pKeyboard->GetKeyboardPress(DIK_W))
+			{// W キー操作
+				if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+				{
+					m_MotionState = MOTIONSTATE_UPATK;
+				}
+			}
+
+			else if (pKeyboard->GetKeyboardPress(DIK_S))
+			{
+				m_MotionState = MOTIONSTATE_CROUCHWAIT;
+				if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+				{
+					m_MotionState = MOTIONSTATE_CROUCHATK;
+				}
+			}
+			else if (m_MotionState == MOTIONSTATE_CROUCHWAIT)
+			{// 移動をやめた場合vbn
+			 // モーションの切り替え
+				m_MotionState = MOTIONSTATE_WAIT;
+			}
+
+			else if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+			{
+				PlayerCollision();
+				//3段攻撃
+				if (m_MotionState == MOTIONSTATE_LIGHT0)
+				{
+					m_MotionState = MOTIONSTATE_LIGHT1;
+				}
+				else if (m_MotionState == MOTIONSTATE_LIGHT1)
+				{
+					m_MotionState = MOTIONSTATE_LIGHT2;
+				}
+				else
+				{
+					m_MotionState = MOTIONSTATE_LIGHT0;
+				}
+			}
 		}
 	}
 
 
 	if (m_PlayerNum == PLAYER_02)
 	{
-		if (pKetybord->GetKeyboardPress(DIK_LEFTARROW))
-		{//  A キー操作
-			m_move.x += D3DX_PI*-0.5f* PLAYER_SPEED;
-			m_fDiffrot.y = D3DX_PI*0.5f;
+		if (m_PlayerState != PLAYERSTATE_ATK)
+		{
+			if (pKeyboard->GetKeyboardPress(DIK_LEFTARROW))
+			{//  A キー操作
+				m_move.x += D3DX_PI*-0.5f* PLAYER_SPEED;
+				m_fDiffrot.y = D3DX_PI*0.5f;
+				m_MotionState = MOTIONSTATE_RUN;
+				if (pKeyboard->GetKeyboardTrigger(DIK_L))
+				{
+					m_MotionState = MOTIONSTATE_DASHATK;
+				}
+			}
+			else if (pKeyboard->GetKeyboardPress(DIK_RIGHTARROW))
+			{//  D キー操作
+				m_move.x += D3DX_PI*0.5f * PLAYER_SPEED;
+				m_fDiffrot.y = D3DX_PI*-0.5f;
+				m_MotionState = MOTIONSTATE_RUN;
+				if (pKeyboard->GetKeyboardTrigger(DIK_L))
+				{
+					m_MotionState = MOTIONSTATE_DASHATK;
+				}
+			}
+			else if (m_MotionState == MOTIONSTATE_RUN)
+			{// 移動をやめた場合
+			 // モーションの切り替え
+				m_MotionState = MOTIONSTATE_WAIT;
+			}
 
-			MotionChangePlayer(MOTIONTYPE_RUN, 0);
-		}
-		else if (pKetybord->GetKeyboardPress(DIK_RIGHTARROW))
-		{//  D キー操作
-			m_move.x += D3DX_PI*0.5f * PLAYER_SPEED;
-			m_fDiffrot.y = D3DX_PI*-0.5f;
-			MotionChangePlayer(MOTIONTYPE_RUN, 0);
-		}
-		else if (m_TypeSelect.motionType == MOTIONTYPE_RUN)
-		{// 移動をやめた場合
-		  //モーションの切り替え
-			MotionChangePlayer(MOTIONTYPE_WAIT, 0);
-		}
+			else if (pKeyboard->GetKeyboardPress(DIK_UPARROW))
+			{// W キー操作
+				if (pKeyboard->GetKeyboardTrigger(DIK_L))
+				{
+					m_MotionState = MOTIONSTATE_UPATK;
+				}
+			}
 
-		else if (pKetybord->GetKeyboardTrigger(DIK_UPARROW))
-		{//  S キー操作
-			m_move.y += 50;
-		}
-
-		if (pKetybord->GetKeyboardTrigger(DIK_RETURN))
-		{//  Xキー操作 攻撃
-			if (m_TypeSelect.motionType != MOTIONTYPE_LIGHT0)
+			else if (pKeyboard->GetKeyboardPress(DIK_DOWNARROW))
 			{
-				MotionChangePlayer(MOTIONTYPE_LIGHT0, 0);
+				m_MotionState = MOTIONSTATE_CROUCHWAIT;
+				if (pKeyboard->GetKeyboardTrigger(DIK_L))
+				{
+					m_MotionState = MOTIONSTATE_CROUCHATK;
+				}
+			}
+			else if (m_MotionState == MOTIONSTATE_CROUCHWAIT)
+			{// 移動をやめた場合vbn
+			 // モーションの切り替え
+				m_MotionState = MOTIONSTATE_WAIT;
+			}
+
+			else if (pKeyboard->GetKeyboardTrigger(DIK_L))
+			{
+				PlayerCollision();
+				//3段攻撃
+				if (m_MotionState == MOTIONSTATE_LIGHT0)
+				{
+					m_MotionState = MOTIONSTATE_LIGHT1;
+				}
+				else if (m_MotionState == MOTIONSTATE_LIGHT1)
+				{
+					m_MotionState = MOTIONSTATE_LIGHT2;
+				}
+				else
+				{
+					m_MotionState = MOTIONSTATE_LIGHT0;
+				}
 			}
 		}
 	}
-
+	if (m_PlayerNum == PLAYER_03)
+	{
+		if (pKeyboard->GetKeyboardTrigger(DIK_RETURN))
+		{
+			m_MotionState = MOTIONSTATE_RUN;
+		}
+	}
 	// 差分
 	if (m_fDistance.y = m_fDiffrot.y - rot.y)
 	{
@@ -466,7 +568,9 @@ void CPlayerBase::MotionPlayer(int nCnt)
 		{// ジャンプ以外
 			pInfo->nNumKey = 0;
 			pInfo->nCntFrame = 0;
+
 			m_MotionState = MOTIONSTATE_WAIT;
+			
 		}
 	}
 	else if (pInfo->nNumKey == pInfo->nMaxKey && m_TypeSelect.motionType != MOTIONTYPE_JUMP)
@@ -505,6 +609,7 @@ HRESULT CPlayerBase::Load(void)
 {
 	TextLoad[PLAYERTYPE_KEN] = (char*)MODELFILE1;
 	TextLoad[PLAYERTYPE_KANGAROO] = (char*)MODELFILE2;
+	TextLoad[PLAYERTYPE_SWORD] = (char*)MODELFILE3;
 
 	for (int nCnt = 0; nCnt < PLAYERTYPE_MAX; nCnt++)
 	{
@@ -514,8 +619,6 @@ HRESULT CPlayerBase::Load(void)
 			return -1;
 
 		std::string sLine;
-
-		int nCount[2] = {};
 		
 		// モデル数
 		std::string sWord = { "NUM_MODEL" };
@@ -590,55 +693,55 @@ HRESULT CPlayerBase::MotionLoad(std::ifstream *file, int nCnt)
 	std::string sLine;
 	int nLoop = 0;			// ループ格納用
 
-		MOTION_INFO *pMotion = &m_PlayerType[nCnt].aMotionInfo[0];
+	MOTION_INFO *pMotion = &m_PlayerType[nCnt].aMotionInfo[0];
 
-		// モデルのファイル名
-		std::string sWord = { "MOTIONSET" };
-		sLine = CScene3D::WordLoad(file, sWord);
+	// モデルのファイル名
+	std::string sWord = { "MOTIONSET" };
+	sLine = CScene3D::WordLoad(file, sWord);
 
-		for (int nCountKey = 0; nCountKey < m_PlayerType[nCnt].nMotionMax; nCountKey++)
+	for (int nCountKey = 0; nCountKey < m_PlayerType[nCnt].nMotionMax; nCountKey++)
+	{
+		KEY_INFO *pKeyInfo = &pMotion->aKeyInfo[0];
+
+		if (sWord == sLine)
 		{
-			KEY_INFO *pKeyInfo = &pMotion->aKeyInfo[0];
+			sWord = { "LOOP" };
+			nLoop = std::stoi(CScene3D::WordLoad(file, sWord));
+			// 1の場合ループする
+			pMotion->bLoop = nLoop == 1 ? true : false;
 
-			if (sWord == sLine)
+			//キーの最大数
+			sWord = { "NUM_KEY" };
+			pMotion->nMaxKey = std::stoi(CScene3D::WordLoad(file, sWord));
+
+			for (int nCount = 0; nCount < pMotion->nMaxKey; nCount++)
 			{
-				sWord = { "LOOP" };
-				nLoop = std::stoi(CScene3D::WordLoad(file, sWord));
-				// 1の場合ループする
-				pMotion->bLoop = nLoop == 1 ? true : false;
+				KEY *pKey = &pKeyInfo->aKey[0];
 
-				//キーの最大数
-				sWord = { "NUM_KEY" };
-				pMotion->nMaxKey = std::stoi(CScene3D::WordLoad(file, sWord));
+				sWord = { "KEYSET" };
+				sLine = CScene3D::WordLoad(file, sWord);
 
-				for (int nCount = 0; nCount < pMotion->nMaxKey; nCount++)
+				sWord = { "FRAME" };
+				pKeyInfo->nNumKyeFrame = std::stoi(CScene3D::WordLoad(file, sWord));
+
+				for (int nCntModel = 0; nCntModel < m_PlayerType[nCnt].nMaxModel; nCntModel++)
 				{
-					KEY *pKey = &pKeyInfo->aKey[0];
-
-					sWord = { "KEYSET" };
+					sWord = { "POS" };
 					sLine = CScene3D::WordLoad(file, sWord);
+					Vector3Load(sLine, &pKey->pos);
 
-					sWord = { "FRAME" };
-					pKeyInfo->nNumKyeFrame = std::stoi(CScene3D::WordLoad(file, sWord));
-
-					for (int nCntModel = 0; nCntModel < m_PlayerType[nCnt].nMaxModel; nCntModel++)
-					{
-						sWord = { "POS" };
-						sLine = CScene3D::WordLoad(file, sWord);
-						Vector3Load(sLine, &pKey->pos);
-
-						sWord = { "ROT" };
-						sLine = CScene3D::WordLoad(file, sWord);
-						Vector3Load(sLine, &pKey->rot);
-						pKey++;
-					}
-					sWord = { "END_KEYSET" };
+					sWord = { "ROT" };
 					sLine = CScene3D::WordLoad(file, sWord);
-					pKeyInfo++;
+					Vector3Load(sLine, &pKey->rot);
+					pKey++;
 				}
-				pMotion++;
+				sWord = { "END_KEYSET" };
+				sLine = CScene3D::WordLoad(file, sWord);
+				pKeyInfo++;
 			}
+			pMotion++;
 		}
+	}
 	return S_OK;
 }
 

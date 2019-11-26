@@ -20,7 +20,7 @@
 // マクロ定義
 //==================================================================================================== 
 #define MAX_MODEL		(64)									// モデルの数
-#define MAX_KEY		(8)									// モデルの数
+#define MAX_KEY		(10)									// モデルの数
 
 
 //================================================================
@@ -62,8 +62,12 @@ public:
 		MOTIONTYPE_LIGHT0,		// 弱攻撃1段目
 		MOTIONTYPE_LIGHT1,		// 2段目
 		MOTIONTYPE_LIGHT2,		// 3段目
+		MOTIONTYPE_DASHATK,		// ダッシュ攻撃
+		MOTIONTYPE_UPATK,		// サマソ
+		MOTIONTYPE_CROUCHATK,
+		MOTIONTYPE_CROUCHWAIT,
+		MOTIONTYPE_DAMAGE,	// 吹き飛ぶ
 		MOTIONTYPE_JUMP,		// ジャンプ
-		MOTIONTYPE_BLOWAWAY,	// 吹き飛ぶ
 		MOTIONTYPE_MAX			// モーションの最大数
 	} MOTIONTYPE;
 

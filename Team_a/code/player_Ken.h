@@ -39,9 +39,9 @@ public:
 	CPlayer_KEN(OBJTYPE type);
 	~CPlayer_KEN();
 
-	static CPlayer_KEN *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERTYPE type, PLAYERNUM PlayerNum);
+	static CPlayer_KEN *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERNUM PlayerNum);
 
-	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERTYPE type, PLAYERNUM PlayerNum);
+	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERNUM PlayerNum);
 
 	void Uninit(void);
 	void Update(void);

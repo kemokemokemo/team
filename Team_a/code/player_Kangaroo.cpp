@@ -47,21 +47,22 @@ CPlayer_Kangaroo::~CPlayer_Kangaroo()
 //=============================================================================
 // ÉÇÉfÉãÇÃê∂ê¨
 //=============================================================================
-CPlayer_Kangaroo * CPlayer_Kangaroo::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERTYPE type, PLAYERNUM PlayerNum)
+CPlayer_Kangaroo * CPlayer_Kangaroo::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERNUM PlayerNum)
 {
 	CPlayer_Kangaroo *pPlayer;
 	pPlayer = new CPlayer_Kangaroo(OBJTYPE_PLAYER);
 
-	pPlayer->Init(pos, rot, type, PlayerNum);
+	pPlayer->Init(pos, rot, PlayerNum);
 	return pPlayer;
 }
 
 //=============================================================================
 // èâä˙âªèàóù
 //=============================================================================
-HRESULT CPlayer_Kangaroo::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERTYPE type, PLAYERNUM PlayerNum)
+HRESULT CPlayer_Kangaroo::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERNUM PlayerNum)
 {
-	CPlayerBase::Init(pos, rot, type, PlayerNum);
+	m_TypeChara = CPlayer_Kangaroo::PLAYERTYPE_KANGAROO;
+	CPlayerBase::Init(pos, rot, PlayerNum);
 
 	m_nLife = 5;
 
