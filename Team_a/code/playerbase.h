@@ -103,18 +103,21 @@ public:
 	void MoveLimit(void);
 	void MotionPlayer(int nCnt);
 	void MotionChangePlayer(MOTIONTYPE motionType, int nCnt);
-	D3DXVECTOR3 GetPlayerPos(void);
 
-	int GetLife(void);
+	void SetMove(D3DXVECTOR3 move) { m_move += move; }
 
-	static HRESULT Load(void);
+	int GetLife();
+	D3DXVECTOR3 GetMove() { return m_move; }
+
+	static HRESULT Load();
 	static HRESULT MotionLoad(std::ifstream *file, int nCnt);
-	static void Unload(void);
+	static void Unload();
 
 	//bool CollisionModel(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 size);
 
 protected:
 	void PlayerCollision();
+	void PlayerCollisionShape();
 
 	float m_fRadius;
 	float m_fAttack;
@@ -122,7 +125,6 @@ protected:
 	int m_nLife;
 
 	PLAYERTYPE m_TypeChara;
-	D3DXVECTOR3	m_move;							// à⁄ìÆó 
 	PLAYERSTATE m_PlayerState;					//ÉvÉåÉCÉÑÅ[ÇÃèÛë‘
 	MOTIONSTATE m_MotionState;
 
@@ -137,8 +139,8 @@ private:
 	static char *TextLoad[PLAYERTYPE_MAX];
 
 	CGauge *pLifeGauge;
-	D3DXVECTOR3 m_pos;
 
+	D3DXVECTOR3	m_move;							// à⁄ìÆó 
 
 	MODELNUM m_TypeSelect;
 	D3DXVECTOR3 m_fDistance;

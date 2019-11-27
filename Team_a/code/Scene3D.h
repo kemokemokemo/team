@@ -109,12 +109,14 @@ public:
 
 	void SetPos(D3DXVECTOR3 pos);
 	void SetRot(D3DXVECTOR3 rot);
+	void SetScale(D3DXVECTOR3 scale) { m_scale = scale; }
 
 	void SetLoad(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxModelModel, int nType);
 
 
-	D3DXVECTOR3 GetPos(void);
-	D3DXVECTOR3 GetRot(void);
+	D3DXVECTOR3 GetPos();
+	D3DXVECTOR3 GetRot();
+	D3DXVECTOR3 GetScale() { return m_scale; }
 
 protected:
 
@@ -138,6 +140,8 @@ private:
 
 	D3DXVECTOR3 m_pos;						// ポリゴンの位置
 	D3DXVECTOR3 m_rot;						// ポリゴンの向き
+	D3DXVECTOR3	m_scale;
+
 	D3DXVECTOR3	m_move;						// 移動量
 	D3DXMATRIX  m_mtxWorld;					// ワールドマトリックス
 

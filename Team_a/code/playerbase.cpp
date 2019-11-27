@@ -90,8 +90,6 @@ void CPlayerBase::Uninit(void)
 //=============================================================================
 void CPlayerBase::Update(void)
 {
-	CScene3D::Update();
-
 	switch (m_PlayerNum)
 	{
 	case PLAYER_01:
@@ -121,6 +119,7 @@ void CPlayerBase::Update(void)
 	{
 	case PLAYERSTATE_NORMAL:
 		//MotionChangePlayer(MOTIONTYPE_NEUTRAL, 0);
+	
 		break;
 
 	case PLAYERSTATE_DAMAGE:
@@ -188,9 +187,11 @@ void CPlayerBase::Update(void)
 		MotionChangePlayer(MOTIONTYPE_JUMP, 0);
 		break;
 	}
-	GetPlayerPos();
+	this->PlayerCollisionShape();
 
 	MoveLimit();	
+
+	CScene3D::Update();
 }
 
 //=============================================================================
@@ -215,17 +216,6 @@ void CPlayerBase::MoveLimit(void)
 		pos.y = 0;
 	}
 	CScene3D::SetPos(pos);
-}
-
-//=============================================================================
-// プレイヤーの移動処理
-//=============================================================================
-D3DXVECTOR3 CPlayerBase::GetPlayerPos(void)
-{
-	D3DXVECTOR3 pos = CScene3D::GetPos();
-
-
-	return pos;
 }
 
 //=============================================================================
@@ -496,6 +486,52 @@ void CPlayerBase::PlayerCollision()
 		if (fLength <= fRadius * fRadius)
 		{
 			PlayerDamage(pPlayer);
+		}
+	}
+}
+
+//========================================================================================================
+// プレイヤーの衝突判定
+//========================================================================================================
+void CPlayerBase::PlayerCollisionShape()
+{
+	for (int nCntModel = 0; nCntModel < MAX_POLYGON; nCntModel++)
+	{
+		CScene *pScene;
+
+		pScene = CScene::GetScene(OBJTYPE_PLAYER, nCntModel);
+
+		if (!pScene || nCntModel == GetID())
+			continue;
+
+		CPlayerBase *pPlayer = (CPlayerBase*)pScene;
+
+		D3DXVECTOR3 pos = GetPos();
+
+		// モデルと物体の距離
+		float fRadius = D3DXVec3Length(&(pPlayer->GetPos() - pos));
+
+		// 半径
+		float fRadiusA = 20.0f;
+		float fRadiusB = 20.0f;
+
+		if (fRadius <= (fRadiusA + fRadiusB))
+		{// 半径+半径より近いか
+
+			D3DXVECTOR3 Vec = pos - pPlayer->GetPos();
+			D3DXVec3Normalize(&Vec, &Vec);			//正規化する
+
+			//どれだけめり込んだか
+			fRadius = (fRadiusB + fRadiusA) - fRadius;
+
+			pos += Vec * fRadius;
+			SetPos(pos);
+
+			D3DXVECTOR3 temp = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+
+			float cosA = D3DXVec3Dot(&(pos - pPlayer->GetPos()), &temp) / D3DXVec3Length(&(pPlayer->GetPos() - pos));
+
+			m_move.y -= m_move.y * cosA * cosA * (fRadius / fRadiusA);
 		}
 	}
 }
