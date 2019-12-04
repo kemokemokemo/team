@@ -177,7 +177,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "DATA\\TEX\\25_ñÓë„àÍê^.jpg";
+    "DATA\\TEX\\boy_face.png";
    }
   }
   Material {

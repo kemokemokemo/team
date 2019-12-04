@@ -36,10 +36,13 @@ HRESULT CScene3D::Init(void)
 	CRenderer *pRenderer = CManager::GetRenderer();
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
 
-	// 初期設定
-	for (int nCntModel = 0; nCntModel < m_Model.nMaxModel; nCntModel++)
-	{
-	}
+	//// 初期設定
+	//for (int nCntModel = 0; nCntModel < m_Model.nMotionMax; nCntModel++)
+	//{
+	//	m_Model.aMotionInfo[nCntModel].nHitIdx = -1;
+	//	m_Model.aMotionInfo[nCntModel].nAtkStar = 0;
+	//	m_Model.aMotionInfo[nCntModel].nAtkEnd = 0;
+	//}
 
 	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
@@ -126,13 +129,13 @@ void CScene3D::Draw(void)
 
 	for (int nCntModel = 0; nCntModel < m_Model.nMaxModel; nCntModel++)
 	{
-		if (m_Model.NumModel[nCntModel].nIdxModelModel == -1)
+		if (m_Model.NumModel[nCntModel].nIdxModel == -1)
 		{
 			mtxModel = m_mtxWorld;
 		}
 		else
 		{
-			mtxModel = m_Model.NumModel[m_Model.NumModel[nCntModel].nIdxModelModel].mtxWorld;
+			mtxModel = m_Model.NumModel[m_Model.NumModel[nCntModel].nIdxModel].mtxWorld;
 		}
 
 		// ワールドマトリックスの初期化
@@ -183,15 +186,6 @@ void CScene3D::Textureload(LPDIRECT3DDEVICE9 pDevice)
 {
 	for (int nCount = 0; nCount <m_Model.nMaxModel; nCount++)
 	{
-		D3DXLoadMeshFromX(m_Model.NumModel[nCount].cFileName,		// 読み込むXファイル名
-			D3DXMESH_SYSTEMMEM,
-			pDevice,
-			NULL,
-			&m_Model.NumModel[nCount].pBuffMat,		// マテリアル情報ポインタ
-			NULL,
-			&m_Model.NumModel[nCount].nNumMat,		// マテリアル情報の数
-			&m_Model.NumModel[nCount].pMesh);		// メッシュ情報ポインタ
-
 		//テクスチャの読み込み
 		D3DXMATERIAL *pMat;							// Xファイルから取り出したマテリアル情報を入れる
 
@@ -224,29 +218,29 @@ void CScene3D::Textureload(LPDIRECT3DDEVICE9 pDevice)
 void CScene3D::BindModel(const MODELNUM *type)
 {
 	m_Model.nMaxModel = type->nMaxModel;
-	for (int nCnt = 0; nCnt < m_Model.nMaxModel; nCnt++)
+
+	m_Model = *type;
+}
+
+void CScene3D::BindMotion(const MOTION_INFO * type)
+{
+	for (int nCnt = 0; nCnt < m_Model.nMotionMax; nCnt++)
 	{
-		m_Model.NumModel[nCnt].nNumMat = type->NumModel[nCnt].nNumMat;
-		m_Model.NumModel[nCnt].pMesh = type->NumModel[nCnt].pMesh;
-		m_Model.NumModel[nCnt].pBuffMat = type->NumModel[nCnt].pBuffMat;
-		m_Model.NumModel[nCnt].pos = type->NumModel[nCnt].pos;
-		m_Model.NumModel[nCnt].rot = type->NumModel[nCnt].rot;
-		m_Model.NumModel[nCnt].nIdxModelModel = type->NumModel[nCnt].nIdxModelModel;
-		m_Model.NumModel[nCnt].nType = type->NumModel[nCnt].nType;
+		m_Model.aMotionInfo[nCnt] = type[nCnt];
 	}
 }
 
 //====================================================================================================
 // キャラクター情報読み込み
 //====================================================================================================
-std::string CScene3D::WordLoad(std::ifstream *file, std::string word)
+std::string CScene3D::WordLoad(std::ifstream *file, std::string word, int linenum)
 {
 	std::string sWord;
 	std::string sLine;
 	std::string sData = "-";
 	std::stringstream sSeparate(sData);
 	std::string s;
-
+	int nCnt = 0;
 
 	while (std::getline(*file, sLine))
 	{
@@ -255,6 +249,7 @@ std::string CScene3D::WordLoad(std::ifstream *file, std::string word)
 		std::string sName;
 		sString >> sName;
 		
+		nCnt++;
 
 		if (sName == word)
 		{
@@ -285,6 +280,10 @@ std::string CScene3D::WordLoad(std::ifstream *file, std::string word)
 				s += sWord; // "abcd" (std::string型の文字列を追加)
 				sWord = s;
 			}
+			break;
+		}
+		else if (linenum != 0 && linenum == nCnt)
+		{
 			break;
 		}
 	}
@@ -339,6 +338,19 @@ D3DXVECTOR3 CScene3D::GetRot(void)
 	return m_rot;
 }
 
+void CScene3D::SetModel(MODELNUM model)
+{
+	m_Model = model;
+}
+
+//====================================================================================================
+// 回転量の取得
+//====================================================================================================
+CScene3D::MODELNUM CScene3D::GetModel()
+{
+	return m_Model;
+}
+
 //====================================================================================================
 // 回転量のセット
 //====================================================================================================
@@ -359,13 +371,13 @@ void CScene3D::SetPosParts(MODELNUM *type)
 	}
 }
 
-void CScene3D::SetLoad(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxModelModel, int nType)
+void CScene3D::SetLoad(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxModel, int nType)
 {
 	for (int nCnt = 0; nCnt < m_Model.nMaxModel; nCnt++)
 	{
 		m_Model.NumModel[nCnt].pos = pos;
 		m_Model.NumModel[nCnt].rot = rot;
-		m_Model.NumModel[nCnt].nIdxModelModel = nIdxModelModel;
+		m_Model.NumModel[nCnt].nIdxModel = nIdxModel;
 		m_Model.NumModel[nCnt].nType = nType;
 	}
 }

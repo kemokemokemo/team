@@ -48,32 +48,17 @@ public:
 	//=============================================================================
 	// モーションの種類
 	//=============================================================================
-	typedef enum
-	{
-		MOTIONSTATE_WAIT = 0,	// ニュートラル
-		MOTIONSTATE_RUN,		// ランニング
-		MOTIONSTATE_LIGHT0,		// 弱攻撃1段目
-		MOTIONSTATE_LIGHT1,		// 2段目
-		MOTIONSTATE_LIGHT2,		// 3段目
-		MOTIONSTATE_DASHATK,	// ダッシュ攻撃
-		MOTIONSTATE_UPATK,		// サマソ
-		MOTIONSTATE_CROUCHATK,
-		MOTIONSTATE_CROUCHWAIT,
-		MOTIONSTATE_DAMAGE,	// 吹き飛ぶ
-		MOTIONSTATE_JUMP,		// ジャンプ
-		MOTIONSTATE_MAX			// モーションの最大数
-	} MOTIONSTATE;
 
-	//=============================================================================
-	// プレイヤー人数
-	//=============================================================================
-	typedef enum
-	{
-		PLAYER_01= 0,
-		PLAYER_02,
-		PLAYER_03,
-		PLAYER_04,			// 人の最大数
-	} PLAYERNUM;
+	////=============================================================================
+	//// プレイヤー人数
+	////=============================================================================
+	//typedef enum
+	//{
+	//	PLAYER_01= 0,
+	//	PLAYER_02,
+	//	PLAYER_03,
+	//	PLAYER_04,			// 人の最大数
+	//} PLAYERNUM;
 
 	//=============================================================================
 	// プレイヤー種類
@@ -92,7 +77,7 @@ public:
 	CPlayerBase(OBJTYPE type);
 	~CPlayerBase();
 
-	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERNUM PlayerNum);
+	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 
 	void Uninit();
 	void Update();
@@ -101,8 +86,8 @@ public:
 	void PlayerDamage(CPlayerBase *pPlayer);
 	void Damage(CPlayerBase *pPlayer, int nDamage);
 	void MoveLimit(void);
-	void MotionPlayer(int nCnt);
-	void MotionChangePlayer(MOTIONTYPE motionType, int nCnt);
+	void MotionPlayer();
+	void MotionChangePlayer(MOTIONTYPE motionType);
 
 	void SetMove(D3DXVECTOR3 move) { m_move += move; }
 
@@ -116,7 +101,6 @@ public:
 	//bool CollisionModel(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 size);
 
 protected:
-	void PlayerCollision();
 	void PlayerCollisionShape();
 
 	float m_fRadius;
@@ -126,24 +110,18 @@ protected:
 
 	PLAYERTYPE m_TypeChara;
 	PLAYERSTATE m_PlayerState;					//プレイヤーの状態
-	MOTIONSTATE m_MotionState;
 
+	D3DXVECTOR3	m_move;							// 移動量
+	D3DXVECTOR3 m_fDistance;
+	D3DXVECTOR3 m_fDiffrot;
 private:
+	void PlayerCollision();
+
 	static MODELNUM m_PlayerType[PLAYERTYPE_MAX];
-
-
-	PLAYERNUM	m_PlayerNum;					// プレイヤーの人数
+	static char *TextLoad[PLAYERTYPE_MAX];
 
 	int m_PlayerStateCount;
 
-	static char *TextLoad[PLAYERTYPE_MAX];
 
-	CGauge *pLifeGauge;
-
-	D3DXVECTOR3	m_move;							// 移動量
-
-	MODELNUM m_TypeSelect;
-	D3DXVECTOR3 m_fDistance;
-	D3DXVECTOR3 m_fDiffrot;
 };
 #endif

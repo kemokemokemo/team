@@ -39,9 +39,9 @@ public:
 	CPlayer_SWORD(OBJTYPE type);
 	~CPlayer_SWORD();
 
-	static CPlayer_SWORD *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERNUM PlayerNum);
+	static CPlayer_SWORD *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 
-	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERNUM PlayerNum);
+	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 
 	void Uninit(void);
 	void Update(void);

@@ -437,7 +437,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "Tex_kan_eye.jpg";
+    "DATA\\TEX\\boy_face.png";
    }
   }
   Material {

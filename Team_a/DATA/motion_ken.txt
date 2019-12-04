@@ -606,6 +606,10 @@ END_MOTIONSET
 MOTIONSET
 	LOOP = 0		# ループするかどうか[0:ループしない / 1:ループする]
 	NUM_KEY = 5		# キー数
+	ATKSET
+		ATK_IDX = 4
+		ATK_START = 2
+		ATK_END = 3
 
 	KEYSET			# --- << KEY : 0 / 5 >> ---
 		FRAME = 5
@@ -2769,6 +2773,7 @@ END_MOTIONSET
 MOTIONSET
 	LOOP = 0		# ループするかどうか[0:ループしない / 1:ループする]
 	NUM_KEY = 5		# キー数
+	ATK_IDX = 10
 
 	KEYSET			# --- << KEY : 0 / 5 >> ---
 		FRAME = 3

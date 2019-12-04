@@ -47,22 +47,22 @@ CPlayer_Kangaroo::~CPlayer_Kangaroo()
 //=============================================================================
 // ƒ‚ƒfƒ‹‚Ì¶¬
 //=============================================================================
-CPlayer_Kangaroo * CPlayer_Kangaroo::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERNUM PlayerNum)
+CPlayer_Kangaroo * CPlayer_Kangaroo::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	CPlayer_Kangaroo *pPlayer;
 	pPlayer = new CPlayer_Kangaroo(OBJTYPE_PLAYER);
 
-	pPlayer->Init(pos, rot, PlayerNum);
+	pPlayer->Init(pos, rot);
 	return pPlayer;
 }
 
 //=============================================================================
 // ‰Šú‰»ˆ—
 //=============================================================================
-HRESULT CPlayer_Kangaroo::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERNUM PlayerNum)
+HRESULT CPlayer_Kangaroo::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	m_TypeChara = CPlayer_Kangaroo::PLAYERTYPE_KANGAROO;
-	CPlayerBase::Init(pos, rot, PlayerNum);
+	CPlayerBase::Init(pos, rot);
 
 	m_nLife = 5;
 
@@ -84,6 +84,16 @@ void CPlayer_Kangaroo::Uninit(void)
 //=============================================================================
 void CPlayer_Kangaroo::Update(void)
 {
+	CKeybord *pKeyboard = CManager::GetKeybord();
+	MODELNUM model = GetModel();
+
+	if (pKeyboard->GetKeyboardTrigger(DIK_RETURN))
+	{
+		model.motionType = MOTIONTYPE_RUN;
+	}
+
+	SetModel(model);
+
 	CPlayerBase::Update();
 }
 

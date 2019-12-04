@@ -16,6 +16,7 @@
 #include "pad.h"
 #include "gauge.h"
 #include "Scene2D.h"
+#include "Scene3D.h"
 
 //=============================================================================
 // マクロ定義
@@ -47,22 +48,22 @@ CPlayer_SWORD::~CPlayer_SWORD()
 //=============================================================================
 // モデルの生成
 //=============================================================================
-CPlayer_SWORD * CPlayer_SWORD::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERNUM PlayerNum)
+CPlayer_SWORD * CPlayer_SWORD::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	CPlayer_SWORD *pPlayer;
 	pPlayer = new CPlayer_SWORD(OBJTYPE_PLAYER);
 
-	pPlayer->Init(pos, rot, PlayerNum);
+	pPlayer->Init(pos, rot);
 	return pPlayer;
 }
 
 //=============================================================================
 // 初期化処理
 //=============================================================================
-HRESULT CPlayer_SWORD::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERNUM PlayerNum)
+HRESULT CPlayer_SWORD::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	m_TypeChara = CPlayer_SWORD::PLAYERTYPE_SWORD;
-	CPlayerBase::Init(pos, rot, PlayerNum);
+	CPlayerBase::Init(pos, rot);
 
 	m_nLife = 3;
 
@@ -84,6 +85,78 @@ void CPlayer_SWORD::Uninit(void)
 //=============================================================================
 void CPlayer_SWORD::Update(void)
 {
+	CKeybord *pKeyboard = CManager::GetKeybord();
+	MODELNUM model = GetModel();
+
+	if (m_PlayerState != PLAYERSTATE_ATK)
+	{
+		if (pKeyboard->GetKeyboardPress(DIK_LEFTARROW))
+		{//  A キー操作
+			m_move.x += D3DX_PI*-0.5f* PLAYER_SPEED;
+			m_fDiffrot.y = D3DX_PI*0.5f;
+			model.motionType = MOTIONTYPE_RUN;
+			if (pKeyboard->GetKeyboardTrigger(DIK_L))
+			{
+				model.motionType = MOTIONTYPE_DASHATK;
+			}
+		}
+		else if (pKeyboard->GetKeyboardPress(DIK_RIGHTARROW))
+		{//  D キー操作
+			m_move.x += D3DX_PI*0.5f * PLAYER_SPEED;
+			m_fDiffrot.y = D3DX_PI*-0.5f;
+			model.motionType = MOTIONTYPE_RUN;
+			if (pKeyboard->GetKeyboardTrigger(DIK_L))
+			{
+				model.motionType = MOTIONTYPE_DASHATK;
+			}
+		}
+		else if (model.motionType == MOTIONTYPE_RUN)
+		{// 移動をやめた場合
+		 // モーションの切り替え
+			model.motionType = MOTIONTYPE_WAIT;
+		}
+
+		else if (pKeyboard->GetKeyboardPress(DIK_UPARROW))
+		{// W キー操作
+			if (pKeyboard->GetKeyboardTrigger(DIK_L))
+			{
+				model.motionType = MOTIONTYPE_UPATK;
+			}
+		}
+
+		else if (pKeyboard->GetKeyboardPress(DIK_DOWNARROW))
+		{
+			model.motionType = MOTIONTYPE_CROUCHWAIT;
+			if (pKeyboard->GetKeyboardTrigger(DIK_L))
+			{
+				model.motionType = MOTIONTYPE_CROUCHATK;
+			}
+		}
+		else if (model.motionType == MOTIONTYPE_CROUCHWAIT)
+		{// 移動をやめた場合vbn
+		 // モーションの切り替え
+			model.motionType = MOTIONTYPE_WAIT;
+		}
+
+		else if (pKeyboard->GetKeyboardTrigger(DIK_L))
+		{
+			//3段攻撃
+			if (model.motionType == MOTIONTYPE_LIGHT0)
+			{
+				model.motionType = MOTIONTYPE_LIGHT1;
+			}
+			else if (model.motionType == MOTIONTYPE_LIGHT1)
+			{
+				model.motionType = MOTIONTYPE_LIGHT2;
+			}
+			else
+			{
+				model.motionType = MOTIONTYPE_LIGHT0;
+			}
+		}
+	}	
+	SetModel(model);
+
 	CPlayerBase::Update();
 }
 

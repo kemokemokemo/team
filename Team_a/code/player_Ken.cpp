@@ -47,22 +47,22 @@ CPlayer_KEN::~CPlayer_KEN()
 //=============================================================================
 // モデルの生成
 //=============================================================================
-CPlayer_KEN * CPlayer_KEN::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERNUM PlayerNum)
+CPlayer_KEN * CPlayer_KEN::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	CPlayer_KEN *pPlayer;
 	pPlayer = new CPlayer_KEN(OBJTYPE_PLAYER);
 
-	pPlayer->Init(pos, rot, PlayerNum);
+	pPlayer->Init(pos, rot);
 	return pPlayer;
 }
 
 //=============================================================================
 // 初期化処理
 //=============================================================================
-HRESULT CPlayer_KEN::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERNUM PlayerNum)
+HRESULT CPlayer_KEN::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	m_TypeChara = CPlayer_KEN::PLAYERTYPE_KEN;
-	CPlayerBase::Init(pos, rot, PlayerNum);
+	CPlayerBase::Init(pos, rot);
 
 	m_nLife = 3;
 
@@ -84,6 +84,78 @@ void CPlayer_KEN::Uninit(void)
 //=============================================================================
 void CPlayer_KEN::Update(void)
 {
+	CKeybord *pKeyboard = CManager::GetKeybord();
+	MODELNUM model = GetModel();
+
+	if (m_PlayerState != PLAYERSTATE_ATK)
+	{
+		if (pKeyboard->GetKeyboardPress(DIK_A))
+		{//  A キー操作
+			m_move.x += D3DX_PI*-0.5f* PLAYER_SPEED;
+			m_fDiffrot.y = D3DX_PI*0.5f;
+			model.motionType = MOTIONTYPE_RUN;
+			if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+			{
+				model.motionType = MOTIONTYPE_DASHATK;
+			}
+		}
+		else if (pKeyboard->GetKeyboardPress(DIK_D))
+		{//  D キー操作
+			m_move.x += D3DX_PI*0.5f * PLAYER_SPEED;
+			m_fDiffrot.y = D3DX_PI*-0.5f;
+			model.motionType = MOTIONTYPE_RUN;
+			if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+			{
+				model.motionType = MOTIONTYPE_DASHATK;
+			}
+		}
+		else if (model.motionType == MOTIONTYPE_RUN)
+		{// 移動をやめた場合
+		 // モーションの切り替え
+			model.motionType = MOTIONTYPE_WAIT;
+		}
+
+		else if (pKeyboard->GetKeyboardPress(DIK_W))
+		{// W キー操作
+			if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+			{
+				model.motionType = MOTIONTYPE_UPATK;
+			}
+		}
+
+		else if (pKeyboard->GetKeyboardPress(DIK_S))
+		{
+			model.motionType = MOTIONTYPE_CROUCHWAIT;
+			if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+			{
+				model.motionType = MOTIONTYPE_CROUCHATK;
+			}
+		}
+		else if (model.motionType == MOTIONTYPE_CROUCHWAIT)
+		{// 移動をやめた場合vbn
+		 // モーションの切り替え
+			model.motionType = MOTIONTYPE_WAIT;
+		}
+
+		else if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+		{
+			//3段攻撃
+			if (model.motionType == MOTIONTYPE_LIGHT0)
+			{
+				model.motionType = MOTIONTYPE_LIGHT1;
+			}
+			else if (model.motionType == MOTIONTYPE_LIGHT1)
+			{
+				model.motionType = MOTIONTYPE_LIGHT2;
+			}
+			else
+			{
+				model.motionType = MOTIONTYPE_LIGHT0;
+			}
+		}
+	}
+	SetModel(model);
+
 	CPlayerBase::Update();
 }
 

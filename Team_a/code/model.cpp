@@ -102,7 +102,7 @@ HRESULT CModel::Load(void)
 		&m_Unit->NumModel->pMesh);
 
 	m_Unit->NumModel->nType = 0;
-	m_Unit->NumModel->nIdxModelModel = -1;
+	m_Unit->NumModel->nIdxModel = -1;
 	m_Unit->nMaxModel = 1;
 
 	return S_OK;

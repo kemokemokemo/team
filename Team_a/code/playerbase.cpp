@@ -51,28 +51,18 @@ CPlayerBase::~CPlayerBase()
 //=============================================================================
 // 初期化処理
 //=============================================================================
-HRESULT CPlayerBase::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYERNUM PlayerNum)
+HRESULT CPlayerBase::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	BindModel(&m_PlayerType[m_TypeChara]);
+	BindMotion(m_PlayerType[m_TypeChara].aMotionInfo);
 
 	CScene3D::Init();
 
 	CScene3D::SetPos(pos);
 
-	m_PlayerNum = PlayerNum;
-
 	m_PlayerStateCount = 0;
 
-	m_TypeSelect = m_PlayerType[m_TypeChara];
-
 	m_PlayerState = PLAYERSTATE_NORMAL;
-
-	m_TypeSelect.motionType = MOTIONTYPE_WAIT;
-
-	for (int nCntModel = 0; nCntModel < MAX_MODEL; nCntModel++)
-	{
-		m_TypeSelect.NumModel[nCntModel].startpos = m_TypeSelect.NumModel[nCntModel].pos;
-	}
 
 	return S_OK;
 }
@@ -90,40 +80,42 @@ void CPlayerBase::Uninit(void)
 //=============================================================================
 void CPlayerBase::Update(void)
 {
-	switch (m_PlayerNum)
-	{
-	case PLAYER_01:
+
+	//switch (m_PlayerNum)
+	//{
+	//case PLAYER_01:
+	//	PlayerMove();
+	//	// モーションの再生
+		MotionPlayer();
+
+	//	break;
+
+	//case PLAYER_02:
+	//	PlayerMove();
+	//	// モーションの再生
+	//	MotionPlayer(0);
+
+	//	break;
+
+	//case PLAYER_03:
 		PlayerMove();
-		// モーションの再生
-		MotionPlayer(0);
+	//	break;
 
-		break;
+	//case PLAYER_04:
+	//	//PlayerMove();
+	//	break;
+	//}
 
-	case PLAYER_02:
-		PlayerMove();
-		// モーションの再生
-		MotionPlayer(0);
-
-		break;
-
-	case PLAYER_03:
-		//PlayerMove();
-		break;
-
-	case PLAYER_04:
-		//PlayerMove();
-		break;
-	}
-
+	MODELNUM model = GetModel();
 	switch (m_PlayerState)
 	{
 	case PLAYERSTATE_NORMAL:
-		//MotionChangePlayer(MOTIONTYPE_NEUTRAL, 0);
+		MotionChangePlayer(MOTIONTYPE_WAIT);
 	
 		break;
 
 	case PLAYERSTATE_DAMAGE:
-			m_MotionState = MOTIONSTATE_DAMAGE;
+			model.motionType = MOTIONTYPE_DAMAGE;
 			m_PlayerState = PLAYERSTATE_UNDYING;
 
 		break;
@@ -139,25 +131,25 @@ void CPlayerBase::Update(void)
 		break;
 	}
 
-	switch (m_MotionState)
+	switch (model.motionType)
 	{
-	case MOTIONSTATE_WAIT:
+	case MOTIONTYPE_WAIT:
 		m_PlayerState = PLAYERSTATE_NORMAL;
-		MotionChangePlayer(MOTIONTYPE_WAIT, 0);
+		MotionChangePlayer(MOTIONTYPE_WAIT);
 		break;
-	case MOTIONSTATE_RUN:
-		MotionChangePlayer(MOTIONTYPE_RUN, 0);
+	case MOTIONTYPE_RUN:
+		MotionChangePlayer(MOTIONTYPE_RUN);
 		break;
-	case MOTIONSTATE_LIGHT0:
-		MotionChangePlayer(MOTIONTYPE_LIGHT0, 0);
+	case MOTIONTYPE_LIGHT0:
+		MotionChangePlayer(MOTIONTYPE_LIGHT0);
 		break;
-	case MOTIONSTATE_LIGHT1:
-		MotionChangePlayer(MOTIONTYPE_LIGHT1, 0);
+	case MOTIONTYPE_LIGHT1:
+		MotionChangePlayer(MOTIONTYPE_LIGHT1);
 		break;
-	case MOTIONSTATE_LIGHT2:
-		MotionChangePlayer(MOTIONTYPE_LIGHT2, 0);
+	case MOTIONTYPE_LIGHT2:
+		MotionChangePlayer(MOTIONTYPE_LIGHT2);
 		break;
-	case MOTIONSTATE_DASHATK:
+	case MOTIONTYPE_DASHATK:
 		if (m_fDiffrot.y == D3DX_PI*0.5f)
 		{
 			m_move.x -= 0.5f;
@@ -167,29 +159,37 @@ void CPlayerBase::Update(void)
 			m_move.x += 0.5f;
 		}
 		m_PlayerState = PLAYERSTATE_ATK;
-		MotionChangePlayer(MOTIONTYPE_DASHATK, 0);
+		MotionChangePlayer(MOTIONTYPE_DASHATK);
 		break;
-	case MOTIONSTATE_UPATK:
+	case MOTIONTYPE_UPATK:
 		m_PlayerState = PLAYERSTATE_ATK;
-		MotionChangePlayer(MOTIONTYPE_UPATK, 0);
+		MotionChangePlayer(MOTIONTYPE_UPATK);
 		break;
-	case MOTIONSTATE_CROUCHATK:
+	case MOTIONTYPE_CROUCHATK:
 		m_PlayerState = PLAYERSTATE_ATK;
-		MotionChangePlayer(MOTIONTYPE_CROUCHATK, 0);
+		MotionChangePlayer(MOTIONTYPE_CROUCHATK);
 		break;
-	case MOTIONSTATE_CROUCHWAIT:
-		MotionChangePlayer(MOTIONTYPE_CROUCHWAIT, 0);
+	case MOTIONTYPE_CROUCHWAIT:
+		MotionChangePlayer(MOTIONTYPE_CROUCHWAIT);
 		break;
-	case MOTIONSTATE_DAMAGE:
-		MotionChangePlayer(MOTIONTYPE_DAMAGE, 0);
+	case MOTIONTYPE_DAMAGE:
+		MotionChangePlayer(MOTIONTYPE_DAMAGE);
 		break;
-	case MOTIONSTATE_JUMP:
-		MotionChangePlayer(MOTIONTYPE_JUMP, 0);
+	case MOTIONTYPE_JUMP:
+		MotionChangePlayer(MOTIONTYPE_JUMP);
 		break;
 	}
-	this->PlayerCollisionShape();
 
+	if (model.aMotionInfo[model.motionType].nHitIdx != -1 &&
+		model.aMotionInfo[model.motionType].nAtkStar <= model.aMotionInfo[model.motionType].nNumKey && model.aMotionInfo[model.motionType].nAtkEnd >= model.aMotionInfo[model.motionType].nNumKey)
+	{
+		this->PlayerCollision();
+	}
+
+	this->PlayerCollisionShape();
 	MoveLimit();	
+
+	SetModel(model);
 
 	CScene3D::Update();
 }
@@ -232,159 +232,156 @@ void CPlayerBase::PlayerMove(void)
 
 	rot = CScene3D::GetRot();
 
-	pos += m_move;
+	//if (m_PlayerNum == PLAYER_01)
+	//{
+		//if (m_PlayerState != PLAYERSTATE_ATK)
+		//{
+		//	if (pKeyboard->GetKeyboardPress(DIK_A))
+		//	{//  A キー操作
+		//		m_move.x += D3DX_PI*-0.5f* PLAYER_SPEED;
+		//		m_fDiffrot.y = D3DX_PI*0.5f;
+		//		model.motionType = MOTIONTYPE_RUN;
+		//		if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+		//		{
+		//			model.motionType = MOTIONTYPE_DASHATK;
+		//		}
+		//	}
+		//	else if (pKeyboard->GetKeyboardPress(DIK_D))
+		//	{//  D キー操作
+		//		m_move.x += D3DX_PI*0.5f * PLAYER_SPEED;
+		//		m_fDiffrot.y = D3DX_PI*-0.5f;
+		//		model.motionType = MOTIONTYPE_RUN;
+		//		if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+		//		{
+		//			model.motionType = MOTIONTYPE_DASHATK;
+		//		}
+		//	}
+		//	else if (model.motionType == MOTIONTYPE_RUN)
+		//	{// 移動をやめた場合
+		//	 // モーションの切り替え
+		//		model.motionType = MOTIONTYPE_WAIT;
+		//	}
 
-	if (m_PlayerNum == PLAYER_01)
-	{
-		if (m_PlayerState != PLAYERSTATE_ATK)
-		{
-			if (pKeyboard->GetKeyboardPress(DIK_A))
-			{//  A キー操作
-				m_move.x += D3DX_PI*-0.5f* PLAYER_SPEED;
-				m_fDiffrot.y = D3DX_PI*0.5f;
-				m_MotionState = MOTIONSTATE_RUN;
-				if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
-				{
-					m_MotionState = MOTIONSTATE_DASHATK;
-				}
-			}
-			else if (pKeyboard->GetKeyboardPress(DIK_D))
-			{//  D キー操作
-				m_move.x += D3DX_PI*0.5f * PLAYER_SPEED;
-				m_fDiffrot.y = D3DX_PI*-0.5f;
-				m_MotionState = MOTIONSTATE_RUN;
-				if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
-				{
-					m_MotionState = MOTIONSTATE_DASHATK;
-				}
-			}
-			else if (m_MotionState == MOTIONSTATE_RUN)
-			{// 移動をやめた場合
-			 // モーションの切り替え
-				m_MotionState = MOTIONSTATE_WAIT;
-			}
+		//	else if (pKeyboard->GetKeyboardPress(DIK_W))
+		//	{// W キー操作
+		//		if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+		//		{
+		//			model.motionType = MOTIONTYPE_UPATK;
+		//		}
+		//	}
 
-			else if (pKeyboard->GetKeyboardPress(DIK_W))
-			{// W キー操作
-				if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
-				{
-					m_MotionState = MOTIONSTATE_UPATK;
-				}
-			}
+		//	else if (pKeyboard->GetKeyboardPress(DIK_S))
+		//	{
+		//		model.motionType = MOTIONTYPE_CROUCHWAIT;
+		//		if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+		//		{
+		//			model.motionType = MOTIONTYPE_CROUCHATK;
+		//		}
+		//	}
+		//	else if (model.motionType == MOTIONTYPE_CROUCHWAIT)
+		//	{// 移動をやめた場合vbn
+		//	 // モーションの切り替え
+		//		model.motionType = MOTIONTYPE_WAIT;
+		//	}
 
-			else if (pKeyboard->GetKeyboardPress(DIK_S))
-			{
-				m_MotionState = MOTIONSTATE_CROUCHWAIT;
-				if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
-				{
-					m_MotionState = MOTIONSTATE_CROUCHATK;
-				}
-			}
-			else if (m_MotionState == MOTIONSTATE_CROUCHWAIT)
-			{// 移動をやめた場合vbn
-			 // モーションの切り替え
-				m_MotionState = MOTIONSTATE_WAIT;
-			}
-
-			else if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
-			{
-				PlayerCollision();
-				//3段攻撃
-				if (m_MotionState == MOTIONSTATE_LIGHT0)
-				{
-					m_MotionState = MOTIONSTATE_LIGHT1;
-				}
-				else if (m_MotionState == MOTIONSTATE_LIGHT1)
-				{
-					m_MotionState = MOTIONSTATE_LIGHT2;
-				}
-				else
-				{
-					m_MotionState = MOTIONSTATE_LIGHT0;
-				}
-			}
-		}
-	}
+		//	else if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+		//	{
+		//		//3段攻撃
+		//		if (model.motionType == MOTIONTYPE_LIGHT0)
+		//		{
+		//			model.motionType = MOTIONTYPE_LIGHT1;
+		//		}
+		//		else if (model.motionType == MOTIONTYPE_LIGHT1)
+		//		{
+		//			model.motionType = MOTIONTYPE_LIGHT2;
+		//		}
+		//		else
+		//		{
+		//			model.motionType = MOTIONTYPE_LIGHT0;
+		//		}
+		//	}
+		//}
+	//}
 
 
-	if (m_PlayerNum == PLAYER_02)
-	{
-		if (m_PlayerState != PLAYERSTATE_ATK)
-		{
-			if (pKeyboard->GetKeyboardPress(DIK_LEFTARROW))
-			{//  A キー操作
-				m_move.x += D3DX_PI*-0.5f* PLAYER_SPEED;
-				m_fDiffrot.y = D3DX_PI*0.5f;
-				m_MotionState = MOTIONSTATE_RUN;
-				if (pKeyboard->GetKeyboardTrigger(DIK_L))
-				{
-					m_MotionState = MOTIONSTATE_DASHATK;
-				}
-			}
-			else if (pKeyboard->GetKeyboardPress(DIK_RIGHTARROW))
-			{//  D キー操作
-				m_move.x += D3DX_PI*0.5f * PLAYER_SPEED;
-				m_fDiffrot.y = D3DX_PI*-0.5f;
-				m_MotionState = MOTIONSTATE_RUN;
-				if (pKeyboard->GetKeyboardTrigger(DIK_L))
-				{
-					m_MotionState = MOTIONSTATE_DASHATK;
-				}
-			}
-			else if (m_MotionState == MOTIONSTATE_RUN)
-			{// 移動をやめた場合
-			 // モーションの切り替え
-				m_MotionState = MOTIONSTATE_WAIT;
-			}
+	//if (m_PlayerNum == PLAYER_02)
+	//{
+		//if (m_PlayerState != PLAYERSTATE_ATK)
+		//{
+		//	if (pKeyboard->GetKeyboardPress(DIK_LEFTARROW))
+		//	{//  A キー操作
+		//		m_move.x += D3DX_PI*-0.5f* PLAYER_SPEED;
+		//		m_fDiffrot.y = D3DX_PI*0.5f;
+		//		model.motionType = MOTIONTYPE_RUN;
+		//		if (pKeyboard->GetKeyboardTrigger(DIK_L))
+		//		{
+		//			model.motionType = MOTIONTYPE_DASHATK;
+		//		}
+		//	}
+		//	else if (pKeyboard->GetKeyboardPress(DIK_RIGHTARROW))
+		//	{//  D キー操作
+		//		m_move.x += D3DX_PI*0.5f * PLAYER_SPEED;
+		//		m_fDiffrot.y = D3DX_PI*-0.5f;
+		//		model.motionType = MOTIONTYPE_RUN;
+		//		if (pKeyboard->GetKeyboardTrigger(DIK_L))
+		//		{
+		//			model.motionType = MOTIONTYPE_DASHATK;
+		//		}
+		//	}
+		//	else if (model.motionType == MOTIONTYPE_RUN)
+		//	{// 移動をやめた場合
+		//	 // モーションの切り替え
+		//		model.motionType = MOTIONTYPE_WAIT;
+		//	}
 
-			else if (pKeyboard->GetKeyboardPress(DIK_UPARROW))
-			{// W キー操作
-				if (pKeyboard->GetKeyboardTrigger(DIK_L))
-				{
-					m_MotionState = MOTIONSTATE_UPATK;
-				}
-			}
+		//	else if (pKeyboard->GetKeyboardPress(DIK_UPARROW))
+		//	{// W キー操作
+		//		if (pKeyboard->GetKeyboardTrigger(DIK_L))
+		//		{
+		//			model.motionType = MOTIONTYPE_UPATK;
+		//		}
+		//	}
 
-			else if (pKeyboard->GetKeyboardPress(DIK_DOWNARROW))
-			{
-				m_MotionState = MOTIONSTATE_CROUCHWAIT;
-				if (pKeyboard->GetKeyboardTrigger(DIK_L))
-				{
-					m_MotionState = MOTIONSTATE_CROUCHATK;
-				}
-			}
-			else if (m_MotionState == MOTIONSTATE_CROUCHWAIT)
-			{// 移動をやめた場合vbn
-			 // モーションの切り替え
-				m_MotionState = MOTIONSTATE_WAIT;
-			}
+		//	else if (pKeyboard->GetKeyboardPress(DIK_DOWNARROW))
+		//	{
+		//		model.motionType = MOTIONTYPE_CROUCHWAIT;
+		//		if (pKeyboard->GetKeyboardTrigger(DIK_L))
+		//		{
+		//			model.motionType = MOTIONTYPE_CROUCHATK;
+		//		}
+		//	}
+		//	else if (model.motionType == MOTIONTYPE_CROUCHWAIT)
+		//	{// 移動をやめた場合vbn
+		//	 // モーションの切り替え
+		//		model.motionType = MOTIONTYPE_WAIT;
+		//	}
 
-			else if (pKeyboard->GetKeyboardTrigger(DIK_L))
-			{
-				PlayerCollision();
-				//3段攻撃
-				if (m_MotionState == MOTIONSTATE_LIGHT0)
-				{
-					m_MotionState = MOTIONSTATE_LIGHT1;
-				}
-				else if (m_MotionState == MOTIONSTATE_LIGHT1)
-				{
-					m_MotionState = MOTIONSTATE_LIGHT2;
-				}
-				else
-				{
-					m_MotionState = MOTIONSTATE_LIGHT0;
-				}
-			}
-		}
-	}
-	if (m_PlayerNum == PLAYER_03)
-	{
-		if (pKeyboard->GetKeyboardTrigger(DIK_RETURN))
-		{
-			m_MotionState = MOTIONSTATE_RUN;
-		}
-	}
+		//	else if (pKeyboard->GetKeyboardTrigger(DIK_L))
+		//	{
+		//		//3段攻撃
+		//		if (model.motionType == MOTIONTYPE_LIGHT0)
+		//		{
+		//			model.motionType = MOTIONTYPE_LIGHT1;
+		//		}
+		//		else if (model.motionType == MOTIONTYPE_LIGHT1)
+		//		{
+		//			model.motionType = MOTIONTYPE_LIGHT2;
+		//		}
+		//		else
+		//		{
+		//			model.motionType = MOTIONTYPE_LIGHT0;
+		//		}
+		//	}
+		//}
+	//}
+	//if (m_PlayerNum == PLAYER_03)
+	//{
+	//	if (pKeyboard->GetKeyboardTrigger(DIK_RETURN))
+	//	{
+	//		model.motionType = MOTIONTYPE_RUN;
+	//	}
+	//}
+
 	// 差分
 	if (m_fDistance.y = m_fDiffrot.y - rot.y)
 	{
@@ -414,8 +411,10 @@ void CPlayerBase::PlayerMove(void)
 	}
 
 	//慣性処理
-	m_move.x += (0 - m_move.x) * 1 / 5;
-	m_move.y += (0 - m_move.y) * 1 / 5;
+	m_move.x += (0 - m_move.x) * 1 / 4;
+	m_move.y += (0 - m_move.y) * 1 / 4;
+
+	pos += m_move;
 
 	CScene3D::SetPos(pos);
 	CScene3D::SetRot(rot);
@@ -426,24 +425,24 @@ void CPlayerBase::PlayerMove(void)
 //=====================================================================================================
 void CPlayerBase::PlayerDamage(CPlayerBase *pPlayer)
 {
-	switch (m_PlayerNum)
-	{
-	case PLAYER_01:
+	//switch (m_PlayerNum)
+	//{
+	//case PLAYER_01:
 		Damage(pPlayer, 1);
-		break;
+	//	break;
 
-	case PLAYER_02:
-		Damage(pPlayer, 1);
-		break;
+	//case PLAYER_02:
+	//	Damage(pPlayer, 1);
+	//	break;
 
-	case PLAYER_03:
-		//PlayerMove();
-		break;
+	//case PLAYER_03:
+	//	//PlayerMove();
+	//	break;
 
-	case PLAYER_04:
-		//PlayerMove();
-		break;
-	}
+	//case PLAYER_04:
+	//	//PlayerMove();
+	//	break;
+	//}
 }
 
 //====================================================================================================
@@ -479,7 +478,22 @@ void CPlayerBase::PlayerCollision()
 
 		CPlayerBase *pPlayer = (CPlayerBase*)pScene;
 
-		float fLength = D3DXVec3LengthSq(&(pPlayer->GetPos() - GetPos()));
+		D3DXVECTOR3 pos = pPlayer->GetPos();  
+		int nCnt = pPlayer->GetModel().aMotionInfo[pPlayer->GetModel().motionType].nHitIdx;
+
+		while (1)
+		{
+			if (nCnt == -1)
+				break;
+
+			D3DXVECTOR3 modelpos = pPlayer->GetModel().NumModel[nCnt].pos;
+
+			D3DXVec3Add(&pos, &pos, &modelpos);
+
+			nCnt = pPlayer->GetModel().NumModel[nCnt].nIdxModel;
+		}
+
+		float fLength = D3DXVec3LengthSq(&(pos - GetPos()));
 		float fRadius = m_fRadius + pPlayer->m_fAttack;
 
 		//円の当たり判定
@@ -539,13 +553,15 @@ void CPlayerBase::PlayerCollisionShape()
 //=============================================================================
 // モーションの再生
 //=============================================================================
-void CPlayerBase::MotionPlayer(int nCnt)
+void CPlayerBase::MotionPlayer()
 {
 	D3DXVECTOR3 Distance;
+	MODELNUM model = GetModel();
 
-	MOTION_INFO* pInfo = &m_TypeSelect.aMotionInfo[m_TypeSelect.motionType];
+	MOTION_INFO* pInfo = &model.aMotionInfo[model.motionType];
+
 	// モーション
-	for (int nCntModel = 0; nCntModel < m_TypeSelect.nMaxModel; nCntModel++)
+	for (int nCntModel = 0; nCntModel < model.nMaxModel; nCntModel++)
 	{
 		KEY *pKeyInfo, *pNextKey;
 
@@ -563,7 +579,7 @@ void CPlayerBase::MotionPlayer(int nCnt)
 		}
 
 		// パーツの位置設定
-		m_TypeSelect.NumModel[nCntModel].pos = m_TypeSelect.NumModel[nCntModel].startpos + pKeyInfo->pos + (pNextKey->pos - pKeyInfo->pos)*
+		model.NumModel[nCntModel].pos = model.NumModel[nCntModel].startpos + pKeyInfo->pos + (pNextKey->pos - pKeyInfo->pos)*
 			(float)pInfo->nCntFrame / (float)pInfo->aKeyInfo[pInfo->nNumKey].nNumKyeFrame;
 
 		Distance = pNextKey->rot - pKeyInfo->rot;
@@ -585,11 +601,10 @@ void CPlayerBase::MotionPlayer(int nCnt)
 			Distance.x += D3DX_PI * 2;
 		}
 		// パーツの向き設定
-		m_TypeSelect.NumModel[nCntModel].rot = pKeyInfo->rot + Distance*
+		model.NumModel[nCntModel].rot = pKeyInfo->rot + Distance*
 			(float)pInfo->nCntFrame / (float)pInfo->aKeyInfo[pInfo->nNumKey].nNumKyeFrame;
-
-
 	}
+
 	pInfo->nCntFrame++;
 
 	if (pInfo->nCntFrame == pInfo->aKeyInfo[pInfo->nNumKey].nNumKyeFrame)
@@ -600,34 +615,38 @@ void CPlayerBase::MotionPlayer(int nCnt)
 
 	if (!pInfo->bLoop && pInfo->nNumKey + 1 == pInfo->nMaxKey)
 	{// モーションがループしない場合
-		if (m_PlayerType[nCnt].motionType != MOTIONTYPE_JUMP)
+		if (model.motionType != MOTIONTYPE_JUMP)
 		{// ジャンプ以外
 			pInfo->nNumKey = 0;
 			pInfo->nCntFrame = 0;
 
-			m_MotionState = MOTIONSTATE_WAIT;
-			
+			model.motionType = MOTIONTYPE_WAIT;
 		}
 	}
-	else if (pInfo->nNumKey == pInfo->nMaxKey && m_TypeSelect.motionType != MOTIONTYPE_JUMP)
+	else if (pInfo->nNumKey == pInfo->nMaxKey && model.motionType != MOTIONTYPE_JUMP)
 	{// モーションが終了した場合
 		pInfo->nNumKey = 0;
 	}
 
-	SetPosParts(&m_TypeSelect);
+	SetModel(model);
 }
 
 //=============================================================================
 // モーションの切り替え
 //=============================================================================
-void CPlayerBase::MotionChangePlayer(MOTIONTYPE motionType, int nCnt)
+void CPlayerBase::MotionChangePlayer(MOTIONTYPE motionType)
 {
-	if (m_TypeSelect.motionType != motionType)
+	MODELNUM model = GetModel();
+
+	if (model.motionType != motionType)
 	{
-		m_TypeSelect.aMotionInfo[m_TypeSelect.motionType].nNumKey = 0;
-		m_TypeSelect.aMotionInfo[m_TypeSelect.motionType].nCntFrame = 0;
+		model.aMotionInfo[model.motionType].nNumKey = 0;
+		model.aMotionInfo[model.motionType].nCntFrame = 0;
+
+		model.motionType = motionType;
+
+		SetModel(model);
 	}
-	m_TypeSelect.motionType = motionType;
 }
 
 //========================================================================================================
@@ -688,11 +707,13 @@ HRESULT CPlayerBase::Load(void)
 				m_PlayerType[nCnt].NumModel[nCount].nType = std::stoi(CScene3D::WordLoad(&File, sWord));
 
 				sWord = { "PARENT" };
-				m_PlayerType[nCnt].NumModel[nCount].nIdxModelModel = std::stoi(CScene3D::WordLoad(&File, sWord));
+				m_PlayerType[nCnt].NumModel[nCount].nIdxModel = std::stoi(CScene3D::WordLoad(&File, sWord));
 
 				sWord = { "POS" };
 				sLine = CScene3D::WordLoad(&File, sWord);
 				Vector3Load(sLine, &m_PlayerType[nCnt].NumModel[nCount].pos);
+
+				m_PlayerType[nCnt].NumModel[nCount].startpos = m_PlayerType[nCnt].NumModel[nCount].pos;
 
 				sWord = { "ROT" };
 				sLine = CScene3D::WordLoad(&File, sWord);
@@ -744,11 +765,33 @@ HRESULT CPlayerBase::MotionLoad(std::ifstream *file, int nCnt)
 			sWord = { "LOOP" };
 			nLoop = std::stoi(CScene3D::WordLoad(file, sWord));
 			// 1の場合ループする
-			pMotion->bLoop = nLoop == 1 ? true : false;
+			pMotion->bLoop = (nLoop == 1) ? true : false;
 
 			//キーの最大数
 			sWord = { "NUM_KEY" };
 			pMotion->nMaxKey = std::stoi(CScene3D::WordLoad(file, sWord));
+
+			sWord = { "ATKSET" };
+			if (CScene3D::WordLoad(file, sWord, 1) == sWord)
+			{
+				// 攻撃するときの部位
+				sWord = { "ATK_IDX" };
+				pMotion->nHitIdx = std::stoi(CScene3D::WordLoad(file, sWord));
+
+				// 攻撃するときのキー(最初)
+				sWord = { "ATK_START" };
+				pMotion->nAtkStar = std::stoi(CScene3D::WordLoad(file, sWord));
+
+				// 攻撃するときのキー(最後)
+				sWord = { "ATK_END" };
+				pMotion->nAtkEnd = std::stoi(CScene3D::WordLoad(file, sWord));
+			}
+			else
+			{
+				pMotion->nHitIdx = -1;
+				pMotion->nAtkStar = 0;
+				pMotion->nAtkEnd = 0;
+			}
 
 			for (int nCount = 0; nCount < pMotion->nMaxKey; nCount++)
 			{
