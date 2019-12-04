@@ -52,8 +52,10 @@ public:
 	void Update(void);
 	void Draw(void);
 
+
 	static HRESULT Load(void);
 	static void Unload(void);
+	static bool CollisionModel(D3DXVECTOR3 * pPos, D3DXVECTOR3 * pPosOld, D3DXVECTOR3 size);
 	//void SetModel(D3DXVECTOR3 pos, D3DXVECTOR3 rot, MODELTYPE type);
 	//bool CollisionModel(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 size);
 

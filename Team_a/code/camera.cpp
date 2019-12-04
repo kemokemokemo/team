@@ -57,7 +57,7 @@ CCamera * CCamera::Create()
 void CCamera::Init(void)
 {
 
-	m_Camera.posV = D3DXVECTOR3(000.0f, 200.0f, -300.0f);
+	m_Camera.posV = D3DXVECTOR3(0.0f, 100.0f, -800.0f);
 	m_Camera.posVDest = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_Camera.posR = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_Camera.posRDest = D3DXVECTOR3(0.0f, 0.0f, 0.0f);

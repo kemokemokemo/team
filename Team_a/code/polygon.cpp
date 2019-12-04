@@ -48,7 +48,7 @@ CPolygon * CPolygon::Create()
 //=============================================================================
 HRESULT CPolygon::Init(void)
 {
-	CScene3D::Init();
+	CScene3D::InitPolygon();
 
 	return S_OK;
 }
@@ -74,6 +74,6 @@ void CPolygon::Update(void)
 //=============================================================================
 void CPolygon::Draw(void)
 {
-	CScene3D::Draw();
+	CScene3D::DrawPolygon();
 }
 

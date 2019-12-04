@@ -45,6 +45,8 @@ public:
 		D3DXVECTOR3 startpos;							// ポリゴンの初期位置(オフセット値)
 		D3DXVECTOR3 pos;								// ポリゴンの位置
 		D3DXVECTOR3 rot;								// ポリゴンの向き
+		D3DXVECTOR3 vtxMin;							//最小値
+		D3DXVECTOR3 vtxMax;							//最大値 
 		int nIdxModel;
 		int nType;
 
@@ -106,6 +108,9 @@ public:
 	void Update(void);
 	void Draw(void);
 
+	HRESULT InitPolygon(void);
+	void DrawPolygon(void);
+
 	void Textureload(LPDIRECT3DDEVICE9 pDevice);
 
 	bool ShapeCapsuleCollision(D3DXVECTOR3 *pPosStart, D3DXVECTOR3 *pPosEnd, float Radius, D3DXVECTOR3 *pPos);
@@ -113,13 +118,17 @@ public:
 	void SetPos(D3DXVECTOR3 pos);
 	void SetRot(D3DXVECTOR3 rot);
 	void SetScale(D3DXVECTOR3 scale) { m_scale = scale; }
-
+	D3DXVECTOR3 SetvtxMin(D3DXVECTOR3 vtxMin) { return m_vtxMin = vtxMin; }
+	D3DXVECTOR3 SetvtxMax(D3DXVECTOR3 vtxMax) { return m_vtxMax = vtxMax; }
+	void SetHight(float Hight);
 	void SetLoad(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxModel, int nType);
 
 
 	D3DXVECTOR3 GetPos();
 	D3DXVECTOR3 GetRot();
 	D3DXVECTOR3 GetScale() { return m_scale; }
+	D3DXVECTOR3 GetvtxMin() { return m_vtxMin; }
+	D3DXVECTOR3 GetvtxMax() { return m_vtxMax; }
 
 	struct MODELNUM
 	{
@@ -154,9 +163,14 @@ private:
 	D3DXVECTOR3	m_move;						// 移動量
 	D3DXMATRIX  m_mtxWorld;					// ワールドマトリックス
 
+	D3DXVECTOR3	m_vtxMin;				//最小値
+	D3DXVECTOR3	m_vtxMax;				//最大値 
 
-	D3DXVECTOR3		m_vtxMin;				//最小値
-	D3DXVECTOR3		m_vtxMax;				//最大値 
+											//ポリゴン用
+	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuffScene;
+	D3DXMATRIX m_mtxWorldPolygon;
+	D3DXVECTOR3 m_rotPolygon;
+	D3DXVECTOR3 m_PosPolygon;
 };
 
 //====================================================================================================

@@ -98,8 +98,6 @@ public:
 	static HRESULT MotionLoad(std::ifstream *file, int nCnt);
 	static void Unload();
 
-	//bool CollisionModel(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 size);
-
 protected:
 	void PlayerCollisionShape();
 
@@ -111,6 +109,8 @@ protected:
 	PLAYERTYPE m_TypeChara;
 	PLAYERSTATE m_PlayerState;					//ÉvÉåÉCÉÑÅ[ÇÃèÛë‘
 
+	D3DXVECTOR3 m_posOld;
+	D3DXVECTOR3 m_pos;
 	D3DXVECTOR3	m_move;							// à⁄ìÆó 
 	D3DXVECTOR3 m_fDistance;
 	D3DXVECTOR3 m_fDiffrot;
@@ -121,7 +121,7 @@ private:
 	static char *TextLoad[PLAYERTYPE_MAX];
 
 	int m_PlayerStateCount;
-
+	bool bJunp;
 
 };
 #endif

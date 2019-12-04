@@ -48,5 +48,6 @@ public:
 	void Draw(void);
 
 private:
+	bool bJunp;
 };
 #endif

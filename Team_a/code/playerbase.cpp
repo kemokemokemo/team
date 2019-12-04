@@ -16,6 +16,7 @@
 #include "pad.h"
 #include "gauge.h"
 #include "Scene2D.h"
+#include "model.h"
 
 //=============================================================================
 // É}ÉNÉçíËã`
@@ -58,9 +59,15 @@ HRESULT CPlayerBase::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 
 	CScene3D::Init();
 
+	m_posOld = pos;
+
+	m_pos = pos;
+
 	CScene3D::SetPos(pos);
 
 	m_PlayerStateCount = 0;
+
+	bJunp = false;
 
 	m_PlayerState = PLAYERSTATE_NORMAL;
 
@@ -80,7 +87,23 @@ void CPlayerBase::Uninit(void)
 //=============================================================================
 void CPlayerBase::Update(void)
 {
+	m_posOld = m_pos;
 
+	m_pos = CScene3D::GetPos();
+
+	D3DXVECTOR3 size = CScene3D::GetScale();
+
+	if ((CModel::CollisionModel(&m_pos, &m_posOld, size)) == true)
+	{
+		if (bJunp == true)
+		{
+			bJunp = false;
+		}
+		else
+		{
+			CScene3D::SetHight(m_pos.y);
+		}
+	}
 	//switch (m_PlayerNum)
 	//{
 	//case PLAYER_01:
@@ -187,6 +210,7 @@ void CPlayerBase::Update(void)
 	}
 
 	this->PlayerCollisionShape();
+
 	MoveLimit();	
 
 	SetModel(model);
@@ -211,10 +235,6 @@ void CPlayerBase::MoveLimit(void)
 
 	m_move.y--;
 
-	if (pos.y <= 0)
-	{
-		pos.y = 0;
-	}
 	CScene3D::SetPos(pos);
 }
 
@@ -381,6 +401,12 @@ void CPlayerBase::PlayerMove(void)
 	//		model.motionType = MOTIONTYPE_RUN;
 	//	}
 	//}
+
+	if (pKeyboard->GetKeyboardTrigger(DIK_J))
+	{
+		bJunp = true;
+		m_move.y += 30.0f;
+	}
 
 	// ç∑ï™
 	if (m_fDistance.y = m_fDiffrot.y - rot.y)

@@ -14,7 +14,7 @@
 //====================================================================================================
 // プロトタイプ宣言
 //====================================================================================================
-#define POLTGON0_TEX "DATA/TEX/IMG_2227.JPG"				//読み込むテクスチャファイル名
+#define POLTGON0_TEX "DATA/TEX/souge.jpg"				//読み込むテクスチャファイル名
 
 //====================================================================================================
 // メンバ変数初期化
@@ -71,8 +71,13 @@ HRESULT CScene3D::Init(void)
 			D3DXVECTOR3 vtx = *(D3DXVECTOR3*)pVertexBuffer;
 
 			// 全ての頂点情報を比較して最大値・最小値を抜き出す
-			D3DXVec3Minimize(&m_vtxMin, &vtx, &m_vtxMin);
-			D3DXVec3Maximize(&m_vtxMax, &vtx, &m_vtxMax);
+			D3DXVec3Minimize(&m_Model.NumModel[nCntModel].vtxMin, &vtx, &m_Model.NumModel[nCntModel].vtxMin);
+			D3DXVec3Maximize(&m_Model.NumModel[nCntModel].vtxMax, &vtx, &m_Model.NumModel[nCntModel].vtxMax);
+
+			m_vtxMin = m_Model.NumModel[nCntModel].vtxMin; //最小値
+			m_vtxMax = m_Model.NumModel[nCntModel].vtxMax; //最大値 
+
+			m_scale = (m_Model.NumModel[nCntModel].vtxMax - m_Model.NumModel[nCntModel].vtxMin);
 
 			pVertexBuffer += sizeFVF;//	サイズ分ポインタを進める
 		}
@@ -177,6 +182,94 @@ void CScene3D::Draw(void)
 		// マテリアルをデフォルトに戻す
 		pDevice->SetMaterial(&matDef);
 	}
+}
+//=============================================================================
+// 初期化処理
+//=============================================================================
+HRESULT CScene3D::InitPolygon(void)
+{
+	CRenderer *pRenderer = CManager::GetRenderer();
+	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
+
+	VERTEX_3D *pVtx;
+
+	D3DXCreateTextureFromFile(
+		pDevice,
+		POLTGON0_TEX,
+		&m_pTexturePolygon);
+
+	// オブジェクトの頂点バッファを生成
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * 4,
+		D3DUSAGE_WRITEONLY,
+		FVF_VERTEX_3D,
+		D3DPOOL_MANAGED,
+		&m_pVtxBuffScene,
+		NULL);
+
+	// 頂点データの範囲をロックし、頂点バッファへのポインタを取得
+	m_pVtxBuffScene->Lock(0, 0, (void**)&pVtx, 0);
+
+	pVtx[0].pos = m_pos + D3DXVECTOR3(-800.0f, 800.0f, 150.0f);
+	pVtx[1].pos = m_pos + D3DXVECTOR3(800.0f, 800.0f, 150.0f);
+	pVtx[2].pos = m_pos + D3DXVECTOR3(-800.0f, -800.0f, 150.0f);
+	pVtx[3].pos = m_pos + D3DXVECTOR3(800.0f, -800.0f, 150.0f);
+
+	pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	pVtx[1].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	pVtx[2].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	pVtx[3].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+
+	pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+
+	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
+	pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
+	pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+
+	// 頂点データをアンロックする
+	m_pVtxBuffScene->Unlock();
+
+
+	return S_OK;
+}
+//========================================================================================================
+// 描画処理
+//========================================================================================================
+void CScene3D::DrawPolygon(void)
+{
+	CRenderer *pRenderer = CManager::GetRenderer();
+	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
+
+	D3DXMATRIX mtxRot, mtxTrans;				//計算用マトリックス
+
+												// ワールドマトリックスの初期化
+	D3DXMatrixIdentity(&m_mtxWorldPolygon);
+
+	// 回転を反映
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rotPolygon.y, m_rotPolygon.x, m_rotPolygon.z);
+	D3DXMatrixMultiply(&m_mtxWorldPolygon, &m_mtxWorldPolygon, &mtxRot);
+
+	// 位置を反映
+	D3DXMatrixTranslation(&mtxTrans, m_PosPolygon.x, m_PosPolygon.y, m_PosPolygon.z);
+	D3DXMatrixMultiply(&m_mtxWorldPolygon, &m_mtxWorldPolygon, &mtxTrans);
+
+	// ワールドマトリックスの設定
+	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorldPolygon);
+
+	// 頂点バッファをデータストリームに設定
+	pDevice->SetStreamSource(0, m_pVtxBuffScene, 0, sizeof(VERTEX_3D));
+
+	//頂点フォーマットの設定
+	pDevice->SetFVF(FVF_VERTEX_3D);
+
+	// テクスチャの設定
+	pDevice->SetTexture(0, m_pTexturePolygon);
+
+	// ポリゴンの描画
+	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 4);//D3DPT_TRIANGLESTRIPは反時計回りにする
 }
 
 //=============================================================================
@@ -382,6 +475,13 @@ void CScene3D::SetLoad(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxModel, int nTyp
 	}
 }
 
+//====================================================================================================
+// 高さのセット
+//====================================================================================================
+void CScene3D::SetHight(float Hight)
+{
+	m_pos.y = Hight;
+}
 //====================================================================================================
 // デストラクタ
 //====================================================================================================
