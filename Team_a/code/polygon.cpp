@@ -20,7 +20,7 @@
 //=============================================================================
 // コンストラクタ
 //=============================================================================
-CPolygon::CPolygon(OBJTYPE type) : CScene3D(type)
+CPolygon::CPolygon(OBJTYPE type) : CPolygonBase(type)
 {
 }
 
@@ -48,7 +48,7 @@ CPolygon * CPolygon::Create()
 //=============================================================================
 HRESULT CPolygon::Init(void)
 {
-	CScene3D::InitPolygon();
+	CPolygonBase::Init();
 
 	return S_OK;
 }
@@ -58,7 +58,7 @@ HRESULT CPolygon::Init(void)
 //=============================================================================
 void CPolygon::Uninit(void)
 {
-	CScene3D::Uninit();
+	CPolygonBase::Uninit();
 }
 
 //=============================================================================
@@ -66,7 +66,7 @@ void CPolygon::Uninit(void)
 //=============================================================================
 void CPolygon::Update(void)
 {
-	CScene3D::Update();
+	CPolygonBase::Update();
 }
 
 //=============================================================================
@@ -74,6 +74,6 @@ void CPolygon::Update(void)
 //=============================================================================
 void CPolygon::Draw(void)
 {
-	CScene3D::DrawPolygon();
+	CPolygonBase::Draw();
 }
 

@@ -22,6 +22,7 @@
 // マクロ定義
 //=============================================================================
 #define PLAYER_SPEED	(1.0f)						//プレイヤーの速さ
+#define PLAYER__BLOWAWAY	(2.0f)					//プレイヤーの吹っ飛び
 #define MODELFILE1		"DATA/motion_ken.txt"		// 読み込むモデル
 #define MODELFILE2		"DATA/motion_Kangaroo.txt"	// 読み込むモデル
 #define MODELFILE3		"DATA/motion_sword.txt"	// 読み込むモデル
@@ -30,6 +31,7 @@
 // メンバ変数初期化
 //=============================================================================
 CScene3D::MODELNUM CPlayerBase::m_PlayerType[PLAYERTYPE_MAX] = {};
+CPlayerBase::MOTION_INFO CPlayerBase::aMotionInfo[PLAYERTYPE_MAX][CPlayerBase::MOTIONTYPE_MAX] = {};
 char *CPlayerBase::TextLoad[PLAYERTYPE_MAX];
 
 //=============================================================================
@@ -55,7 +57,7 @@ CPlayerBase::~CPlayerBase()
 HRESULT CPlayerBase::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	BindModel(&m_PlayerType[m_TypeChara]);
-	BindMotion(m_PlayerType[m_TypeChara].aMotionInfo);
+	//BindMotion(m_PlayerType[m_TypeChara].aMotionInfo);
 
 	CScene3D::Init();
 
@@ -67,10 +69,16 @@ HRESULT CPlayerBase::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 
 	m_PlayerStateCount = 0;
 
+	MotionType = MOTIONTYPE_WAIT;					// 現在のモーション
+
 	bJunp = false;
 
 	m_PlayerState = PLAYERSTATE_NORMAL;
 
+	for (int nCnt = 0; nCnt < MOTIONTYPE_MAX; nCnt++)
+	{
+		MotionInfo[nCnt] = aMotionInfo[m_TypeChara][nCnt];
+	}
 	return S_OK;
 }
 
@@ -104,42 +112,24 @@ void CPlayerBase::Update(void)
 			CScene3D::SetHight(m_pos.y);
 		}
 	}
-	//switch (m_PlayerNum)
-	//{
-	//case PLAYER_01:
-	//	PlayerMove();
-	//	// モーションの再生
-		MotionPlayer();
 
-	//	break;
+	//モーションの再生
+	MotionPlayer();
 
-	//case PLAYER_02:
-	//	PlayerMove();
-	//	// モーションの再生
-	//	MotionPlayer(0);
+	PlayerMove();
 
-	//	break;
-
-	//case PLAYER_03:
-		PlayerMove();
-	//	break;
-
-	//case PLAYER_04:
-	//	//PlayerMove();
-	//	break;
-	//}
 
 	MODELNUM model = GetModel();
 	switch (m_PlayerState)
 	{
 	case PLAYERSTATE_NORMAL:
-		MotionChangePlayer(MOTIONTYPE_WAIT);
-	
+		//MotionChangePlayer(MOTIONTYPE_WAIT);
+
 		break;
 
 	case PLAYERSTATE_DAMAGE:
-			model.motionType = MOTIONTYPE_DAMAGE;
-			m_PlayerState = PLAYERSTATE_UNDYING;
+		MotionChangePlayer(MOTIONTYPE_DAMAGE);
+		m_PlayerState = PLAYERSTATE_UNDYING;
 
 		break;
 	case PLAYERSTATE_UNDYING:
@@ -150,27 +140,27 @@ void CPlayerBase::Update(void)
 		}
 		break;
 	case PLAYERSTATE_RANNING:
-		//MotionChangePlayer(MOTIONTYPE_RUNNING, 0);
+		//MotionChangePlayer(MOTIONTYPE_RUNNING);
 		break;
 	}
 
-	switch (model.motionType)
+	switch (MotionType)
 	{
 	case MOTIONTYPE_WAIT:
 		m_PlayerState = PLAYERSTATE_NORMAL;
-		MotionChangePlayer(MOTIONTYPE_WAIT);
+		//MotionChangePlayer(MOTIONTYPE_WAIT);
 		break;
 	case MOTIONTYPE_RUN:
-		MotionChangePlayer(MOTIONTYPE_RUN);
+		//MotionChangePlayer(MOTIONTYPE_RUN);
 		break;
 	case MOTIONTYPE_LIGHT0:
-		MotionChangePlayer(MOTIONTYPE_LIGHT0);
+		//MotionChangePlayer(MOTIONTYPE_LIGHT0);
 		break;
 	case MOTIONTYPE_LIGHT1:
-		MotionChangePlayer(MOTIONTYPE_LIGHT1);
+		//MotionChangePlayer(MOTIONTYPE_LIGHT1);
 		break;
 	case MOTIONTYPE_LIGHT2:
-		MotionChangePlayer(MOTIONTYPE_LIGHT2);
+		//MotionChangePlayer(MOTIONTYPE_LIGHT2);
 		break;
 	case MOTIONTYPE_DASHATK:
 		if (m_fDiffrot.y == D3DX_PI*0.5f)
@@ -182,36 +172,36 @@ void CPlayerBase::Update(void)
 			m_move.x += 0.5f;
 		}
 		m_PlayerState = PLAYERSTATE_ATK;
-		MotionChangePlayer(MOTIONTYPE_DASHATK);
+		//MotionChangePlayer(MOTIONTYPE_DASHATK);
 		break;
 	case MOTIONTYPE_UPATK:
 		m_PlayerState = PLAYERSTATE_ATK;
-		MotionChangePlayer(MOTIONTYPE_UPATK);
+		//MotionChangePlayer(MOTIONTYPE_UPATK);
 		break;
 	case MOTIONTYPE_CROUCHATK:
 		m_PlayerState = PLAYERSTATE_ATK;
-		MotionChangePlayer(MOTIONTYPE_CROUCHATK);
+		//MotionChangePlayer(MOTIONTYPE_CROUCHATK);
 		break;
 	case MOTIONTYPE_CROUCHWAIT:
-		MotionChangePlayer(MOTIONTYPE_CROUCHWAIT);
+		//MotionChangePlayer(MOTIONTYPE_CROUCHWAIT);
 		break;
 	case MOTIONTYPE_DAMAGE:
-		MotionChangePlayer(MOTIONTYPE_DAMAGE);
+		//MotionChangePlayer(MOTIONTYPE_DAMAGE);
 		break;
 	case MOTIONTYPE_JUMP:
-		MotionChangePlayer(MOTIONTYPE_JUMP);
+		//MotionChangePlayer(MOTIONTYPE_JUMP);
 		break;
 	}
 
-	if (model.aMotionInfo[model.motionType].nHitIdx != -1 &&
-		model.aMotionInfo[model.motionType].nAtkStar <= model.aMotionInfo[model.motionType].nNumKey && model.aMotionInfo[model.motionType].nAtkEnd >= model.aMotionInfo[model.motionType].nNumKey)
+	if (MotionInfo[MotionType].nHitIdx != -1 &&
+		MotionInfo[MotionType].nAtkStar <= MotionInfo[MotionType].nNumKey && MotionInfo[MotionType].nAtkEnd >= MotionInfo[MotionType].nNumKey)
 	{
 		this->PlayerCollision();
 	}
 
 	this->PlayerCollisionShape();
 
-	MoveLimit();	
+	MoveLimit();
 
 	SetModel(model);
 
@@ -401,11 +391,13 @@ void CPlayerBase::PlayerMove(void)
 	//		model.motionType = MOTIONTYPE_RUN;
 	//	}
 	//}
-
-	if (pKeyboard->GetKeyboardTrigger(DIK_J))
+	if (bJunp == false)
 	{
-		bJunp = true;
-		m_move.y += 30.0f;
+		if (pKeyboard->GetKeyboardTrigger(DIK_J))
+		{
+			bJunp = true;
+			m_move.y += 30.0f;
+		}
 	}
 
 	// 差分
@@ -451,24 +443,9 @@ void CPlayerBase::PlayerMove(void)
 //=====================================================================================================
 void CPlayerBase::PlayerDamage(CPlayerBase *pPlayer)
 {
-	//switch (m_PlayerNum)
-	//{
-	//case PLAYER_01:
-		Damage(pPlayer, 1);
-	//	break;
 
-	//case PLAYER_02:
-	//	Damage(pPlayer, 1);
-	//	break;
+ 	Damage(pPlayer, 1);
 
-	//case PLAYER_03:
-	//	//PlayerMove();
-	//	break;
-
-	//case PLAYER_04:
-	//	//PlayerMove();
-	//	break;
-	//}
 }
 
 //====================================================================================================
@@ -493,6 +470,23 @@ void CPlayerBase::Damage(CPlayerBase *pPlayer, int nDamage)
 //========================================================================================================
 void CPlayerBase::PlayerCollision()
 {
+	float fMinLength = 10000.0f;
+	CPlayerBase *pPlayer[2] = {};
+
+	D3DXVECTOR3 pos = GetPos();
+	int nCnt = MotionInfo[MotionType].nHitIdx;
+
+	while (1)
+	{
+		if (nCnt == -1)
+			break;
+
+		D3DXVec3Add(&pos, &pos, &GetModel().NumModel[nCnt].pos);
+
+		nCnt = GetModel().NumModel[nCnt].nIdxModel;
+	}
+
+
 	for (int nCntScene = 0; nCntScene < MAX_POLYGON; nCntScene++)
 	{
 		CScene *pScene;
@@ -502,32 +496,28 @@ void CPlayerBase::PlayerCollision()
 		if (!pScene || nCntScene == GetID())
 			continue;
 
-		CPlayerBase *pPlayer = (CPlayerBase*)pScene;
+		pPlayer[0] = (CPlayerBase*)pScene;
 
-		D3DXVECTOR3 pos = pPlayer->GetPos();  
-		int nCnt = pPlayer->GetModel().aMotionInfo[pPlayer->GetModel().motionType].nHitIdx;
+		float fLength = D3DXVec3LengthSq(&(pPlayer[0]->GetPos() - pos));
 
-		while (1)
+		if (fMinLength > fLength)
 		{
-			if (nCnt == -1)
-				break;
-
-			D3DXVECTOR3 modelpos = pPlayer->GetModel().NumModel[nCnt].pos;
-
-			D3DXVec3Add(&pos, &pos, &modelpos);
-
-			nCnt = pPlayer->GetModel().NumModel[nCnt].nIdxModel;
-		}
-
-		float fLength = D3DXVec3LengthSq(&(pos - GetPos()));
-		float fRadius = m_fRadius + pPlayer->m_fAttack;
-
-		//円の当たり判定
-		if (fLength <= fRadius * fRadius)
-		{
-			PlayerDamage(pPlayer);
+			fMinLength = fLength;
+			pPlayer[1] = pPlayer[0];
 		}
 	}
+
+	if (pPlayer[1] && pPlayer[1]->m_PlayerState != PLAYERSTATE_DAMAGE)
+	{
+		float fRadius = m_fRadius + pPlayer[1]->m_fAttack;
+
+		//円の当たり判定
+		if (fMinLength <= fRadius * fRadius)
+		{
+			PlayerDamage(pPlayer[1]);
+		}
+	}
+
 }
 
 //========================================================================================================
@@ -584,7 +574,7 @@ void CPlayerBase::MotionPlayer()
 	D3DXVECTOR3 Distance;
 	MODELNUM model = GetModel();
 
-	MOTION_INFO* pInfo = &model.aMotionInfo[model.motionType];
+	MOTION_INFO* pInfo = &MotionInfo[MotionType];
 
 	// モーション
 	for (int nCntModel = 0; nCntModel < model.nMaxModel; nCntModel++)
@@ -641,15 +631,15 @@ void CPlayerBase::MotionPlayer()
 
 	if (!pInfo->bLoop && pInfo->nNumKey + 1 == pInfo->nMaxKey)
 	{// モーションがループしない場合
-		if (model.motionType != MOTIONTYPE_JUMP)
+		if (MotionType != MOTIONTYPE_JUMP)
 		{// ジャンプ以外
 			pInfo->nNumKey = 0;
 			pInfo->nCntFrame = 0;
 
-			model.motionType = MOTIONTYPE_WAIT;
+			MotionType = MOTIONTYPE_WAIT;
 		}
 	}
-	else if (pInfo->nNumKey == pInfo->nMaxKey && model.motionType != MOTIONTYPE_JUMP)
+	else if (pInfo->nNumKey == pInfo->nMaxKey && MotionType != MOTIONTYPE_JUMP)
 	{// モーションが終了した場合
 		pInfo->nNumKey = 0;
 	}
@@ -662,16 +652,11 @@ void CPlayerBase::MotionPlayer()
 //=============================================================================
 void CPlayerBase::MotionChangePlayer(MOTIONTYPE motionType)
 {
-	MODELNUM model = GetModel();
-
-	if (model.motionType != motionType)
+	if (MotionType != motionType)
 	{
-		model.aMotionInfo[model.motionType].nNumKey = 0;
-		model.aMotionInfo[model.motionType].nCntFrame = 0;
-
-		model.motionType = motionType;
-
-		SetModel(model);
+		MotionInfo[MotionType].nNumKey = 0;
+		MotionInfo[MotionType].nCntFrame = 0;
+		MotionType = motionType;
 	}
 }
 
@@ -776,7 +761,7 @@ HRESULT CPlayerBase::MotionLoad(std::ifstream *file, int nCnt)
 	std::string sLine;
 	int nLoop = 0;			// ループ格納用
 
-	MOTION_INFO *pMotion = &m_PlayerType[nCnt].aMotionInfo[0];
+	MOTION_INFO *pMotion = &aMotionInfo[nCnt][0];
 
 	// モデルのファイル名
 	std::string sWord = { "MOTIONSET" };

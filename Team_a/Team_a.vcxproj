@@ -171,6 +171,7 @@
     <ClCompile Include="code\player_Ken.cpp" />
     <ClCompile Include="code\player_Sword.cpp" />
     <ClCompile Include="code\polygon.cpp" />
+    <ClCompile Include="code\polygonbase.cpp" />
     <ClCompile Include="code\renderer.cpp" />
     <ClCompile Include="code\Result.cpp" />
     <ClCompile Include="code\Scene.cpp" />
@@ -197,6 +198,7 @@
     <ClInclude Include="code\player_Ken.h" />
     <ClInclude Include="code\player_Sword.h" />
     <ClInclude Include="code\polygon.h" />
+    <ClInclude Include="code\polygonbase.h" />
     <ClInclude Include="code\renderer.h" />
     <ClInclude Include="code\Result.h" />
     <ClInclude Include="code\Scene.h" />

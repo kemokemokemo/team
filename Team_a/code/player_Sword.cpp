@@ -94,64 +94,64 @@ void CPlayer_SWORD::Update(void)
 		{//  A キー操作
 			m_move.x += D3DX_PI*-0.5f* PLAYER_SPEED;
 			m_fDiffrot.y = D3DX_PI*0.5f;
-			model.motionType = MOTIONTYPE_RUN;
+			MotionType = MOTIONTYPE_RUN;
 			if (pKeyboard->GetKeyboardTrigger(DIK_L))
 			{
-				model.motionType = MOTIONTYPE_DASHATK;
+				MotionType = MOTIONTYPE_DASHATK;
 			}
 		}
 		else if (pKeyboard->GetKeyboardPress(DIK_RIGHTARROW))
 		{//  D キー操作
 			m_move.x += D3DX_PI*0.5f * PLAYER_SPEED;
 			m_fDiffrot.y = D3DX_PI*-0.5f;
-			model.motionType = MOTIONTYPE_RUN;
+			MotionType = MOTIONTYPE_RUN;
 			if (pKeyboard->GetKeyboardTrigger(DIK_L))
 			{
-				model.motionType = MOTIONTYPE_DASHATK;
+				MotionType = MOTIONTYPE_DASHATK;
 			}
 		}
-		else if (model.motionType == MOTIONTYPE_RUN)
+		else if (MotionType == MOTIONTYPE_RUN)
 		{// 移動をやめた場合
 		 // モーションの切り替え
-			model.motionType = MOTIONTYPE_WAIT;
+			MotionType = MOTIONTYPE_WAIT;
 		}
 
 		else if (pKeyboard->GetKeyboardPress(DIK_UPARROW))
 		{// W キー操作
 			if (pKeyboard->GetKeyboardTrigger(DIK_L))
 			{
-				model.motionType = MOTIONTYPE_UPATK;
+				MotionType = MOTIONTYPE_UPATK;
 			}
 		}
 
 		else if (pKeyboard->GetKeyboardPress(DIK_DOWNARROW))
 		{
-			model.motionType = MOTIONTYPE_CROUCHWAIT;
+			MotionType = MOTIONTYPE_CROUCHWAIT;
 			if (pKeyboard->GetKeyboardTrigger(DIK_L))
 			{
-				model.motionType = MOTIONTYPE_CROUCHATK;
+				MotionType = MOTIONTYPE_CROUCHATK;
 			}
 		}
-		else if (model.motionType == MOTIONTYPE_CROUCHWAIT)
+		else if (MotionType == MOTIONTYPE_CROUCHWAIT)
 		{// 移動をやめた場合vbn
 		 // モーションの切り替え
-			model.motionType = MOTIONTYPE_WAIT;
+			MotionType = MOTIONTYPE_WAIT;
 		}
 
 		else if (pKeyboard->GetKeyboardTrigger(DIK_L))
 		{
 			//3段攻撃
-			if (model.motionType == MOTIONTYPE_LIGHT0)
+			if (MotionType == MOTIONTYPE_LIGHT0)
 			{
-				model.motionType = MOTIONTYPE_LIGHT1;
+				MotionType = MOTIONTYPE_LIGHT1;
 			}
-			else if (model.motionType == MOTIONTYPE_LIGHT1)
+			else if (MotionType == MOTIONTYPE_LIGHT1)
 			{
-				model.motionType = MOTIONTYPE_LIGHT2;
+				MotionType = MOTIONTYPE_LIGHT2;
 			}
 			else
 			{
-				model.motionType = MOTIONTYPE_LIGHT0;
+				MotionType = MOTIONTYPE_LIGHT0;
 			}
 		}
 	}	

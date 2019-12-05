@@ -54,48 +54,6 @@ public:
 
 	} MODEL;
 
-	//=============================================================================
-	// モーションの種類
-	//=============================================================================
-	typedef enum
-	{
-		MOTIONTYPE_WAIT = 0,	// ニュートラル
-		MOTIONTYPE_RUN,			// ランニング
-		MOTIONTYPE_LIGHT0,		// 弱攻撃1段目
-		MOTIONTYPE_LIGHT1,		// 2段目
-		MOTIONTYPE_LIGHT2,		// 3段目
-		MOTIONTYPE_DASHATK,		// ダッシュ攻撃
-		MOTIONTYPE_UPATK,		// サマソ
-		MOTIONTYPE_CROUCHATK,
-		MOTIONTYPE_CROUCHWAIT,
-		MOTIONTYPE_DAMAGE,	// 吹き飛ぶ
-		MOTIONTYPE_JUMP,		// ジャンプ
-		MOTIONTYPE_MAX			// モーションの最大数
-	} MOTIONTYPE;
-
-	typedef struct
-	{// キー要素
-		D3DXVECTOR3		pos;						// 現在の位置
-		D3DXVECTOR3		rot;						// 向き(回転)
-	} KEY;
-
-	typedef struct
-	{// キー情報
-		int				nNumKyeFrame;				// キーフレーム数
-		KEY				aKey[MAX_MODEL];			// キー要素
-	} KEY_INFO;
-
-	typedef struct
-	{// モーション情報
-		int				nCntFrame;					// 現在のフレーム数
-		int				nNumKey;					// 現在のキー
-		int				nMaxKey;					// 最大キー数
-		bool			bLoop;						// ループするか
-		KEY_INFO		aKeyInfo[MAX_KEY];			// キー情報
-		int             nHitIdx;					// 攻撃の部位
-		int				nAtkStar;
-		int				nAtkEnd;
-	} MOTION_INFO;
 
 	//================================================================
 	// プロトタイプ宣言
@@ -108,8 +66,6 @@ public:
 	void Update(void);
 	void Draw(void);
 
-	HRESULT InitPolygon(void);
-	void DrawPolygon(void);
 
 	void Textureload(LPDIRECT3DDEVICE9 pDevice);
 
@@ -133,8 +89,6 @@ public:
 	struct MODELNUM
 	{
 		MODEL NumModel[MAX_MODEL];
-		MOTION_INFO		aMotionInfo[MOTIONTYPE_MAX];// モーション情報
-		MOTIONTYPE		motionType;					// 現在のモーション
 		int nMaxModel;								// モデル数
 		int nMotionMax;
 	};
@@ -144,7 +98,7 @@ public:
 protected:
 
 	void BindModel(const MODELNUM *type);
-	void BindMotion(const MOTION_INFO *type);
+	//void BindMotion(const MOTION_INFO *type);
 
 	void SetPosParts(MODELNUM *type);
 	static std::string WordLoad(std::ifstream *file, std::string word, int linenum = 0);
@@ -153,8 +107,6 @@ protected:
 private:
 
 	MODELNUM m_Model;						// 親子パーツ
-
-	LPDIRECT3DTEXTURE9 m_pTexturePolygon;
 
 	D3DXVECTOR3 m_pos;						// ポリゴンの位置
 	D3DXVECTOR3 m_rot;						// ポリゴンの向き
@@ -166,11 +118,7 @@ private:
 	D3DXVECTOR3	m_vtxMin;				//最小値
 	D3DXVECTOR3	m_vtxMax;				//最大値 
 
-											//ポリゴン用
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuffScene;
-	D3DXMATRIX m_mtxWorldPolygon;
-	D3DXVECTOR3 m_rotPolygon;
-	D3DXVECTOR3 m_PosPolygon;
 };
 
 //====================================================================================================

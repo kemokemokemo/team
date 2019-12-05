@@ -85,14 +85,11 @@ void CPlayer_Kangaroo::Uninit(void)
 void CPlayer_Kangaroo::Update(void)
 {
 	CKeybord *pKeyboard = CManager::GetKeybord();
-	MODELNUM model = GetModel();
 
 	if (pKeyboard->GetKeyboardTrigger(DIK_RETURN))
 	{
-		model.motionType = MOTIONTYPE_RUN;
+		MotionType = MOTIONTYPE_RUN;
 	}
-
-	SetModel(model);
 
 	CPlayerBase::Update();
 }
