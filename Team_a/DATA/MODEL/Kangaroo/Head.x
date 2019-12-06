@@ -1971,7 +1971,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "Tex_white.jpg";
+    "data\\TEX\\Tex_white.jpg";
    }
   }
   Material {
@@ -1986,7 +1986,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "Tex_kan_eye.jpg";
+    "data\\TEX\\Tex_kan_eye.jpg";
    }
   }
   Material {
@@ -1995,7 +1995,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "Tex_kan_eye.jpg";
+    "data\\TEX\\Tex_kan_eye.jpg";
    }
   }
   Material {

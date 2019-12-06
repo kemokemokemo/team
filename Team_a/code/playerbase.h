@@ -41,7 +41,7 @@ public:
 		PLAYERSTATE_DAMAGE,
 		PLAYERSTATE_UNDYING,
 		PLAYERSTATE_ATK,
-		PLAYERSTATE_RANNING,
+		PLAYERSTATE_ACT,
 		PLAYERSTATE_MAX,
 	} PLAYERSTATE;
 
@@ -150,6 +150,12 @@ public:
 	static HRESULT MotionLoad(std::ifstream *file, int nCnt);
 	static void Unload();
 
+	void SetJump(bool bJumpman);//ジャンプ
+	bool GetJump();//ジャンプ
+
+	void PlayerCollisionFloor();//床
+
+
 protected:
 	void PlayerCollisionShape();
 
@@ -157,6 +163,7 @@ protected:
 	float m_fAttack;
 
 	int m_nLife;
+	int nCountATK;
 
 	PLAYERTYPE m_TypeChara;
 	PLAYERSTATE m_PlayerState;					//プレイヤーの状態
@@ -167,16 +174,18 @@ protected:
 	D3DXVECTOR3 m_fDistance;
 	D3DXVECTOR3 m_fDiffrot;
 	MOTIONTYPE	MotionType;					// 現在のモーション
+	bool bWJump;
 private:
 	void PlayerCollision();
-
 	static MODELNUM m_PlayerType[PLAYERTYPE_MAX];
 	static char *TextLoad[PLAYERTYPE_MAX];
 
 	int m_PlayerStateCount;
 	static MOTION_INFO aMotionInfo[PLAYERTYPE_MAX][MOTIONTYPE_MAX];
 	MOTION_INFO MotionInfo[MOTIONTYPE_MAX];
-	bool bJunp;
+
+	bool bJump;
+
 
 };
 #endif

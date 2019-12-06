@@ -21,7 +21,7 @@
 //=============================================================================
 // マクロ定義
 //=============================================================================
-#define PLAYER_SPEED	(1.0f)						//プレイヤーの速さ
+#define PLAYER_SPEED		(1.0f)						//プレイヤーの速さ
 #define PLAYER__BLOWAWAY	(2.0f)					//プレイヤーの吹っ飛び
 #define MODELFILE1		"DATA/motion_ken.txt"		// 読み込むモデル
 #define MODELFILE2		"DATA/motion_Kangaroo.txt"	// 読み込むモデル
@@ -69,9 +69,13 @@ HRESULT CPlayerBase::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 
 	m_PlayerStateCount = 0;
 
+	nCountATK = 0;
+
 	MotionType = MOTIONTYPE_WAIT;					// 現在のモーション
 
-	bJunp = false;
+	bJump = true;
+
+	bWJump = true;
 
 	m_PlayerState = PLAYERSTATE_NORMAL;
 
@@ -95,24 +99,6 @@ void CPlayerBase::Uninit(void)
 //=============================================================================
 void CPlayerBase::Update(void)
 {
-	m_posOld = m_pos;
-
-	m_pos = CScene3D::GetPos();
-
-	D3DXVECTOR3 size = CScene3D::GetScale();
-
-	if ((CModel::CollisionModel(&m_pos, &m_posOld, size)) == true)
-	{
-		if (bJunp == true)
-		{
-			bJunp = false;
-		}
-		else
-		{
-			CScene3D::SetHight(m_pos.y);
-		}
-	}
-
 	//モーションの再生
 	MotionPlayer();
 
@@ -123,7 +109,7 @@ void CPlayerBase::Update(void)
 	switch (m_PlayerState)
 	{
 	case PLAYERSTATE_NORMAL:
-		//MotionChangePlayer(MOTIONTYPE_WAIT);
+		nCountATK = 0;
 
 		break;
 
@@ -139,57 +125,89 @@ void CPlayerBase::Update(void)
 			m_PlayerState = PLAYERSTATE_NORMAL;
 		}
 		break;
-	case PLAYERSTATE_RANNING:
-		//MotionChangePlayer(MOTIONTYPE_RUNNING);
-		break;
 	}
 
 	switch (MotionType)
 	{
 	case MOTIONTYPE_WAIT:
 		m_PlayerState = PLAYERSTATE_NORMAL;
-		//MotionChangePlayer(MOTIONTYPE_WAIT);
+		MotionChangePlayer(MOTIONTYPE_WAIT);
 		break;
 	case MOTIONTYPE_RUN:
-		//MotionChangePlayer(MOTIONTYPE_RUN);
+		MotionChangePlayer(MOTIONTYPE_RUN);
 		break;
 	case MOTIONTYPE_LIGHT0:
-		//MotionChangePlayer(MOTIONTYPE_LIGHT0);
+		MotionChangePlayer(MOTIONTYPE_LIGHT0);
 		break;
 	case MOTIONTYPE_LIGHT1:
-		//MotionChangePlayer(MOTIONTYPE_LIGHT1);
+		MotionChangePlayer(MOTIONTYPE_LIGHT1);
 		break;
 	case MOTIONTYPE_LIGHT2:
-		//MotionChangePlayer(MOTIONTYPE_LIGHT2);
+		MotionChangePlayer(MOTIONTYPE_LIGHT2);
 		break;
 	case MOTIONTYPE_DASHATK:
-		if (m_fDiffrot.y == D3DX_PI*0.5f)
-		{
-			m_move.x -= 0.5f;
-		}
-		else
-		{
-			m_move.x += 0.5f;
-		}
 		m_PlayerState = PLAYERSTATE_ATK;
-		//MotionChangePlayer(MOTIONTYPE_DASHATK);
+		MotionChangePlayer(MOTIONTYPE_DASHATK);
 		break;
 	case MOTIONTYPE_UPATK:
 		m_PlayerState = PLAYERSTATE_ATK;
-		//MotionChangePlayer(MOTIONTYPE_UPATK);
+		MotionChangePlayer(MOTIONTYPE_UPATK);
 		break;
 	case MOTIONTYPE_CROUCHATK:
 		m_PlayerState = PLAYERSTATE_ATK;
-		//MotionChangePlayer(MOTIONTYPE_CROUCHATK);
+		MotionChangePlayer(MOTIONTYPE_CROUCHATK);
 		break;
 	case MOTIONTYPE_CROUCHWAIT:
-		//MotionChangePlayer(MOTIONTYPE_CROUCHWAIT);
+		MotionChangePlayer(MOTIONTYPE_CROUCHWAIT);
 		break;
 	case MOTIONTYPE_DAMAGE:
-		//MotionChangePlayer(MOTIONTYPE_DAMAGE);
+		MotionChangePlayer(MOTIONTYPE_DAMAGE);
 		break;
 	case MOTIONTYPE_JUMP:
-		//MotionChangePlayer(MOTIONTYPE_JUMP);
+		m_PlayerState = PLAYERSTATE_NORMAL;
+		MotionChangePlayer(MOTIONTYPE_JUMP);
+		break;
+	case MOTIONTYPE_DOUBLEJUMP:
+		MotionChangePlayer(MOTIONTYPE_DOUBLEJUMP);
+		break;
+	case MOTIONTYPE_RAND:
+		m_PlayerState = PLAYERSTATE_ATK;
+		MotionChangePlayer(MOTIONTYPE_RAND);
+		break;
+	case MOTIONTYPE_AIR_N:
+		m_PlayerState = PLAYERSTATE_ATK;
+		MotionChangePlayer(MOTIONTYPE_AIR_N);
+		break;
+	case MOTIONTYPE_AIR_F:
+		m_PlayerState = PLAYERSTATE_ATK;
+		MotionChangePlayer(MOTIONTYPE_AIR_F);
+		break;
+	case MOTIONTYPE_AIR_B:
+		m_PlayerState = PLAYERSTATE_ATK;
+		MotionChangePlayer(MOTIONTYPE_AIR_B);
+		break;
+	case MOTIONTYPE_AIR_U:
+		m_PlayerState = PLAYERSTATE_ATK;
+		MotionChangePlayer(MOTIONTYPE_AIR_U);
+		break;
+	case MOTIONTYPE_AIR_D:
+		m_PlayerState = PLAYERSTATE_ATK;
+		MotionChangePlayer(MOTIONTYPE_AIR_D);
+		break;
+	case MOTIONTYPE_SP_N:
+		m_PlayerState = PLAYERSTATE_ATK;
+		MotionChangePlayer(MOTIONTYPE_SP_N);
+		break;
+	case MOTIONTYPE_SP_UP:
+		m_PlayerState = PLAYERSTATE_ATK;
+		MotionChangePlayer(MOTIONTYPE_SP_UP);
+		break;
+	case MOTIONTYPE_SP_DOWN:
+		m_PlayerState = PLAYERSTATE_ATK;
+		MotionChangePlayer(MOTIONTYPE_SP_DOWN);
+		break;
+	case MOTIONTYPE_GAUDE:
+		MotionChangePlayer(MOTIONTYPE_GAUDE);
 		break;
 	}
 
@@ -223,7 +241,7 @@ void CPlayerBase::MoveLimit(void)
 {
 	D3DXVECTOR3 pos = CScene3D::GetPos();
 
-	m_move.y--;
+	m_move.y-=1.4f;
 
 	CScene3D::SetPos(pos);
 }
@@ -391,14 +409,14 @@ void CPlayerBase::PlayerMove(void)
 	//		model.motionType = MOTIONTYPE_RUN;
 	//	}
 	//}
-	if (bJunp == false)
-	{
-		if (pKeyboard->GetKeyboardTrigger(DIK_J))
-		{
-			bJunp = true;
-			m_move.y += 30.0f;
-		}
-	}
+	//if (bJunp == false)
+	//{
+	//	if (pKeyboard->GetKeyboardTrigger(DIK_J))
+	//	{
+	//		bJunp = true;
+	//		m_move.y += 80.0f;
+	//	}
+	//}
 
 	// 差分
 	if (m_fDistance.y = m_fDiffrot.y - rot.y)
@@ -631,15 +649,11 @@ void CPlayerBase::MotionPlayer()
 
 	if (!pInfo->bLoop && pInfo->nNumKey + 1 == pInfo->nMaxKey)
 	{// モーションがループしない場合
-		if (MotionType != MOTIONTYPE_JUMP)
-		{// ジャンプ以外
 			pInfo->nNumKey = 0;
 			pInfo->nCntFrame = 0;
-
 			MotionType = MOTIONTYPE_WAIT;
-		}
 	}
-	else if (pInfo->nNumKey == pInfo->nMaxKey && MotionType != MOTIONTYPE_JUMP)
+	else if (pInfo->nNumKey == pInfo->nMaxKey)
 	{// モーションが終了した場合
 		pInfo->nNumKey = 0;
 	}
@@ -849,4 +863,48 @@ void CPlayerBase::Unload(void)
 			m_PlayerType[nCntType].NumModel[nCnt].pMesh = NULL;
 		}
 	}
+}
+//=============================================================================
+// 床の当たり判定
+//=============================================================================
+void CPlayerBase::PlayerCollisionFloor(void)
+{
+	m_posOld = m_pos;
+
+	m_pos = CScene3D::GetPos();
+
+	D3DXVECTOR3 size = CScene3D::GetScale();
+
+	if ((CModel::CollisionModel(&m_pos, &m_posOld, size)) == true)
+	{
+		if (bJump == true)//ジャンプ可能な時
+		{
+			bJump = false;
+			bWJump = false;
+		}
+		else
+		{//着地
+			if (MotionType == MOTIONTYPE_JUMP)
+			{
+				MotionChangePlayer(MOTIONTYPE_RAND);
+			}
+			CScene3D::SetHight(m_pos.y);
+		}
+	}
+
+}
+
+//=============================================================================
+// ジャンプできるかできないか
+//=============================================================================
+void CPlayerBase::SetJump(bool bJumpman)
+{
+	bJump = bJumpman;
+}
+//=============================================================================
+// ジャンプできるかできないか
+//=============================================================================
+bool CPlayerBase::GetJump()
+{
+	return bJump;
 }
