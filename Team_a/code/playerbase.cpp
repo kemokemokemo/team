@@ -125,6 +125,8 @@ void CPlayerBase::Update(void)
 			m_PlayerState = PLAYERSTATE_NORMAL;
 		}
 		break;
+	case PLAYERSTATE_GAUDE:
+		break;
 	}
 
 	switch (MotionType)
@@ -143,6 +145,7 @@ void CPlayerBase::Update(void)
 		MotionChangePlayer(MOTIONTYPE_LIGHT1);
 		break;
 	case MOTIONTYPE_LIGHT2:
+		m_PlayerState = PLAYERSTATE_ATK;
 		MotionChangePlayer(MOTIONTYPE_LIGHT2);
 		break;
 	case MOTIONTYPE_DASHATK:
@@ -175,23 +178,23 @@ void CPlayerBase::Update(void)
 		MotionChangePlayer(MOTIONTYPE_RAND);
 		break;
 	case MOTIONTYPE_AIR_N:
-		m_PlayerState = PLAYERSTATE_ATK;
+		m_PlayerState = PLAYERSTATE_AIRATK;
 		MotionChangePlayer(MOTIONTYPE_AIR_N);
 		break;
 	case MOTIONTYPE_AIR_F:
-		m_PlayerState = PLAYERSTATE_ATK;
+		m_PlayerState = PLAYERSTATE_AIRATK;
 		MotionChangePlayer(MOTIONTYPE_AIR_F);
 		break;
 	case MOTIONTYPE_AIR_B:
-		m_PlayerState = PLAYERSTATE_ATK;
+		m_PlayerState = PLAYERSTATE_AIRATK;
 		MotionChangePlayer(MOTIONTYPE_AIR_B);
 		break;
 	case MOTIONTYPE_AIR_U:
-		m_PlayerState = PLAYERSTATE_ATK;
+		m_PlayerState = PLAYERSTATE_AIRATK;
 		MotionChangePlayer(MOTIONTYPE_AIR_U);
 		break;
 	case MOTIONTYPE_AIR_D:
-		m_PlayerState = PLAYERSTATE_ATK;
+		m_PlayerState = PLAYERSTATE_AIRATK;
 		MotionChangePlayer(MOTIONTYPE_AIR_D);
 		break;
 	case MOTIONTYPE_SP_N:
@@ -241,7 +244,8 @@ void CPlayerBase::MoveLimit(void)
 {
 	D3DXVECTOR3 pos = CScene3D::GetPos();
 
-	m_move.y-=1.4f;
+	m_move.y -= 1.6f;
+
 
 	CScene3D::SetPos(pos);
 }
@@ -461,9 +465,7 @@ void CPlayerBase::PlayerMove(void)
 //=====================================================================================================
 void CPlayerBase::PlayerDamage(CPlayerBase *pPlayer)
 {
-
  	Damage(pPlayer, 1);
-
 }
 
 //====================================================================================================
@@ -477,7 +479,11 @@ void CPlayerBase::Damage(CPlayerBase *pPlayer, int nDamage)
 		pPlayer->m_PlayerState = PLAYERSTATE_DAMAGE;
 		pPlayer->m_PlayerStateCount = 60;
 	}
-	
+	if (pPlayer->m_PlayerState == PLAYERSTATE_GAUDE)
+	{
+
+	}
+
 	if (pPlayer->m_nLife <= 0)
 	{
 		pPlayer->Release();
@@ -884,7 +890,7 @@ void CPlayerBase::PlayerCollisionFloor(void)
 		}
 		else
 		{//’…’n
-			if (MotionType == MOTIONTYPE_JUMP)
+			if (MotionType == MOTIONTYPE_JUMP || m_PlayerState == PLAYERSTATE_AIRATK)
 			{
 				MotionChangePlayer(MOTIONTYPE_RAND);
 			}

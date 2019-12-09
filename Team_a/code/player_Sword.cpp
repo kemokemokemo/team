@@ -24,8 +24,9 @@
 //=============================================================================
 #define PLAYER_SPEED	(1.8f)						//プレイヤーの速さ
 #define PLAYER_AIRSPEED	(1.5f)						//空中でのプレイヤーの速さ
-#define PLAYER_JUMP (60.0f)						//ジャンプの高さ
-#define PLAYER_AIRJUMP (50.0f)					//空中ジャンプの高さ
+#define PLAYER_AIRATKSPEED	(0.7f)						//空中でのプレイヤーの速さ
+#define PLAYER_JUMP (90.0f)						//ジャンプの高さ
+#define PLAYER_AIRJUMP (60.0f)					//空中ジャンプの高さ
 
 //=============================================================================
 // メンバ変数初期化
@@ -66,10 +67,10 @@ HRESULT CPlayer_SWORD::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	m_TypeChara = CPlayer_SWORD::PLAYERTYPE_SWORD;
 	CPlayerBase::Init(pos, rot);
-
+	m_fDiffrot.y = D3DX_PI*0.5f;
 	m_nLife = 12;
-	m_fRadius = 50.0f;
-	m_fAttack = 30.0f;
+	m_fRadius = 70.0f;
+	m_fAttack = 40.0f;
 
 	return S_OK;
 }
@@ -87,6 +88,7 @@ void CPlayer_SWORD::Uninit(void)
 void CPlayer_SWORD::Update(void)
 {
 	CKeybord *pKeyboard = CManager::GetKeybord();
+	CPad *pGamePad = CManager::GetPad();
 	MODELNUM model = GetModel();
 
 	PlayerCollisionFloor();
@@ -96,7 +98,7 @@ void CPlayer_SWORD::Update(void)
 		//空中
 		if (GetJump() == false)
 		{
-			if (pKeyboard->GetKeyboardTrigger(DIK_J))
+			if (pKeyboard->GetKeyboardTrigger(DIK_I)||pGamePad->GetJoypadTrigger(0, CPad::JOYPADKEY_Y))
 			{//ジャンプ
 				if (bWJump == false)
 				{
@@ -105,31 +107,31 @@ void CPlayer_SWORD::Update(void)
 					m_move.y += PLAYER_JUMP;
 				}
 			}
-			else if (pKeyboard->GetKeyboardPress(DIK_LEFTARROW))
+			else if (pKeyboard->GetKeyboardPress(DIK_LEFTARROW) || pGamePad->GetJoypadPress(0, CPad::JOYPADKEY_LEFT))
 			{//  A キー操作
 				m_move.x += D3DX_PI*-0.5f* PLAYER_SPEED;
 				m_fDiffrot.y = D3DX_PI*0.5f;
 				MotionChangePlayer(MOTIONTYPE_RUN);
 
-				if (pKeyboard->GetKeyboardTrigger(DIK_L))
+				if (pKeyboard->GetKeyboardTrigger(DIK_L) || pGamePad->GetJoypadPress(0, CPad::JOYPADKEY_B))
 				{
 					MotionChangePlayer(MOTIONTYPE_DASHATK);
 				}
-				else if (pKeyboard->GetKeyboardTrigger(DIK_K))
+				else if (pKeyboard->GetKeyboardTrigger(DIK_K) || pGamePad->GetJoypadTrigger(0, CPad::JOYPADKEY_A))
 				{//特殊攻撃ニュートラル
 					MotionChangePlayer(MOTIONTYPE_SP_N);
 				}
 			}
-			else if (pKeyboard->GetKeyboardPress(DIK_RIGHTARROW))
+			else if (pKeyboard->GetKeyboardPress(DIK_RIGHTARROW) || pGamePad->GetJoypadPress(0, CPad::JOYPADKEY_RIGHT))
 			{//  D キー操作
 				m_move.x += D3DX_PI*0.5f * PLAYER_SPEED;
 				m_fDiffrot.y = D3DX_PI*-0.5f;
 				MotionChangePlayer(MOTIONTYPE_RUN);
-				if (pKeyboard->GetKeyboardTrigger(DIK_L))
+				if (pKeyboard->GetKeyboardTrigger(DIK_L) || pGamePad->GetJoypadTrigger(0, CPad::JOYPADKEY_B))
 				{
 					MotionChangePlayer(MOTIONTYPE_DASHATK);
 				}
-				else if (pKeyboard->GetKeyboardTrigger(DIK_K))
+				else if (pKeyboard->GetKeyboardTrigger(DIK_K) || pGamePad->GetJoypadTrigger(0, CPad::JOYPADKEY_A))
 				{//特殊攻撃ニュートラル
 					MotionChangePlayer(MOTIONTYPE_SP_N);
 				}
@@ -140,26 +142,26 @@ void CPlayer_SWORD::Update(void)
 				MotionChangePlayer(MOTIONTYPE_WAIT);
 			}
 
-			else if (pKeyboard->GetKeyboardPress(DIK_UPARROW))
+			else if (pKeyboard->GetKeyboardPress(DIK_UPARROW) || pGamePad->GetJoypadPress(0, CPad::JOYPADKEY_UP))
 			{// W キー操作
-				if (pKeyboard->GetKeyboardTrigger(DIK_L))
+				if (pKeyboard->GetKeyboardTrigger(DIK_L) || pGamePad->GetJoypadTrigger(0, CPad::JOYPADKEY_B))
 				{
 					MotionChangePlayer(MOTIONTYPE_UPATK);
 				}
-				else if (pKeyboard->GetKeyboardTrigger(DIK_K))
+				else if (pKeyboard->GetKeyboardTrigger(DIK_K) || pGamePad->GetJoypadTrigger(0, CPad::JOYPADKEY_A))
 				{//特殊攻撃上
 					MotionChangePlayer(MOTIONTYPE_SP_UP);
 				}
 			}
 
-			else if (pKeyboard->GetKeyboardPress(DIK_DOWNARROW))
+			else if (pKeyboard->GetKeyboardPress(DIK_DOWNARROW) || pGamePad->GetJoypadPress(0, CPad::JOYPADKEY_DOWN))
 			{
 				MotionChangePlayer(MOTIONTYPE_CROUCHWAIT);
-				if (pKeyboard->GetKeyboardTrigger(DIK_L))
+				if (pKeyboard->GetKeyboardTrigger(DIK_L) || pGamePad->GetJoypadTrigger(0, CPad::JOYPADKEY_B))
 				{
 					MotionChangePlayer(MOTIONTYPE_CROUCHATK);
 				}
-				else if (pKeyboard->GetKeyboardTrigger(DIK_K))
+				else if (pKeyboard->GetKeyboardTrigger(DIK_K) || pGamePad->GetJoypadTrigger(0, CPad::JOYPADKEY_A))
 				{//特殊攻撃下
 					MotionChangePlayer(MOTIONTYPE_SP_DOWN);
 				}
@@ -170,11 +172,11 @@ void CPlayer_SWORD::Update(void)
 			 // モーションの切り替え
 				MotionChangePlayer(MOTIONTYPE_WAIT);
 			}
-			else if (pKeyboard->GetKeyboardTrigger(DIK_K))
+			else if (pKeyboard->GetKeyboardTrigger(DIK_K) || pGamePad->GetJoypadTrigger(0, CPad::JOYPADKEY_A))
 			{//特殊攻撃ニュートラル
 				MotionChangePlayer(MOTIONTYPE_SP_N);
 			}
-			else if (pKeyboard->GetKeyboardTrigger(DIK_L))
+			else if (pKeyboard->GetKeyboardTrigger(DIK_L) || pGamePad->GetJoypadTrigger(0, CPad::JOYPADKEY_B))
 			{
 				//3段攻撃
 				if (MotionType == MOTIONTYPE_LIGHT0)
@@ -190,87 +192,142 @@ void CPlayer_SWORD::Update(void)
 					MotionChangePlayer(MOTIONTYPE_LIGHT0);
 				}
 			}
+			else if (pGamePad->GetJoypadPress(0, CPad::JOYPADKEY_X))
+			{
+				MotionChangePlayer(MOTIONTYPE_GAUDE);
+			}
 		}
 
 		//空中
 		else
 		{
-			if (MotionType != MOTIONTYPE_DOUBLEJUMP)
+			if (m_PlayerState != PLAYERSTATE_AIRATK)
 			{
-				MotionChangePlayer(MOTIONTYPE_JUMP);
-			}
-			if (bWJump == true)
-			{
-				if (pKeyboard->GetKeyboardTrigger(DIK_J))
-				{//二段ジャンプ
-					MotionChangePlayer(MOTIONTYPE_DOUBLEJUMP);
-					bWJump = false;
-					m_move.y += PLAYER_AIRJUMP;
+				if (MotionType != MOTIONTYPE_DOUBLEJUMP)
+				{
+					MotionChangePlayer(MOTIONTYPE_JUMP);
 				}
-			}
-			if (pKeyboard->GetKeyboardPress(DIK_LEFTARROW))
-			{//  A キー操作
-				m_move.x += D3DX_PI*-0.5f* PLAYER_AIRSPEED;
+				if (bWJump == true)
+				{
+					if (pKeyboard->GetKeyboardTrigger(DIK_I) || pGamePad->GetJoypadTrigger(0, CPad::JOYPADKEY_Y))
+					{//二段ジャンプ
+						MotionChangePlayer(MOTIONTYPE_DOUBLEJUMP);
+						bWJump = false;
+						m_move.y = 0.0f;
+						m_move.y += PLAYER_AIRJUMP;
+					}
+				}
+				if (pKeyboard->GetKeyboardPress(DIK_LEFTARROW) || pGamePad->GetJoypadPress(0, CPad::JOYPADKEY_LEFT))
+				{//  A キー操作
+					m_move.x += D3DX_PI*-0.5f* PLAYER_AIRSPEED;
 
-				if (pKeyboard->GetKeyboardTrigger(DIK_L))
-				{
-					if (m_fDiffrot.y == D3DX_PI*0.5f)
+					if (pKeyboard->GetKeyboardTrigger(DIK_L) || pGamePad->GetJoypadTrigger(0, CPad::JOYPADKEY_B))
 					{
-						MotionChangePlayer(MOTIONTYPE_AIR_F);
-					}
-					else
-					{
-						MotionChangePlayer(MOTIONTYPE_AIR_B);
-					}
-				}
-			}
-			else if (pKeyboard->GetKeyboardPress(DIK_RIGHTARROW))
-			{//  D キー操作
-				m_move.x += D3DX_PI*0.5f * PLAYER_AIRSPEED;
-				if (pKeyboard->GetKeyboardTrigger(DIK_L))
-				{
-					if (m_fDiffrot.y == D3DX_PI*-0.5f)
-					{
-						MotionChangePlayer(MOTIONTYPE_AIR_F);
-					}
-					else
-					{
-						MotionChangePlayer(MOTIONTYPE_AIR_B);
+						if (m_fDiffrot.y == D3DX_PI*0.5f)
+						{
+							MotionChangePlayer(MOTIONTYPE_AIR_F);
+						}
+						else
+						{
+							MotionChangePlayer(MOTIONTYPE_AIR_B);
+						}
 					}
 				}
-			}
-			else if (pKeyboard->GetKeyboardPress(DIK_UPARROW))
-			{
-				if (pKeyboard->GetKeyboardTrigger(DIK_L))
-				{
-					MotionChangePlayer(MOTIONTYPE_AIR_U);
+				else if (pKeyboard->GetKeyboardPress(DIK_RIGHTARROW) || pGamePad->GetJoypadPress(0, CPad::JOYPADKEY_RIGHT))
+				{//  D キー操作
+					m_move.x += D3DX_PI*0.5f * PLAYER_AIRSPEED;
+					if (pKeyboard->GetKeyboardTrigger(DIK_L) || pGamePad->GetJoypadTrigger(0, CPad::JOYPADKEY_B))
+					{
+						if (m_fDiffrot.y == D3DX_PI*-0.5f)
+						{
+							MotionChangePlayer(MOTIONTYPE_AIR_F);
+						}
+						else
+						{
+							MotionChangePlayer(MOTIONTYPE_AIR_B);
+						}
+					}
 				}
-			}
-			else if (pKeyboard->GetKeyboardPress(DIK_DOWNARROW))
-			{
-				if (pKeyboard->GetKeyboardTrigger(DIK_L))
+				else if (pKeyboard->GetKeyboardPress(DIK_UPARROW) || pGamePad->GetJoypadPress(0, CPad::JOYPADKEY_UP))
 				{
-					MotionChangePlayer(MOTIONTYPE_AIR_D);
+					if (pKeyboard->GetKeyboardTrigger(DIK_L) || pGamePad->GetJoypadTrigger(0, CPad::JOYPADKEY_B))
+					{
+						MotionChangePlayer(MOTIONTYPE_AIR_U);
+					}
 				}
-			}
-			else if (pKeyboard->GetKeyboardTrigger(DIK_L))
-			{
-				MotionChangePlayer(MOTIONTYPE_AIR_N);
+				else if (pKeyboard->GetKeyboardPress(DIK_DOWNARROW) || pGamePad->GetJoypadPress(0, CPad::JOYPADKEY_DOWN))
+				{
+					m_move.y -= 1.2f;
+					if (pKeyboard->GetKeyboardTrigger(DIK_L) || pGamePad->GetJoypadTrigger(0, CPad::JOYPADKEY_B))
+					{
+						MotionChangePlayer(MOTIONTYPE_AIR_D);
+					}
+				}
+				else if (pKeyboard->GetKeyboardTrigger(DIK_L) || pGamePad->GetJoypadTrigger(0, CPad::JOYPADKEY_B))
+				{
+					MotionChangePlayer(MOTIONTYPE_AIR_N);
+				}
 			}
 		}
 	}
 
 	switch (MotionType)
 	{
+	case MOTIONTYPE_LIGHT0:
+		nCountATK++;
+		if (nCountATK >= 0 && nCountATK <= 1)
+		{
+			if (m_fDiffrot.y == D3DX_PI*0.5f)
+			{
+				m_move.x -= 0.5f;
+			}
+			else
+			{
+				m_move.x += 0.5f;
+			}
+		}
+		break;
+	case MOTIONTYPE_LIGHT1:
+		nCountATK++;
+		if (nCountATK >= 0 && nCountATK <= 1)
+		{
+			if (m_fDiffrot.y == D3DX_PI*0.5f)
+			{
+				m_move.x -= 0.5f;
+			}
+			else
+			{
+				m_move.x += 0.5f;
+			}
+		}
+		break;
+	case MOTIONTYPE_LIGHT2:
+		nCountATK++;
+		if (nCountATK >= 0 && nCountATK <= 1)
+		{
+			if (m_fDiffrot.y == D3DX_PI*0.5f)
+			{
+				m_move.x -= 0.5f;
+			}
+			else
+			{
+				m_move.x += 0.5f;
+			}
+		}
+
 		break;
 	case MOTIONTYPE_DASHATK:
-		if (m_fDiffrot.y == D3DX_PI*0.5f)
+		nCountATK++;
+		if (nCountATK >= 1 && nCountATK <= 40)
 		{
-			m_move.x -= 0.7f;
-		}
-		else
-		{
-			m_move.x += 0.7f;
+			if (m_fDiffrot.y == D3DX_PI*0.5f)
+			{
+				m_move.x -= 0.9f;
+			}
+			else
+			{
+				m_move.x += 0.9f;
+			}
 		}
 		break;
 
@@ -286,6 +343,34 @@ void CPlayer_SWORD::Update(void)
 			{
 				m_move.x += 3.5f;
 			}
+		}
+		break;
+	case MOTIONTYPE_AIR_N:
+	case MOTIONTYPE_AIR_F:
+	case MOTIONTYPE_AIR_B:
+	case MOTIONTYPE_AIR_U:
+	case MOTIONTYPE_AIR_D:
+		if (pGamePad->GetJoypadPress(0, CPad::JOYPADKEY_RIGHT))
+		{
+			m_move.x += D3DX_PI*0.5f* PLAYER_AIRATKSPEED;
+		}
+		else if (pGamePad->GetJoypadPress(0, CPad::JOYPADKEY_LEFT))
+		{
+			m_move.x += D3DX_PI*-0.5f* PLAYER_AIRATKSPEED;
+		}
+		if (pKeyboard->GetKeyboardPress(DIK_S)|| pGamePad->GetJoypadPress(0, CPad::JOYPADKEY_DOWN))
+		{
+			m_move.y -= 1.2f;
+		}
+		break;
+	case MOTIONTYPE_GAUDE:
+		if (pGamePad->GetJoypadPress(0, CPad::JOYPADKEY_X))
+		{
+			m_PlayerState = PLAYERSTATE_GAUDE;
+		}
+		else
+		{
+			MotionChangePlayer(MOTIONTYPE_WAIT);
 		}
 		break;
 	}
