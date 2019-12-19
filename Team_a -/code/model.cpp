@@ -17,6 +17,7 @@
 // メンバ変数初期化
 //=============================================================================
 CScene3D::MODELNUM CModel::m_Unit[UNITTYPE_MAX] = {};
+#define Distance	(5)					//プレイヤーの吹っ飛び
 
 //=============================================================================
 // コンストラクタ
@@ -133,15 +134,15 @@ bool CModel::CollisionModel(D3DXVECTOR3 * pPos, D3DXVECTOR3 * pPosOld, D3DXVECTO
 	// 当たり判定
 	for (int nCountBlock = 0; nCountBlock < MAX_MODEL; nCountBlock++)
 	{
-		if (pPos->y <= m_Unit->NumModel[m_Unit->NumModel[nCountBlock].nType].pos.y + m_Unit->NumModel[m_Unit->NumModel[nCountBlock].nType].vtxMax.y&&
-			pPosOld->y >= m_Unit->NumModel[m_Unit->NumModel[nCountBlock].nType].pos.y + m_Unit->NumModel[m_Unit->NumModel[nCountBlock].nType].vtxMax.y)
+		if (pPos->y <= m_Unit->NumModel[m_Unit->NumModel[nCountBlock].nType].pos.y + Distance + m_Unit->NumModel[m_Unit->NumModel[nCountBlock].nType].vtxMax.y&&
+			pPosOld->y >= m_Unit->NumModel[m_Unit->NumModel[nCountBlock].nType].pos.y + Distance + m_Unit->NumModel[m_Unit->NumModel[nCountBlock].nType].vtxMax.y)
 		{// 乗っているか
 			if (pPos->x + size.x > m_Unit->NumModel[m_Unit->NumModel[nCountBlock].nType].pos.x + m_Unit->NumModel[m_Unit->NumModel[nCountBlock].nType].vtxMin.x&&
 				pPos->x - size.x < m_Unit->NumModel[m_Unit->NumModel[nCountBlock].nType].pos.x + m_Unit->NumModel[m_Unit->NumModel[nCountBlock].nType].vtxMax.x&&
 				pPos->z + size.z > m_Unit->NumModel[m_Unit->NumModel[nCountBlock].nType].pos.z + m_Unit->NumModel[m_Unit->NumModel[nCountBlock].nType].vtxMin.z&&
 				pPos->z - size.z < m_Unit->NumModel[m_Unit->NumModel[nCountBlock].nType].pos.z + m_Unit->NumModel[m_Unit->NumModel[nCountBlock].nType].vtxMax.z)
 			{// X,Z座標が範囲内の場合
-				pPos->y = m_Unit->NumModel[m_Unit->NumModel[nCountBlock].nType].pos.y + m_Unit->NumModel[m_Unit->NumModel[nCountBlock].nType].vtxMax.y;
+				pPos->y = m_Unit->NumModel[m_Unit->NumModel[nCountBlock].nType].pos.y + Distance + m_Unit->NumModel[m_Unit->NumModel[nCountBlock].nType].vtxMax.y;
 				bRand = true;
 			}
 		}

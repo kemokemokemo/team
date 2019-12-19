@@ -39,9 +39,9 @@ public:
 	CPlayer_Kangaroo(OBJTYPE type);
 	~CPlayer_Kangaroo();
 
-	static CPlayer_Kangaroo *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
+	static CPlayer_Kangaroo *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CMaker::MAKERTYPE MokerType);
 
-	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
+	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CMaker::MAKERTYPE MokerType);
 
 	void Uninit(void);
 	void Update(void);

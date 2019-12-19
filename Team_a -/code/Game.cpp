@@ -21,7 +21,8 @@
 #include "player_sword.h"
 #include "player_Kangaroo.h"
 #include "gauge.h"
-
+#include "effect.h"
+#include "HitModel.h"
 //====================================================================================================
 // É}ÉNÉçíËã`
 //==================================================================================================== 
@@ -61,15 +62,21 @@ HRESULT CGame::Init(void)
 
 	CGauge::Load();
 
+	CMaker::Load();
+
+	CEffect::Load();
+
+	CHitModel::Load();
+
 	CModel::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CModel::UNITTYPE_FLOOR);
 
 	//CModel::Create(D3DXVECTOR3(640.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CModel::MODELTYPE_BILL0);
 
-	CPlayer_KEN::Create(D3DXVECTOR3(-200.0f, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	CPlayer_KEN::Create(D3DXVECTOR3(-200.0f, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CMaker::MAKERTYPE_1P);
 
-	CPlayer_SWORD::Create(D3DXVECTOR3(200.0f,500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	CPlayer_SWORD::Create(D3DXVECTOR3(200.0f,500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CMaker::MAKERTYPE_2P);
 
-	CPlayer_Kangaroo::Create(D3DXVECTOR3(0.0f, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+//	CPlayer_Kangaroo::Create(D3DXVECTOR3(0.0f, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
 	CGauge::Create(D3DXVECTOR3(200.0f, 600.0f, 0.0f));
 
@@ -87,6 +94,9 @@ void CGame::Uninit(void)
 	CPlayerBase::Unload();
 	CModel::Unload();
 	CGauge::Unload();
+	CMaker::Unload();
+	CEffect::Unload();
+	CHitModel::Unload();
 }
 
 //================================================================================================

@@ -17,6 +17,8 @@
 #include "gauge.h"
 #include "Scene2D.h"
 #include "model.h"
+#include "effect.h"
+#include "HitModel.h"
 
 //=============================================================================
 // É}ÉNÉçíËã`
@@ -54,7 +56,7 @@ CPlayerBase::~CPlayerBase()
 //=============================================================================
 // èâä˙âªèàóù
 //=============================================================================
-HRESULT CPlayerBase::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+HRESULT CPlayerBase::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CMaker::MAKERTYPE MokerType)
 {
 	BindModel(&m_PlayerType[m_TypeChara]);
 	//BindMotion(m_PlayerType[m_TypeChara].aMotionInfo);
@@ -64,6 +66,8 @@ HRESULT CPlayerBase::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	m_posOld = pos;
 
 	m_pos = pos;
+
+	m_MokerType = MokerType;
 
 	CScene3D::SetPos(pos);
 
@@ -82,6 +86,16 @@ HRESULT CPlayerBase::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	for (int nCnt = 0; nCnt < MOTIONTYPE_MAX; nCnt++)
 	{
 		MotionInfo[nCnt] = aMotionInfo[m_TypeChara][nCnt];
+	}
+
+	if (m_MokerType == CMaker::MAKERTYPE_1P)
+	{
+		CMaker::Create(pos, CMaker::MAKERTYPE_1P);
+	}
+	if (m_MokerType == CMaker::MAKERTYPE_2P)
+	{
+		CMaker::Create(pos, CMaker::MAKERTYPE_2P);
+
 	}
 	return S_OK;
 }
@@ -318,6 +332,7 @@ void CPlayerBase::Damage(CPlayerBase *pPlayer, int nDamage)
 	if (pPlayer->m_PlayerState == PLAYERSTATE_NORMAL)
 	{
 		pPlayer->m_nLife -= nDamage;
+		CEffect::SetParticle(pPlayer->GetPos(), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 10);
 		pPlayer->m_PlayerState = PLAYERSTATE_DAMAGE;
 		pPlayer->m_PlayerStateCount = 60;
 	}
@@ -369,6 +384,7 @@ void CPlayerBase::PlayerCollision()
 			fMinLength = fLength;
 			pPlayer[1] = pPlayer[0];
 		}
+		SetPosParts(pos);
 	}
 
 	if (pPlayer[1] && pPlayer[1]->m_PlayerState != PLAYERSTATE_DAMAGE)
@@ -379,6 +395,8 @@ void CPlayerBase::PlayerCollision()
 		if (fMinLength <= fRadius * fRadius)
 		{
 			PlayerDamage(pPlayer[1]);
+
+			//CHitModel::Create(pos, D3DXVECTOR3(pPlayer[1]->m_fAttack, pPlayer[1]->m_fAttack, pPlayer[1]->m_fAttack));
 		}
 	}
 
@@ -572,6 +590,11 @@ void CPlayerBase::MotionChangePlayer(MOTIONTYPE motionType)
 int CPlayerBase::GetLife(void)
 {
 	return m_nLife;
+}
+
+CMaker::MAKERTYPE CPlayerBase::GetMaker()
+{
+	return m_MokerType;
 }
 
 //========================================================================================================

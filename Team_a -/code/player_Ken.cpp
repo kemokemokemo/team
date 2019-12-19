@@ -49,22 +49,22 @@ CPlayer_KEN::~CPlayer_KEN()
 //=============================================================================
 // ÉÇÉfÉãÇÃê∂ê¨
 //=============================================================================
-CPlayer_KEN * CPlayer_KEN::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CPlayer_KEN * CPlayer_KEN::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CMaker::MAKERTYPE MokerType)
 {
 	CPlayer_KEN *pPlayer;
 	pPlayer = new CPlayer_KEN(OBJTYPE_PLAYER);
 
-	pPlayer->Init(pos, rot);
+	pPlayer->Init(pos, rot, MokerType);
 	return pPlayer;
 }
 
 //=============================================================================
 // èâä˙âªèàóù
 //=============================================================================
-HRESULT CPlayer_KEN::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+HRESULT CPlayer_KEN::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CMaker::MAKERTYPE MokerType)
 {
 	m_TypeChara = CPlayer_KEN::PLAYERTYPE_KEN;
-	CPlayerBase::Init(pos, rot);
+	CPlayerBase::Init(pos, rot, MokerType);
 
 	m_nLife = 12;
 	m_fDiffrot.y = D3DX_PI*-0.5f;

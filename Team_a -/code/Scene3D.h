@@ -78,10 +78,11 @@ public:
 	D3DXVECTOR3 SetvtxMax(D3DXVECTOR3 vtxMax) { return m_vtxMax = vtxMax; }
 	void SetHight(float Hight);
 	void SetLoad(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxModel, int nType);
-
+	void SetPosParts(D3DXVECTOR3 Parts);
 
 	D3DXVECTOR3 GetPos();
 	D3DXVECTOR3 GetRot();
+	D3DXVECTOR3 GetPosParts();
 	D3DXVECTOR3 GetScale() { return m_scale; }
 	D3DXVECTOR3 GetvtxMin() { return m_vtxMin; }
 	D3DXVECTOR3 GetvtxMax() { return m_vtxMax; }
@@ -111,6 +112,7 @@ private:
 	D3DXVECTOR3 m_pos;						// ポリゴンの位置
 	D3DXVECTOR3 m_rot;						// ポリゴンの向き
 	D3DXVECTOR3	m_scale;
+	D3DXVECTOR3 m_parts;					// ポリゴンの位置保存用
 
 	D3DXVECTOR3	m_move;						// 移動量
 	D3DXMATRIX  m_mtxWorld;					// ワールドマトリックス

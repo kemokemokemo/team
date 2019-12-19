@@ -154,15 +154,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="code\billboard.cpp" />
     <ClCompile Include="code\camera.cpp" />
+    <ClCompile Include="code\effect.cpp" />
     <ClCompile Include="code\fade.cpp" />
     <ClCompile Include="code\Game.cpp" />
     <ClCompile Include="code\Gameover.cpp" />
     <ClCompile Include="code\gauge.cpp" />
+    <ClCompile Include="code\HitModel.cpp" />
+    <ClCompile Include="code\HitModelBase.cpp" />
     <ClCompile Include="code\input.cpp" />
     <ClCompile Include="code\keybord.cpp" />
     <ClCompile Include="code\light.cpp" />
     <ClCompile Include="code\main.cpp" />
+    <ClCompile Include="code\maker.cpp" />
     <ClCompile Include="code\manager.cpp" />
     <ClCompile Include="code\model.cpp" />
     <ClCompile Include="code\pad.cpp" />
@@ -181,15 +186,20 @@
     <ClCompile Include="code\tutorial.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="code\billboard.h" />
     <ClInclude Include="code\camera.h" />
+    <ClInclude Include="code\effect.h" />
     <ClInclude Include="code\fade.h" />
     <ClInclude Include="code\Game.h" />
     <ClInclude Include="code\Gameover.h" />
     <ClInclude Include="code\gauge.h" />
+    <ClInclude Include="code\HitModel.h" />
+    <ClInclude Include="code\HitModelBase.h" />
     <ClInclude Include="code\input.h" />
     <ClInclude Include="code\keybord.h" />
     <ClInclude Include="code\light.h" />
     <ClInclude Include="code\main.h" />
+    <ClInclude Include="code\maker.h" />
     <ClInclude Include="code\manager.h" />
     <ClInclude Include="code\model.h" />
     <ClInclude Include="code\pad.h" />

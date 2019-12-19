@@ -51,22 +51,22 @@ CPlayer_SWORD::~CPlayer_SWORD()
 //=============================================================================
 // ÉÇÉfÉãÇÃê∂ê¨
 //=============================================================================
-CPlayer_SWORD * CPlayer_SWORD::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CPlayer_SWORD * CPlayer_SWORD::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CMaker::MAKERTYPE MokerType)
 {
 	CPlayer_SWORD *pPlayer;
 	pPlayer = new CPlayer_SWORD(OBJTYPE_PLAYER);
 
-	pPlayer->Init(pos, rot);
+	pPlayer->Init(pos, rot, MokerType);
 	return pPlayer;
 }
 
 //=============================================================================
 // èâä˙âªèàóù
 //=============================================================================
-HRESULT CPlayer_SWORD::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+HRESULT CPlayer_SWORD::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CMaker::MAKERTYPE MokerType)
 {
 	m_TypeChara = CPlayer_SWORD::PLAYERTYPE_SWORD;
-	CPlayerBase::Init(pos, rot);
+	CPlayerBase::Init(pos, rot, MokerType);
 	m_fDiffrot.y = D3DX_PI*0.5f;
 	m_nLife = 12;
 	m_fRadius = 40.0f;

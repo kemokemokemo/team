@@ -47,22 +47,22 @@ CPlayer_Kangaroo::~CPlayer_Kangaroo()
 //=============================================================================
 // ÉÇÉfÉãÇÃê∂ê¨
 //=============================================================================
-CPlayer_Kangaroo * CPlayer_Kangaroo::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CPlayer_Kangaroo * CPlayer_Kangaroo::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CMaker::MAKERTYPE MokerType)
 {
 	CPlayer_Kangaroo *pPlayer;
 	pPlayer = new CPlayer_Kangaroo(OBJTYPE_PLAYER);
 
-	pPlayer->Init(pos, rot);
+	pPlayer->Init(pos, rot, MokerType);
 	return pPlayer;
 }
 
 //=============================================================================
 // èâä˙âªèàóù
 //=============================================================================
-HRESULT CPlayer_Kangaroo::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+HRESULT CPlayer_Kangaroo::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CMaker::MAKERTYPE MokerType)
 {
 	m_TypeChara = CPlayer_Kangaroo::PLAYERTYPE_KANGAROO;
-	CPlayerBase::Init(pos, rot);
+	CPlayerBase::Init(pos, rot, MokerType);
 
 	m_nLife = 5;
 

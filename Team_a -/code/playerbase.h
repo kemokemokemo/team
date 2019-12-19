@@ -14,6 +14,7 @@
 //=============================================================================
 #include "main.h"
 #include "Scene3D.h"
+#include "maker.h"
 
 //=============================================================================
 // 構造体定義
@@ -25,6 +26,8 @@
 #define MAX_PLAYER	(2)
 
 class CGauge;
+class CMaker;
+
 //================================================================
 // レンダリングクラス
 //================================================================
@@ -130,7 +133,7 @@ public:
 	CPlayerBase(OBJTYPE type);
 	~CPlayerBase();
 
-	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
+	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CMaker::MAKERTYPE MokerType);
 
 	void Uninit();
 	void Update();
@@ -146,6 +149,8 @@ public:
 
 	int GetLife();
 	D3DXVECTOR3 GetMove() { return m_move; }
+
+	CMaker::MAKERTYPE GetMaker();
 
 	static HRESULT Load();
 	static HRESULT MotionLoad(std::ifstream *file, int nCnt);
@@ -177,6 +182,7 @@ protected:
 	MOTIONTYPE	m_MotionType;					// 現在のモーション
 	bool bWJump;
 private:
+
 	void PlayerCollision();
 	static MODELNUM m_PlayerType[PLAYERTYPE_MAX];
 	static char *TextLoad[PLAYERTYPE_MAX];
@@ -186,6 +192,7 @@ private:
 	MOTION_INFO MotionInfo[MOTIONTYPE_MAX];
 
 	bool bJump;
+	CMaker::MAKERTYPE m_MokerType;
 
 
 };

@@ -334,6 +334,11 @@ D3DXVECTOR3 CScene3D::GetRot(void)
 	return m_rot;
 }
 
+D3DXVECTOR3 CScene3D::GetPosParts()
+{
+	return m_parts;
+}
+
 void CScene3D::SetModel(MODELNUM model)
 {
 	m_Model = model;
@@ -376,6 +381,10 @@ void CScene3D::SetLoad(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxModel, int nTyp
 		m_Model.NumModel[nCnt].nIdxModel = nIdxModel;
 		m_Model.NumModel[nCnt].nType = nType;
 	}
+}
+
+void CScene3D::SetPosParts(D3DXVECTOR3 Parts)
+{
 }
 
 //====================================================================================================
