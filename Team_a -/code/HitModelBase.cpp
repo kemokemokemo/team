@@ -38,52 +38,15 @@ CHitModelBase::~CHitModelBase()
 //=============================================================================
 HRESULT CHitModelBase::Init()
 {
-	CRenderer *pRenderer = CManager::GetRenderer();
-	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
+	//CRenderer *pRenderer = CManager::GetRenderer();
+	//LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
 
-	VERTEX_3D *pVtx;
-
-	// オブジェクトの頂点バッファを生成
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * 4,
-		D3DUSAGE_WRITEONLY,
-		FVF_VERTEX_3D,
-		D3DPOOL_MANAGED,
-		&m_pVtxBuffScene,
-		NULL);
-
-	D3DXCreateTextureFromFile(
-		pDevice,
-		POLTGON0_TEX,
-		&m_pTextureModel);
-
-	// 頂点データの範囲をロックし、頂点バッファへのポインタを取得
-	m_pVtxBuffScene->Lock(0, 0, (void**)&pVtx, 0);
-
-	pVtx[0].pos = m_pos + D3DXVECTOR3(-m_scale.x, m_scale.y, m_scale.z);
-	pVtx[1].pos = m_pos + D3DXVECTOR3(m_scale.x, m_scale.y, m_scale.z);
-	pVtx[2].pos = m_pos + D3DXVECTOR3(-m_scale.x, m_scale.y, -m_scale.z);
-	pVtx[3].pos = m_pos + D3DXVECTOR3(m_scale.x, m_scale.y, -m_scale.z);
-
-	pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	pVtx[1].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	pVtx[2].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	pVtx[3].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-
-	pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-
-	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-	pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-	pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
-
-	// 頂点データをアンロックする
-	m_pVtxBuffScene->Unlock();
+	//D3DXCreateTextureFromFile(
+	//	pDevice,
+	//	POLTGON0_TEX,
+	//	&m_pTextureModel);
 
 	return S_OK;
-
 }
 
 //=============================================================================
@@ -91,7 +54,7 @@ HRESULT CHitModelBase::Init()
 //=============================================================================
 void CHitModelBase::Uninit(void)
 {
-
+	Release();
 }
 
 //=============================================================================
@@ -116,9 +79,6 @@ void CHitModelBase::Draw(void)
 
 	// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
-
-	//pDevice->LightEnable(0, FALSE);
-	//pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 	// 拡大率を反映
 	D3DXMatrixScaling(&mtxScale, m_scale.x, m_scale.y, m_scale.z);
@@ -156,18 +116,6 @@ void CHitModelBase::Draw(void)
 	}
 	// マテリアルをデフォルトに戻す
 	pDevice->SetMaterial(&matDef);
-
-	//pDevice->LightEnable(0, TRUE);
-	//pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
-}
-
-//====================================================================================================
-// モデルの初期化
-//====================================================================================================
-void CHitModelBase::ModelInit(void)
-{
-	CRenderer *pRenderer = CManager::GetRenderer();
-	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
 }
 
 //====================================================================================================

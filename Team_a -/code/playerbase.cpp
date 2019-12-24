@@ -81,6 +81,9 @@ HRESULT CPlayerBase::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CMaker::MAKERTYPE Mo
 
 	bWJump = true;
 
+	pMaker = NULL;
+	m_Hitmodel = NULL;
+
 	m_PlayerState = PLAYERSTATE_NORMAL;
 
 	for (int nCnt = 0; nCnt < MOTIONTYPE_MAX; nCnt++)
@@ -118,8 +121,8 @@ void CPlayerBase::Update(void)
 
 	PlayerMove();
 
-
 	MODELNUM model = GetModel();
+
 	switch (m_PlayerState)
 	{
 	case PLAYERSTATE_NORMAL:
@@ -232,6 +235,11 @@ void CPlayerBase::Update(void)
 		MotionInfo[m_MotionType].nAtkStar <= MotionInfo[m_MotionType].nNumKey && MotionInfo[m_MotionType].nAtkEnd >= MotionInfo[m_MotionType].nNumKey)
 	{
 		this->PlayerCollision();
+	}
+	else if (m_Hitmodel)
+	{// 可視化なし
+		m_Hitmodel->Uninit();
+		m_Hitmodel = NULL;
 	}
 
 	this->PlayerCollisionShape();
@@ -359,17 +367,29 @@ void CPlayerBase::PlayerCollision()
 	float fMinLength = 10000.0f;
 	CPlayerBase *pPlayer[2] = {};
 
-	D3DXVECTOR3 pos = GetPos();
-	int nCnt = MotionInfo[m_MotionType].nHitIdx;
+	D3DXVECTOR3 pos = {};
 
-	while (nCnt != -1)
-	{
-		D3DXVec3Add(&pos, &pos, &MotionInfo[m_MotionType].aKeyInfo[MotionInfo[m_MotionType].nNumKey].aKey[nCnt].pos);
-		D3DXVec3Add(&pos, &pos, &GetModel().NumModel[nCnt].pos);
+	// モーションでの座標
+	D3DXMATRIX mtxWorld = GetModel().NumModel[MotionInfo[m_MotionType].nHitIdx].mtxWorld;
 
-		nCnt = GetModel().NumModel[nCnt].nIdxModel;
+	pos.x = mtxWorld._41;
+	pos.y = mtxWorld._42;
+	pos.z = mtxWorld._43;
+
+	if (MotionInfo[m_MotionType].nAtkStar == MotionInfo[m_MotionType].nNumKey && MotionInfo[m_MotionType].nCntFrame == 0)
+	{// 当たり判定の可視化
+
+		if (m_Hitmodel)
+		{
+			m_Hitmodel->Uninit();
+			m_Hitmodel = NULL;
+		}
+		m_Hitmodel = CHitModel::Create(pos, D3DXVECTOR3(m_fAttack, m_fAttack, m_fAttack));
 	}
-
+	else if (m_Hitmodel)
+	{
+		m_Hitmodel->SetPos(pos);
+	}
 
 	for (int nCntScene = 0; nCntScene < MAX_POLYGON; nCntScene++)
 	{
@@ -389,7 +409,6 @@ void CPlayerBase::PlayerCollision()
 			fMinLength = fLength;
 			pPlayer[1] = pPlayer[0];
 		}
-		SetParts(pos);
 	}
 
 	if (pPlayer[1] && pPlayer[1]->m_PlayerState != PLAYERSTATE_DAMAGE)
@@ -400,11 +419,8 @@ void CPlayerBase::PlayerCollision()
 		if (fMinLength <= fRadius * fRadius)
 		{
 			PlayerDamage(pPlayer[1]);
-
-			CHitModel::Create(pos, D3DXVECTOR3(pPlayer[1]->m_fAttack, pPlayer[1]->m_fAttack, pPlayer[1]->m_fAttack));
 		}
 	}
-
 }
 
 //========================================================================================================
@@ -425,37 +441,22 @@ void CPlayerBase::PlayerCollisionShape()
 
 		// 頭 足元
 		D3DXVECTOR3 pos[2] = { m_pos, m_pos };
-
-
 		D3DXVECTOR3 opponent[2] = { pPlayer->m_pos, pPlayer->m_pos};
 
-		int nIdx[2] = { GetModel().NumModel[1].nIdxModel,pPlayer->GetModel().NumModel[1].nIdxModel };
-		D3DXVECTOR3 *poshead[2] = { &pos[0],&opponent[0] };
+		// モーションでの座標
+		D3DXMATRIX mtxWorld = GetModel().NumModel[1].mtxWorld;
+		pos[0] = D3DXVECTOR3(mtxWorld._41, mtxWorld._42, mtxWorld._43);
 
-		for (int nCount = 0; nCount < 2; nCount++)
-		{
-			while (nIdx[nCount] != -1)
-			{
-				D3DXVec3Add(poshead[nCount], poshead[nCount], &MotionInfo[m_MotionType].aKeyInfo[MotionInfo[m_MotionType].nNumKey].aKey[nIdx[nCount]].pos);
-				D3DXVec3Add(poshead[nCount], poshead[nCount], &GetModel().NumModel[nIdx[nCount]].pos);
+		mtxWorld = pPlayer->GetModel().NumModel[1].mtxWorld;
+		opponent[0] = D3DXVECTOR3(mtxWorld._41, mtxWorld._42, mtxWorld._43);
 
-				if (nCount == 0)
-				{
-					nIdx[0] = GetModel().NumModel[nIdx[0]].nIdxModel;
-				}
-				else
-				{
-					nIdx[1] = pPlayer->GetModel().NumModel[nIdx[1]].nIdxModel;
-				}
-			}
-		}
-
+		// 頭の衝突位置調整
 		pos[0] -= (pos[0] - pos[1]) / 4.0f;
 		pos[1] += (pos[0] - pos[1]) / 4.0f;
 
+		// 足の衝突位置調整
 		opponent[0] -= (opponent[0] - opponent[1]) / 4.0f;
 		opponent[1] += (opponent[0] - opponent[1]) / 4.0f;
-
 
 		// モデルと物体の距離
 		float fRadius = 10000.0f;
@@ -488,7 +489,10 @@ void CPlayerBase::PlayerCollisionShape()
 			// どれだけめり込んだか
 			fRadius = (fRadiusB + fRadiusA) - fRadius;
 
-			SetPos(GetPos() + vec * fRadius);
+			D3DXVECTOR3 pos = GetPos() + vec * fRadius;
+			pos.z = 0.0f;
+
+			SetPos(pos);
 
 			D3DXVECTOR3 temp = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 

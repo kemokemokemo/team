@@ -77,27 +77,6 @@ void CHitModel::Uninit(void)
 //=============================================================================
 void CHitModel::Update(void)
 {
-	for (int nCntModel = 0; nCntModel < MAX_POLYGON; nCntModel++)
-	{
-		CScene *pScene;
-
-		pScene = CScene::GetScene(OBJTYPE_PLAYER, nCntModel);
-
-		if (!pScene)
-			continue;
-
-		CPlayerBase *pPlayer = (CPlayerBase*)pScene;
-
-		D3DXVECTOR3 pos;
-
-		D3DXVECTOR3 posp = pPlayer->GetPosParts();
-
-		pos = posp;
-
-		CHitModelBase::SetPos(pos);
-
-		break;
-	}
 	CHitModelBase::Update();
 }
 

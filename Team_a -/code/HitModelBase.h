@@ -48,7 +48,6 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
-	void ModelInit(void);
 
 	D3DXVECTOR3 GetPos();
 	D3DXVECTOR3 GetSize();
@@ -56,10 +55,6 @@ public:
 	void Setsize(D3DXVECTOR3 scale);
 
 	void BindHitModel(DWORD NumMat, LPD3DXMESH Mesh, LPD3DXBUFFER BuffMat);
-
-
-	//static HRESULT Load(void);
-	//static void Unload(void);
 
 private:
 

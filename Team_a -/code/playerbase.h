@@ -15,6 +15,7 @@
 #include "main.h"
 #include "Scene3D.h"
 #include "maker.h"
+#include "HitModel.h"
 
 //=============================================================================
 // ç\ë¢ëÃíËã`
@@ -194,6 +195,7 @@ private:
 	bool bJump;
 	CMaker::MAKERTYPE m_MokerType;
 
+	CHitModel *m_Hitmodel;
 	CMaker *pMaker;
 };
 #endif
