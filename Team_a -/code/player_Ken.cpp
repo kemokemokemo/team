@@ -20,12 +20,13 @@
 
 //=============================================================================
 // マクロ定義
-//=============================================================================
+//===========================================================================
 #define PLAYER_SPEED	(2.0f)					//プレイヤーの速さ
 #define PLAYER_AIRSPEED	(1.8f)					//空中でのプレイヤーの速さ
 #define PLAYER_AIRATKSPEED	(0.8f)					//空中でのプレイヤーの速さ
 #define PLAYER_JUMP (100.0f)					//ジャンプの高さ
 #define PLAYER_AIRJUMP (80.0f)					//空中ジャンプの高さ
+#define LIGHT_ATK (9)					//弱攻撃に派生できるフレーム
 
 //=============================================================================
 // メンバ変数初期化
@@ -174,19 +175,8 @@ void CPlayer_KEN::Update(void)
 			}
 			else if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
 			{
-				//3段攻撃
-				if (m_MotionType == MOTIONTYPE_LIGHT0)
-				{
-					MotionChangePlayer(MOTIONTYPE_LIGHT1);
-				}
-				else if (m_MotionType == MOTIONTYPE_LIGHT1)
-				{
-					MotionChangePlayer(MOTIONTYPE_LIGHT2);
-				}
-				else
-				{
-					MotionChangePlayer(MOTIONTYPE_LIGHT0);
-				}
+
+				MotionChangePlayer(MOTIONTYPE_LIGHT0);
 			}
 			else if (pKeyboard->GetKeyboardPress(DIK_G))
 			{
@@ -271,45 +261,62 @@ void CPlayer_KEN::Update(void)
 	{
 	case MOTIONTYPE_LIGHT0:
 		nCountATK++;
-		if (nCountATK >= 0 && nCountATK <= 1)
+		if (nCountATK >= 0 && nCountATK <= 5)
 		{
 			if (m_fDiffrot.y == D3DX_PI*0.5f)
 			{
-				m_move.x -= 0.5f;
+				m_move.x -= 1.5f;
 			}
 			else
 			{
-				m_move.x += 0.5f;
+				m_move.x += 1.5f;
+			}
+		}
+		if (nCountATK >= LIGHT_ATK)
+		{
+			if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+			{
+				nCountATK = 0;
+				MotionChangePlayer(MOTIONTYPE_LIGHT1);
 			}
 		}
 		break;
 	case MOTIONTYPE_LIGHT1:
 		nCountATK++;
-		if (nCountATK >= 0 && nCountATK <= 1)
+		if (nCountATK >= 0 && nCountATK <= 5)
 		{
 			if (m_fDiffrot.y == D3DX_PI*0.5f)
 			{
-				m_move.x -= 0.5f;
+				m_move.x -= 1.0f;
 			}
 			else
 			{
-				m_move.x += 0.5f;
+				m_move.x += 1.0f;
+			}
+		}
+		if (nCountATK >= LIGHT_ATK)
+		{
+			if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+			{
+				nCountATK = 0;
+				MotionChangePlayer(MOTIONTYPE_LIGHT2);
 			}
 		}
 		break;
 	case MOTIONTYPE_LIGHT2:
 		nCountATK++;
-		if (nCountATK >= 0 && nCountATK <= 1)
+		if (nCountATK >= 0 && nCountATK <= 5)
 		{
 			if (m_fDiffrot.y == D3DX_PI*0.5f)
 			{
-				m_move.x -= 0.5f;
+				m_move.x -= 1.5f;
 			}
 			else
 			{
-				m_move.x += 0.5f;
+				m_move.x += 1.5f;
 			}
 		}
+
 		break;
 	case MOTIONTYPE_DASHATK:
 		nCountATK++;
@@ -337,7 +344,7 @@ void CPlayer_KEN::Update(void)
 		break;
 	case MOTIONTYPE_SP_DOWN:
 		nCountATK++;
-		if (nCountATK >= 45&& nCountATK <= 55)
+		if (nCountATK >= 45 && nCountATK <= 55)
 		{
 			if (m_fDiffrot.y == D3DX_PI*0.5f)
 			{
@@ -377,6 +384,7 @@ void CPlayer_KEN::Update(void)
 			MotionChangePlayer(MOTIONTYPE_WAIT);
 		}
 	}
+
 
 	CPlayerBase::Update();
 }

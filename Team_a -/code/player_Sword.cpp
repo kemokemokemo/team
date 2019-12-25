@@ -27,6 +27,7 @@
 #define PLAYER_AIRATKSPEED	(0.7f)						//空中でのプレイヤーの速さ
 #define PLAYER_JUMP (90.0f)						//ジャンプの高さ
 #define PLAYER_AIRJUMP (60.0f)					//空中ジャンプの高さ
+#define LIGHT_ATK (9)					//弱攻撃に派生できるフレーム
 
 //=============================================================================
 // メンバ変数初期化
@@ -98,7 +99,7 @@ void CPlayer_SWORD::Update(void)
 		//空中
 		if (GetJump() == false)
 		{
-			if (pKeyboard->GetKeyboardTrigger(DIK_I)||pGamePad->GetJoypadTrigger(0, CPad::JOYPADKEY_Y))
+			if (pKeyboard->GetKeyboardTrigger(DIK_I) || pGamePad->GetJoypadTrigger(0, CPad::JOYPADKEY_Y))
 			{//ジャンプ
 				if (bWJump == false)
 				{
@@ -178,19 +179,7 @@ void CPlayer_SWORD::Update(void)
 			}
 			else if (pKeyboard->GetKeyboardTrigger(DIK_L) || pGamePad->GetJoypadTrigger(0, CPad::JOYPADKEY_B))
 			{
-				//3段攻撃
-				if (m_MotionType == MOTIONTYPE_LIGHT0)
-				{
-					MotionChangePlayer(MOTIONTYPE_LIGHT1);
-				}
-				else if (m_MotionType == MOTIONTYPE_LIGHT1)
-				{
-					MotionChangePlayer(MOTIONTYPE_LIGHT2);
-				}
-				else
-				{
-					MotionChangePlayer(MOTIONTYPE_LIGHT0);
-				}
+				MotionChangePlayer(MOTIONTYPE_LIGHT0);
 			}
 			else if (pGamePad->GetJoypadPress(0, CPad::JOYPADKEY_X))
 			{
@@ -275,43 +264,48 @@ void CPlayer_SWORD::Update(void)
 	{
 	case MOTIONTYPE_LIGHT0:
 		nCountATK++;
-		if (nCountATK >= 0 && nCountATK <= 1)
+		if (nCountATK >= LIGHT_ATK)
 		{
-			if (m_fDiffrot.y == D3DX_PI*0.5f)
+			if (pKeyboard->GetKeyboardTrigger(DIK_L) || pGamePad->GetJoypadTrigger(0, CPad::JOYPADKEY_B))
 			{
-				m_move.x -= 0.5f;
-			}
-			else
-			{
-				m_move.x += 0.5f;
+				nCountATK = 0;
+				MotionChangePlayer(MOTIONTYPE_LIGHT1);
 			}
 		}
 		break;
 	case MOTIONTYPE_LIGHT1:
 		nCountATK++;
-		if (nCountATK >= 0 && nCountATK <= 1)
+		if (nCountATK >= 0 && nCountATK <= 5)
 		{
 			if (m_fDiffrot.y == D3DX_PI*0.5f)
 			{
-				m_move.x -= 0.5f;
+				m_move.x -= 1.5f;
 			}
 			else
 			{
-				m_move.x += 0.5f;
+				m_move.x += 1.5f;
+			}
+		}
+		if (nCountATK >= LIGHT_ATK)
+		{
+			if (pKeyboard->GetKeyboardTrigger(DIK_L) || pGamePad->GetJoypadTrigger(0, CPad::JOYPADKEY_B))
+			{
+				nCountATK = 0;
+				MotionChangePlayer(MOTIONTYPE_LIGHT2);
 			}
 		}
 		break;
 	case MOTIONTYPE_LIGHT2:
 		nCountATK++;
-		if (nCountATK >= 0 && nCountATK <= 1)
+		if (nCountATK >= 0 && nCountATK <= 5)
 		{
 			if (m_fDiffrot.y == D3DX_PI*0.5f)
 			{
-				m_move.x -= 0.5f;
+				m_move.x -= 2.5f;
 			}
 			else
 			{
-				m_move.x += 0.5f;
+				m_move.x += 2.5f;
 			}
 		}
 
@@ -358,7 +352,7 @@ void CPlayer_SWORD::Update(void)
 		{
 			m_move.x += D3DX_PI*-0.5f* PLAYER_AIRATKSPEED;
 		}
-		if (pKeyboard->GetKeyboardPress(DIK_S)|| pGamePad->GetJoypadPress(0, CPad::JOYPADKEY_DOWN))
+		if (pKeyboard->GetKeyboardPress(DIK_S) || pGamePad->GetJoypadPress(0, CPad::JOYPADKEY_DOWN))
 		{
 			m_move.y -= 1.2f;
 		}

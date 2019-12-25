@@ -119,7 +119,6 @@ void CPlayerBase::Update(void)
 	//ƒ‚[ƒVƒ‡ƒ“‚ÌÄ¶
 	MotionPlayer();
 
-	PlayerMove();
 
 	MODELNUM model = GetModel();
 
@@ -156,9 +155,11 @@ void CPlayerBase::Update(void)
 		MotionChangePlayer(MOTIONTYPE_RUN);
 		break;
 	case MOTIONTYPE_LIGHT0:
+		m_PlayerState = PLAYERSTATE_ATK;
 		MotionChangePlayer(MOTIONTYPE_LIGHT0);
 		break;
 	case MOTIONTYPE_LIGHT1:
+		m_PlayerState = PLAYERSTATE_ATK;
 		MotionChangePlayer(MOTIONTYPE_LIGHT1);
 		break;
 	case MOTIONTYPE_LIGHT2:
@@ -241,6 +242,7 @@ void CPlayerBase::Update(void)
 		m_Hitmodel->Uninit();
 		m_Hitmodel = NULL;
 	}
+	this->PlayerMove();
 
 	this->PlayerCollisionShape();
 
