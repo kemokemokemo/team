@@ -45,6 +45,6 @@ private:
 	static CCamera*m_pCamera;
 	static CLight*m_pLight;
 
-	static CPlayerBase::PLAYERTYPE m_PlayerType[4];
+	static CPlayerBase::PLAYERTYPE m_PlayerType[3];
 };
 #endif

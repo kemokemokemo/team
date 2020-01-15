@@ -175,7 +175,6 @@ void CPlayer_KEN::Update(void)
 			}
 			else if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
 			{
-
 				MotionChangePlayer(MOTIONTYPE_LIGHT0);
 			}
 			else if (pKeyboard->GetKeyboardPress(DIK_G))

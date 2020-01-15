@@ -32,7 +32,7 @@
 //=====================================================================================================
 CManager *CGame::m_pManager = NULL;
 CLight*CGame::m_pLight = NULL;
-CPlayerBase::PLAYERTYPE CGame::m_PlayerType[4] = {};
+CPlayerBase::PLAYERTYPE CGame::m_PlayerType[3] = {};
 
 //================================================================================================
 // コンストラクタ
@@ -74,7 +74,7 @@ HRESULT CGame::Init(void)
 	//CModel::Create(D3DXVECTOR3(640.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CModel::MODELTYPE_BILL0);
 
 
-	for (int nCnt = 0; nCnt < 4; nCnt++)
+	for (int nCnt = 0; nCnt < 3; nCnt++)
 	{
 		switch (m_PlayerType[nCnt])
 		{
@@ -84,17 +84,19 @@ HRESULT CGame::Init(void)
 
 			break;
 
+		case CPlayerBase::PLAYERTYPE_KANGAROO:
+
+			CPlayer_Kangaroo::Create(D3DXVECTOR3(0.0f, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CMaker::MAKERTYPE)nCnt);
+
+			break;
+
 		case CPlayerBase::PLAYERTYPE_SWORD:
 
 			CPlayer_SWORD::Create(D3DXVECTOR3(200.0f, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CMaker::MAKERTYPE)nCnt);
 
 			break;
 
-		case CPlayerBase::PLAYERTYPE_KANGAROO:
 
-			CPlayer_Kangaroo::Create(D3DXVECTOR3(0.0f, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CMaker::MAKERTYPE)nCnt);
-
-			break;
 		}
 	}
 
@@ -103,8 +105,6 @@ HRESULT CGame::Init(void)
 	//CPlayer_SWORD::Create(D3DXVECTOR3(200.0f,500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CMaker::MAKERTYPE_2P);
 
 	//CPlayer_Kangaroo::Create(D3DXVECTOR3(0.0f, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CMaker::MAKERTYPE_2P);
-
-
 
 	CGauge::Create(D3DXVECTOR3(200.0f, 600.0f, 0.0f));
 
@@ -152,7 +152,7 @@ void CGame::Draw(void)
 
 void CGame::SetPlayerType(CSelectIcon * type)
 {
-	for (int nCnt = 0; nCnt < 4; nCnt++)
+	for (int nCnt = 0; nCnt < 3; nCnt++)
 	{
 		m_PlayerType[nCnt] = type[nCnt].GetType();
 	}

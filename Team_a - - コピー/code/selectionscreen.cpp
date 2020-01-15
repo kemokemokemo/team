@@ -59,9 +59,7 @@ HRESULT CSelectionScreen::Init(void)
 		m_pPlayerIcon[nCnt] = CSelectIcon::Create(D3DXVECTOR3(pos, 0.0f, 0.0f), (CSelectIcon::ICON)nCnt);
 		pos += 100.0f;
 	}
-	
 	return S_OK;
-
 }
 
 //=================================================================================================
@@ -81,7 +79,7 @@ void CSelectionScreen::Update(void)
 
 	// アイコンの動き
 	float fH, fV;
-	for (int nCnt = 0; nCnt < 4; nCnt++)
+	for (int nCnt = 0; nCnt < 3; nCnt++)
 	{
 		// スティック取得
 		pPad->GetJoypadStickLeft(nCnt, &fH, &fV);
@@ -96,8 +94,25 @@ void CSelectionScreen::Update(void)
 			D3DXVECTOR3 pos = m_pPlayerIcon[nCnt]->GetPos();
 
 			// ここで何のプレイヤーか分ける
+			m_pPlayerIcon[nCnt]->SetType(CPlayerBase::PLAYERTYPE_KEN);
+			break;
+		}
+		if (pPad->GetJoypadTrigger(nCnt, CPad::JOYPADKEY_A))
+		{
+			D3DXVECTOR3 pos = m_pPlayerIcon[nCnt]->GetPos();
 
+			// ここで何のプレイヤーか分ける
+			m_pPlayerIcon[nCnt]->SetType(CPlayerBase::PLAYERTYPE_KANGAROO);
+			break;
+
+		}
+		if (pPad->GetJoypadTrigger(nCnt, CPad::JOYPADKEY_Y))
+		{
+			D3DXVECTOR3 pos = m_pPlayerIcon[nCnt]->GetPos();
+
+			// ここで何のプレイヤーか分ける
 			m_pPlayerIcon[nCnt]->SetType(CPlayerBase::PLAYERTYPE_SWORD);
+			break;
 		}
 	}
 

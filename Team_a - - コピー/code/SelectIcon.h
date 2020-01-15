@@ -11,14 +11,14 @@
 //インクリードファイル
 //====================================================================================================
 #include"playerbase.h"
-#include"billboard.h"
+#include"scene2D.h"
 
 
 class CPlayerBase;
 //================================================================
 // レンダリングクラス
 //================================================================
-class CSelectIcon: public CBillboard
+class CSelectIcon: public CScene2D
 {
 public:
 
@@ -39,7 +39,7 @@ public:
 	CSelectIcon(OBJTYPE type);
 	~CSelectIcon();
 
-	HRESULT Init(D3DXVECTOR3 pos, ICON Icon);
+	HRESULT Init(D3DXVECTOR3 pos);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
@@ -59,7 +59,7 @@ private:
 	CPlayerBase::PLAYERTYPE m_PlayerType;
 
 	D3DXVECTOR3 m_move;
-	ICON m_Icon[4];
+	ICON m_Icon;
 	float Size;
 	int m_nLife;
 };
