@@ -23,6 +23,7 @@
 #include "gauge.h"
 #include "effect.h"
 #include "HitModel.h"
+#include "Texture.h"
 //====================================================================================================
 // É}ÉNÉçíËã`
 //==================================================================================================== 
@@ -67,6 +68,8 @@ HRESULT CGame::Init(void)
 
 	CEffect::Load();
 
+	CTexture::Load();
+
 	CHitModel::Load();
 
 	CModel::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CModel::UNITTYPE_FLOOR);
@@ -110,6 +113,10 @@ HRESULT CGame::Init(void)
 
 	CPolygon::Create();
 
+	CTexture::Create(D3DXVECTOR3(80.0f, 550.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 510.0f, 200.0f, CTexture::TYPE_LIFE1);
+	CTexture::Create(D3DXVECTOR3(680.0f, 550.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 510.0f, 200.0f, CTexture::TYPE_LIFE2);
+
+
 	return S_OK;
 }
 
@@ -123,6 +130,7 @@ void CGame::Uninit(void)
 	CModel::Unload();
 	CGauge::Unload();
 	CMaker::Unload();
+	CTexture::Unload();
 	CEffect::Unload();
 	CHitModel::Unload();
 }

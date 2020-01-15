@@ -184,6 +184,7 @@
     <ClCompile Include="code\Scene3D.cpp" />
     <ClCompile Include="code\SelectIcon.cpp" />
     <ClCompile Include="code\selectionscreen.cpp" />
+    <ClCompile Include="code\Texture.cpp" />
     <ClCompile Include="code\Title.cpp" />
     <ClCompile Include="code\tutorial.cpp" />
   </ItemGroup>
@@ -218,6 +219,7 @@
     <ClInclude Include="code\Scene3D.h" />
     <ClInclude Include="code\SelectIcon.h" />
     <ClInclude Include="code\selectionscreen.h" />
+    <ClInclude Include="code\Texture.h" />
     <ClInclude Include="code\Title.h" />
     <ClInclude Include="code\tutorial.h" />
   </ItemGroup>

@@ -37,23 +37,28 @@ public:
 
 	void BindTexture(LPDIRECT3DTEXTURE9 cName);
 	D3DXVECTOR3 GetPos(void);
+	D3DXVECTOR3 GetMove(void);
 	void SetPos(D3DXVECTOR3 pos);
+	void SetMove(D3DXVECTOR3 move);
 	void SetColor(D3DXCOLOR color);
 	void SetSize(float Size_x, float Size_y, float Size_z);
 	void CBillboard::SetAnim(int fHeight, int fWidht, int fChange);
+
+protected:
+	D3DXVECTOR3 m_pos;
+	D3DXVECTOR3 m_rot;
+	D3DXVECTOR3 m_move;
+	float m_size_x;
+	float m_size_y;
+	float m_size_z;
 
 private:
 
 	LPDIRECT3DTEXTURE9 m_pTextureBillBoard;
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuffBillBoard;
 	D3DXMATRIX m_mtxWorldBillBoard;
-	D3DXVECTOR3 m_pos;
-	D3DXVECTOR3 m_rot;
 	int m_nCounterAnim;
 	int m_nPatternAnim;
-	float m_size_x;
-	float m_size_y;
-	float m_size_z;
 
 	D3DXCOLOR m_Color;
 
