@@ -1,3 +1,37 @@
-﻿  selectionscreen.cpp
-  Team_a.vcxproj -> C:\Users\S-Jobi18-051\Desktop\Team_a - - コピー\Debug\Team_a.exe
-  Team_a.vcxproj -> C:\Users\S-Jobi18-051\Desktop\Team_a - - コピー\Debug\Team_a.pdb (Full PDB)
+﻿  tutorial.cpp
+  Title.cpp
+  selectionscreen.cpp
+  SelectIcon.cpp
+  Scene3D.cpp
+  Scene2D.cpp
+  Scene.cpp
+  Result.cpp
+  renderer.cpp
+  polygonbase.cpp
+  polygon.cpp
+  player_Sword.cpp
+  player_Ken.cpp
+  player_Kangaroo.cpp
+  playerbase.cpp
+  pad.cpp
+  model.cpp
+  manager.cpp
+  maker.cpp
+  main.cpp
+  コードを生成中...
+  コンパイル中...
+  light.cpp
+  keybord.cpp
+  input.cpp
+  HitModelBase.cpp
+  HitModel.cpp
+  gauge.cpp
+  Gameover.cpp
+  Game.cpp
+  fade.cpp
+  effect.cpp
+  camera.cpp
+  billboard.cpp
+  コードを生成中...
+  Team_a.vcxproj -> C:\Users\木村洸太\Documents\GitHub\team\Team_a - - コピー\Debug\Team_a.exe
+  Team_a.vcxproj -> C:\Users\木村洸太\Documents\GitHub\team\Team_a - - コピー\Debug\Team_a.pdb (Full PDB)
