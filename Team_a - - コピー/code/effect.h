@@ -61,7 +61,7 @@ private:
 	static LPDIRECT3DTEXTURE9 m_pTextureEffect[MAX_EFFECTTEX];		// テクスチャへのポインタ
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuffEffect;				// 頂点バッファへのポインタ
 	EFFECTTYPE EffectType;
-
+	float size;
 	D3DXVECTOR3 m_move;
 	int m_nLife;
 };

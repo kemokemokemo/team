@@ -111,10 +111,14 @@
     <ClCompile Include="code\SelectIcon.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="code\Number.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="code\time.cpp">
+=======
+    <ClCompile Include="code\Texture.cpp">
+>>>>>>> b94db975b7e9952fbed0bf1639f5e5e35a94897c
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -215,10 +219,14 @@
     <ClInclude Include="code\SelectIcon.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="code\Number.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="code\time.h">
+=======
+    <ClInclude Include="code\Texture.h">
+>>>>>>> b94db975b7e9952fbed0bf1639f5e5e35a94897c
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

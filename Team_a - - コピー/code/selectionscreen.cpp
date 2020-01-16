@@ -13,7 +13,7 @@
 #include "light.h"
 #include "playerbase.h"
 #include "Game.h"
-
+#include "Texture.h"
 //====================================================================================================
 // É}ÉNÉçíËã`
 //==================================================================================================== 
@@ -50,11 +50,17 @@ CSelectionScreen::~CSelectionScreen()
 HRESULT CSelectionScreen::Init(void)
 {
 	m_pLight = CLight::Create();
+	CTexture::Load();
 
 	CSelectIcon::Load();
 	float pos = 0;
+	CTexture::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(0.9f, 0.9f, 0.9f, 1.0f), 1280.0f, 720.0f, CTexture::TYPE_SELECT_BG);
+	CTexture::Create(D3DXVECTOR3(100.0f, 350.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 370.0f, 350.0f, CTexture::TYPE_SELECT1);
+	CTexture::Create(D3DXVECTOR3(800.0f, 350.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 370.0f, 350.0f, CTexture::TYPE_SELECT2);
 
-	for (int nCnt = 0; nCnt < 4; nCnt++)
+
+
+	for (int nCnt = 0; nCnt < 2; nCnt++)
 	{
 		m_pPlayerIcon[nCnt] = CSelectIcon::Create(D3DXVECTOR3(pos, 0.0f, 0.0f), (CSelectIcon::ICON)nCnt);
 		pos += 100.0f;

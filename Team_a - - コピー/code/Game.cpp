@@ -23,8 +23,12 @@
 #include "gauge.h"
 #include "effect.h"
 #include "HitModel.h"
+<<<<<<< HEAD
 #include "Number.h"
 #include "time.h"
+=======
+#include "Texture.h"
+>>>>>>> b94db975b7e9952fbed0bf1639f5e5e35a94897c
 //====================================================================================================
 // É}ÉNÉçíËã`
 //==================================================================================================== 
@@ -71,6 +75,8 @@ HRESULT CGame::Init(void)
 
 	CEffect::Load();
 
+	CTexture::Load();
+
 	CHitModel::Load();
 
 	CNumber::Load();
@@ -116,10 +122,16 @@ HRESULT CGame::Init(void)
 
 	CPolygon::Create();
 
+<<<<<<< HEAD
 
 	{//êßå¿éûä‘ÇÃê∂ê¨
 		pTime = CTime::Create(100);
 	}
+=======
+	CTexture::Create(D3DXVECTOR3(80.0f, 550.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 510.0f, 200.0f, CTexture::TYPE_LIFE1);
+	CTexture::Create(D3DXVECTOR3(680.0f, 550.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 510.0f, 200.0f, CTexture::TYPE_LIFE2);
+
+>>>>>>> b94db975b7e9952fbed0bf1639f5e5e35a94897c
 
 	return S_OK;
 }
@@ -134,6 +146,7 @@ void CGame::Uninit(void)
 	CModel::Unload();
 	CGauge::Unload();
 	CMaker::Unload();
+	CTexture::Unload();
 	CEffect::Unload();
 	CHitModel::Unload();
 }

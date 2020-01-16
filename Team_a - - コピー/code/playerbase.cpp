@@ -352,20 +352,36 @@ void CPlayerBase::PlayerDamage(CPlayerBase *pPlayer)
 //=====================================================================================================
 void CPlayerBase::Damage(CPlayerBase *pPlayer, int nDamage)
 {
+<<<<<<< HEAD
 	 
+=======
+>>>>>>> b94db975b7e9952fbed0bf1639f5e5e35a94897c
 	if (pPlayer->m_PlayerState == PLAYERSTATE_NORMAL)
 	{
 		pPlayer->m_nLife -= nDamage;
-		CEffect::SetParticle(pPlayer->GetPos(), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 20,CEffect::EFFECTTYPE_EXPLOSION);
+		CEffect::SetParticle(pPlayer->GetPos(), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 10, CEffect::EFFECTTYPE_EXPLOSION);
+		float fAngle = 0.0f;
+		float fSpeed = 0.0f;
+
+		for (int nCnt = 0; nCnt < 50; nCnt++)
+		{
+			// o‚·Œü‚«
+			fAngle = float(rand() % 314) / 20.0f - float(rand() % 314) / 20.0f;	// ‘S•ûŒüo‚·
+			D3DXVECTOR3 move0 = D3DXVECTOR3(sinf(fAngle)*(fSpeed + rand() % 12 + 5.0f), cosf(fAngle)*(fSpeed + rand() % 12 + 5.0f), 0.0f);
+			D3DXVECTOR3 move1 = D3DXVECTOR3(sinf(fAngle)*fSpeed, 0.0f, cosf(fAngle)*fSpeed);
+			D3DXVECTOR3 move2 = D3DXVECTOR3(0.0f, sinf(fAngle)*fSpeed, cosf(fAngle)*fSpeed);
+			CEffect::SetParticle(pPlayer->GetPos(), move0, 10, CEffect::EFFECTTYPE_DAMAGE);
+		}
 		pPlayer->m_PlayerState = PLAYERSTATE_DAMAGE;
 		pPlayer->m_PlayerStateCount = 60;
 
 		pPlayer->pMaker->MakerLife(nDamage);
 
 	}
-	
+
 	if (pPlayer->m_PlayerState == PLAYERSTATE_GAUDE)
 	{
+
 	}
 
 	if (pPlayer->m_nLife <= 0)

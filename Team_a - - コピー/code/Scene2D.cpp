@@ -75,20 +75,20 @@ HRESULT CScene2D::Init(void)
 	// 頂点データの範囲をロックし、頂点バッファへのポインタを取得
 	m_pVtxBuffScene->Lock(0, 0, (void**)&pVtx, 0);
 
-	pVtx[0].pos = m_pos + D3DXVECTOR3(-Pos, -Pos, 0.0f);
-	pVtx[1].pos = m_pos + D3DXVECTOR3(Pos, -Pos, 0.0f);
-	pVtx[2].pos = m_pos + D3DXVECTOR3(-Pos, Pos, 0.0f);
-	pVtx[3].pos = m_pos + D3DXVECTOR3(Pos, Pos, 0.0f);
+	pVtx[0].pos = m_pos + D3DXVECTOR3(-0.0f, -0.0f, 0.0f);
+	pVtx[1].pos = m_pos + D3DXVECTOR3(m_PosSize_X, -0.0f, 0.0f);
+	pVtx[2].pos = m_pos + D3DXVECTOR3(-0.0f, m_PosSize_Y, 0.0f);
+	pVtx[3].pos = m_pos + D3DXVECTOR3(m_PosSize_X, m_PosSize_Y, 0.0f);
 
 	pVtx[0].rhw = 1.0f;
 	pVtx[1].rhw = 1.0f;
 	pVtx[2].rhw = 1.0f;
 	pVtx[3].rhw = 1.0f;
 
-	pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	pVtx[0].col = m_Col;
+	pVtx[1].col = m_Col;
+	pVtx[2].col = m_Col;
+	pVtx[3].col = m_Col;
 
 	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
 	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);

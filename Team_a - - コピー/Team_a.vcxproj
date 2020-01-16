@@ -185,7 +185,11 @@
     <ClCompile Include="code\Scene3D.cpp" />
     <ClCompile Include="code\SelectIcon.cpp" />
     <ClCompile Include="code\selectionscreen.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="code\time.cpp" />
+=======
+    <ClCompile Include="code\Texture.cpp" />
+>>>>>>> b94db975b7e9952fbed0bf1639f5e5e35a94897c
     <ClCompile Include="code\Title.cpp" />
     <ClCompile Include="code\tutorial.cpp" />
   </ItemGroup>
@@ -221,7 +225,11 @@
     <ClInclude Include="code\Scene3D.h" />
     <ClInclude Include="code\SelectIcon.h" />
     <ClInclude Include="code\selectionscreen.h" />
+<<<<<<< HEAD
     <ClInclude Include="code\time.h" />
+=======
+    <ClInclude Include="code\Texture.h" />
+>>>>>>> b94db975b7e9952fbed0bf1639f5e5e35a94897c
     <ClInclude Include="code\Title.h" />
     <ClInclude Include="code\tutorial.h" />
   </ItemGroup>
