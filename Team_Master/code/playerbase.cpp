@@ -473,8 +473,11 @@ void CPlayerBase::PlayerCollision()
 		//‰~‚Ì“–‚½‚è”»’è
 		if (fMinLength <= fRadius * fRadius)
 		{
-			PlayerDamage(pPlayer[1]);
-			//m_MotionOld = MOTIONTYPE_WAIT;
+			if (m_MotionOld != m_MotionType)
+			{
+				m_MotionOld = m_MotionType;
+				PlayerDamage(pPlayer[1]);
+			}
 		}
 	}
 }

@@ -85,33 +85,34 @@ HRESULT CGame::Init(void)
 
 	for (int nCnt = 0; nCnt < 2; nCnt++)
 	{
-		switch (m_PlayerType[nCnt])
-		{
-		case CPlayerBase::PLAYERTYPE_KEN:
+		//switch (m_PlayerType[nCnt])
+		//{
+		//case CPlayerBase::PLAYERTYPE_KEN:
 
-			CPlayer_KEN::Create(D3DXVECTOR3(-200.0f, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CMaker::MAKERTYPE)nCnt);
+		//	CPlayer_KEN::Create(D3DXVECTOR3(-200.0f, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CMaker::MAKERTYPE)nCnt);
 
-			break;
+		//	break;
 
-		case CPlayerBase::PLAYERTYPE_KANGAROO:
-
-			CPlayer_Kangaroo::Create(D3DXVECTOR3(0.0f, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CMaker::MAKERTYPE)nCnt);
-
-			break;
-
-		case CPlayerBase::PLAYERTYPE_SWORD:
-
-			CPlayer_SWORD::Create(D3DXVECTOR3(200.0f, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CMaker::MAKERTYPE)nCnt);
-
-			break;
+		//case CPlayerBase::PLAYERTYPE_KANGAROO:
 
 
-		}
+		//	CPlayer_Kangaroo::Create(D3DXVECTOR3(0.0f, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CMaker::MAKERTYPE)nCnt);
+
+		//	break;
+
+		//case CPlayerBase::PLAYERTYPE_SWORD:
+
+		//	CPlayer_SWORD::Create(D3DXVECTOR3(200.0f, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CMaker::MAKERTYPE)nCnt);
+
+		//	break;
+
+
+		//}
 	}
 
-	//CPlayer_KEN::Create(D3DXVECTOR3(-200.0f, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CMaker::MAKERTYPE_1P);
+	CPlayer_KEN::Create(D3DXVECTOR3(-200.0f, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CMaker::MAKERTYPE_1P);
 
-	//CPlayer_SWORD::Create(D3DXVECTOR3(200.0f,500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CMaker::MAKERTYPE_2P);
+	CPlayer_SWORD::Create(D3DXVECTOR3(200.0f,500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CMaker::MAKERTYPE_2P);
 
 	//CPlayer_Kangaroo::Create(D3DXVECTOR3(0.0f, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CMaker::MAKERTYPE_2P);
 
