@@ -70,8 +70,10 @@ HRESULT CPlayer_SWORD::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CMaker::MAKERTYPE 
 	CPlayerBase::Init(pos, rot, MokerType);
 	m_fDiffrot.y = D3DX_PI*0.5f;
 	m_nLife = 12;
-	m_fRadius = 40.0f;
-	m_fAttack = 40.0f;
+	m_fRadius = 25.0f;
+	m_fAttack = 50.0f;
+
+	CGauge::Create(D3DXVECTOR3(700.0f, 50.0f, 0.0f), m_nLife, CPlayer_SWORD::PLAYERTYPE_SWORD);
 
 	return S_OK;
 }

@@ -29,7 +29,7 @@ CLight*CSelectionScreen::m_pLight = NULL;
 //=================================================================================================
 CSelectionScreen::CSelectionScreen()
 {
-	for (int nCnt = 0; nCnt < 4; nCnt++)
+	for (int nCnt = 0; nCnt < 2; nCnt++)
 	{
 		m_pPlayerIcon[nCnt] = NULL;
 	}
@@ -79,7 +79,7 @@ void CSelectionScreen::Update(void)
 
 	// アイコンの動き
 	float fH, fV;
-	for (int nCnt = 0; nCnt < 3; nCnt++)
+	for (int nCnt = 0; nCnt < 2; nCnt++)
 	{
 		// スティック取得
 		pPad->GetJoypadStickLeft(nCnt, &fH, &fV);
@@ -95,7 +95,6 @@ void CSelectionScreen::Update(void)
 
 			// ここで何のプレイヤーか分ける
 			m_pPlayerIcon[nCnt]->SetType(CPlayerBase::PLAYERTYPE_KEN);
-			break;
 		}
 		if (pPad->GetJoypadTrigger(nCnt, CPad::JOYPADKEY_A))
 		{
@@ -103,8 +102,6 @@ void CSelectionScreen::Update(void)
 
 			// ここで何のプレイヤーか分ける
 			m_pPlayerIcon[nCnt]->SetType(CPlayerBase::PLAYERTYPE_KANGAROO);
-			break;
-
 		}
 		if (pPad->GetJoypadTrigger(nCnt, CPad::JOYPADKEY_Y))
 		{
@@ -112,7 +109,6 @@ void CSelectionScreen::Update(void)
 
 			// ここで何のプレイヤーか分ける
 			m_pPlayerIcon[nCnt]->SetType(CPlayerBase::PLAYERTYPE_SWORD);
-			break;
 		}
 	}
 

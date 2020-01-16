@@ -18,6 +18,7 @@ class CManager;
 class CRenderer;
 class CCamera;
 class CLight;
+class CTime;
 
 //================================================================
 // レンダリングクラス
@@ -44,7 +45,8 @@ private:
 	static CManager*m_pManager;
 	static CCamera*m_pCamera;
 	static CLight*m_pLight;
+	static CTime *pTime;
 
-	static CPlayerBase::PLAYERTYPE m_PlayerType[3];
+	static CPlayerBase::PLAYERTYPE m_PlayerType[];
 };
 #endif

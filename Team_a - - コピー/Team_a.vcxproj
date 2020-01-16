@@ -170,6 +170,7 @@
     <ClCompile Include="code\maker.cpp" />
     <ClCompile Include="code\manager.cpp" />
     <ClCompile Include="code\model.cpp" />
+    <ClCompile Include="code\Number.cpp" />
     <ClCompile Include="code\pad.cpp" />
     <ClCompile Include="code\playerbase.cpp" />
     <ClCompile Include="code\player_Kangaroo.cpp" />
@@ -184,6 +185,7 @@
     <ClCompile Include="code\Scene3D.cpp" />
     <ClCompile Include="code\SelectIcon.cpp" />
     <ClCompile Include="code\selectionscreen.cpp" />
+    <ClCompile Include="code\time.cpp" />
     <ClCompile Include="code\Title.cpp" />
     <ClCompile Include="code\tutorial.cpp" />
   </ItemGroup>
@@ -204,6 +206,7 @@
     <ClInclude Include="code\maker.h" />
     <ClInclude Include="code\manager.h" />
     <ClInclude Include="code\model.h" />
+    <ClInclude Include="code\Number.h" />
     <ClInclude Include="code\pad.h" />
     <ClInclude Include="code\playerbase.h" />
     <ClInclude Include="code\player_Kangaroo.h" />
@@ -218,6 +221,7 @@
     <ClInclude Include="code\Scene3D.h" />
     <ClInclude Include="code\SelectIcon.h" />
     <ClInclude Include="code\selectionscreen.h" />
+    <ClInclude Include="code\time.h" />
     <ClInclude Include="code\Title.h" />
     <ClInclude Include="code\tutorial.h" />
   </ItemGroup>

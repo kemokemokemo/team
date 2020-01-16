@@ -42,11 +42,16 @@ CGauge::CGauge()
 //=============================================================================
 // èâä˙âªèàóù
 //=============================================================================
-HRESULT CGauge::Init(D3DXVECTOR3 pos)
+HRESULT CGauge::Init(D3DXVECTOR3 pos,int Life, CPlayerBase::PLAYERTYPE playerType)
 {
 	CScene2D::Init();
 
+	m_nLife = Life;
+
+	PlayerType = playerType;
+
 	SetPos(pos);
+	SetColor(D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));
 
 	return S_OK;
 }
@@ -64,27 +69,48 @@ void CGauge::Uninit(void)
 //=====================================================================================================
 void CGauge::Update(void)
 {
-	m_nLife ;
 	CScene2D::Update();
-	if (m_nLife <= 0)
+
+	for (int nCntModel = 0; nCntModel < MAX_POLYGON; nCntModel++)
+	{
+		CScene *pScene;
+
+		pScene = CScene::GetScene(OBJTYPE_PLAYER, nCntModel);
+
+		if (!pScene)
+			continue;
+
+		CPlayerBase *pPlayer = (CPlayerBase*)pScene;
+
+
+		if (pPlayer->GetTypeChara() == PlayerType)
+		{
+
+			m_nLife = pPlayer->GetLife();
+			break;
+		}
+	}
+
+	if (m_nLife < 0)
 	{
 		m_nLife = 0;
 	}
-	UIUpdate(m_nLife, 100);
+
+	UIUpdate(m_nLife, 45);
 }
 
 //========================================================================================================
 // ï`âÊèàóù
 //========================================================================================================
-CGauge *CGauge::Create(D3DXVECTOR3 pos)
+CGauge *CGauge::Create(D3DXVECTOR3 pos, int Life, CPlayerBase::PLAYERTYPE playerType)
 {
 	CGauge *pGauge;
 
-	pGauge = new CGauge(OBJTYPE_RANKING);
+	pGauge = new CGauge(OBJTYPE_BG);
 
 	pGauge->BindTexture(m_pTextureGauge[0]);
 
-	pGauge->Init(pos);
+	pGauge->Init(pos, Life, playerType);
 
 	return pGauge;
 }

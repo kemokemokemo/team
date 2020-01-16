@@ -331,8 +331,20 @@ void CPlayerBase::PlayerMove(void)
 //=====================================================================================================
 void CPlayerBase::PlayerDamage(CPlayerBase *pPlayer)
 {
- 	Damage(pPlayer, 1);
+	switch (m_TypeChara)
+	{
+	case PLAYERTYPE_KEN:
+		KenDamage(pPlayer);
+		break;
 
+	case PLAYERTYPE_KANGAROO:
+		KangarooDamage(pPlayer);
+		break;
+
+	case PLAYERTYPE_SWORD:
+		SwordDamage(pPlayer);
+		break;
+	}
 }
 
 //====================================================================================================
@@ -340,7 +352,7 @@ void CPlayerBase::PlayerDamage(CPlayerBase *pPlayer)
 //=====================================================================================================
 void CPlayerBase::Damage(CPlayerBase *pPlayer, int nDamage)
 {
-
+	 
 	if (pPlayer->m_PlayerState == PLAYERSTATE_NORMAL)
 	{
 		pPlayer->m_nLife -= nDamage;
@@ -358,6 +370,8 @@ void CPlayerBase::Damage(CPlayerBase *pPlayer, int nDamage)
 
 	if (pPlayer->m_nLife <= 0)
 	{
+		pPlayer->m_nLife = 0;
+
 		pPlayer->Release();
 	}
 }
@@ -404,18 +418,44 @@ void CPlayerBase::PlayerCollision()
 
 		pPlayer[0] = (CPlayerBase*)pScene;
 
-		float fLength = D3DXVec3LengthSq(&(pPlayer[0]->GetPos() - pos));
+		D3DXVECTOR3 headpos, legpos = {};
 
-		if (fMinLength > fLength)
+		headpos = pPlayer[0]->GetPos();
+
+		int nCount = 1;
+		while (nCount != -1)
 		{
-			fMinLength = fLength;
-			pPlayer[1] = pPlayer[0];
+			D3DXVec3Add(&headpos, &headpos, &pPlayer[0]->GetModel().NumModel[nCount].pos);
+
+			nCount = pPlayer[0]->GetModel().NumModel[nCount].nIdxModel;
+		}
+
+		legpos = pPlayer[0]->GetPos();
+
+		D3DXVECTOR3 dis = headpos - legpos;
+
+		headpos -= dis / 6;
+		legpos += dis / 4;
+
+		D3DXVECTOR3 aPos[2] = { headpos , legpos };
+
+		float fLength = 0.0f;
+
+		for (int nCnt = 0; nCnt < 2; nCnt++)
+		{
+			fLength = D3DXVec3LengthSq(&(aPos[nCnt] - pos));
+
+			if (fMinLength > fLength)
+			{
+				fMinLength = fLength;
+				pPlayer[1] = pPlayer[0];
+			}
 		}
 	}
 
 	if (pPlayer[1] && pPlayer[1]->m_PlayerState != PLAYERSTATE_DAMAGE)
 	{
-		float fRadius = m_fRadius + pPlayer[1]->m_fAttack;
+		float fRadius =  m_fAttack + pPlayer[1]->m_fRadius;
 
 		//円の当たり判定
 		if (fMinLength <= fRadius * fRadius)
@@ -593,6 +633,199 @@ void CPlayerBase::MotionChangePlayer(MOTIONTYPE motionType)
 		MotionInfo[m_MotionType].nCntFrame = 0;
 		m_MotionType = motionType;
 	}
+}
+//========================================================================================================
+// ケンのダメージ処理
+//========================================================================================================
+void CPlayerBase::KenDamage(CPlayerBase *pPlayer)
+{
+	switch (m_MotionType)
+	{
+	case MOTIONTYPE_LIGHT0:
+		// 弱攻撃1段目
+		Damage(pPlayer, 1);
+		break;
+
+	case MOTIONTYPE_LIGHT1:
+		// 2段目
+		Damage(pPlayer, 2);
+		break;
+
+	case MOTIONTYPE_LIGHT2:
+		// 3段目
+		Damage(pPlayer, 3);
+		break;
+
+	case MOTIONTYPE_DASHATK:
+		// ダッシュ攻撃
+		Damage(pPlayer, 1);
+		break;
+
+	case MOTIONTYPE_UPATK:
+		// 上攻撃
+		Damage(pPlayer, 1);
+		break;
+
+	case MOTIONTYPE_CROUCHATK:
+		// しゃがみ攻撃
+		Damage(pPlayer, 1);
+		break;
+
+	case MOTIONTYPE_AIR_N:
+		// 空中ニュートラル
+		Damage(pPlayer, 1);
+		break;
+
+	case MOTIONTYPE_AIR_F:
+		// 空中前
+		Damage(pPlayer, 1);
+		break;
+
+	case MOTIONTYPE_AIR_B:
+		// 空中後ろ
+		Damage(pPlayer, 1);
+		break;
+
+	case MOTIONTYPE_AIR_U:
+		// 空中上
+		Damage(pPlayer, 1);
+		break;
+
+	case MOTIONTYPE_AIR_D:
+		// 空中下
+		Damage(pPlayer, 1);
+		break;
+	}
+}
+
+//========================================================================================================
+// カンガルーのダメージ処理
+//========================================================================================================
+void CPlayerBase::KangarooDamage(CPlayerBase *pPlayer)
+{
+	switch (m_MotionType)
+	{
+	case MOTIONTYPE_LIGHT0:
+		// 弱攻撃1段目
+		Damage(pPlayer, 1);
+		break;
+
+	case MOTIONTYPE_LIGHT1:
+		// 2段目
+		Damage(pPlayer, 1);
+		break;
+
+	case MOTIONTYPE_LIGHT2:
+		// 3段目
+		Damage(pPlayer, 1);
+		break;
+
+	case MOTIONTYPE_DASHATK:
+		// ダッシュ攻撃
+		Damage(pPlayer, 1);
+		break;
+
+	case MOTIONTYPE_UPATK:
+		// 上攻撃
+		Damage(pPlayer, 1);
+		break;
+
+	case MOTIONTYPE_CROUCHATK:
+		// しゃがみ攻撃
+		Damage(pPlayer, 1);
+		break;
+
+	case MOTIONTYPE_AIR_N:
+		// 空中ニュートラル
+		Damage(pPlayer, 1);
+		break;
+
+	case MOTIONTYPE_AIR_F:
+		// 空中前
+		Damage(pPlayer, 1);
+		break;
+
+	case MOTIONTYPE_AIR_B:
+		// 空中後ろ
+		Damage(pPlayer, 1);
+		break;
+
+	case MOTIONTYPE_AIR_U:
+		// 空中上
+		Damage(pPlayer, 1);
+		break;
+
+	case MOTIONTYPE_AIR_D:
+		// 空中下
+		Damage(pPlayer, 1);
+		break;
+	}
+
+}
+
+//========================================================================================================
+// ソードのダメージ処理
+//========================================================================================================
+void CPlayerBase::SwordDamage(CPlayerBase *pPlayer)
+{
+	switch (m_MotionType)
+	{
+	case MOTIONTYPE_LIGHT0:
+		// 弱攻撃1段目
+		Damage(pPlayer, 1);
+		break;
+
+	case MOTIONTYPE_LIGHT1:
+		// 2段目
+		Damage(pPlayer, 1);
+		break;
+
+	case MOTIONTYPE_LIGHT2:
+		// 3段目
+		Damage(pPlayer, 1);
+		break;
+
+	case MOTIONTYPE_DASHATK:
+		// ダッシュ攻撃
+		Damage(pPlayer, 1);
+		break;
+
+	case MOTIONTYPE_UPATK:
+		// 上攻撃
+		Damage(pPlayer, 1);
+		break;
+
+	case MOTIONTYPE_CROUCHATK:
+		// しゃがみ攻撃
+		Damage(pPlayer, 1);
+		break;
+
+	case MOTIONTYPE_AIR_N:
+		// 空中ニュートラル
+		Damage(pPlayer, 1);
+		break;
+
+	case MOTIONTYPE_AIR_F:
+		// 空中前
+		Damage(pPlayer, 1);
+		break;
+
+	case MOTIONTYPE_AIR_B:
+		// 空中後ろ
+		Damage(pPlayer, 1);
+		break;
+
+	case MOTIONTYPE_AIR_U:
+		// 空中上
+		Damage(pPlayer, 1);
+		break;
+
+	case MOTIONTYPE_AIR_D:
+		// 空中下
+		Damage(pPlayer, 1);
+		break;
+	}
+
 }
 
 //========================================================================================================

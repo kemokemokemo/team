@@ -70,8 +70,11 @@ HRESULT CPlayer_KEN::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CMaker::MAKERTYPE Mo
 
 	m_nLife = 12;
 	m_fDiffrot.y = D3DX_PI*-0.5f;
-	m_fRadius = 20.0f;
+	m_fRadius = 10.0f;
 	m_fAttack = 30.0f;
+
+
+	CGauge::Create(D3DXVECTOR3(20.0f, 50.0f, 0.0f), m_nLife, CPlayer_KEN::PLAYERTYPE_KEN);
 
 	return S_OK;
 }

@@ -23,6 +23,8 @@
 #include "gauge.h"
 #include "effect.h"
 #include "HitModel.h"
+#include "Number.h"
+#include "time.h"
 //====================================================================================================
 // マクロ定義
 //==================================================================================================== 
@@ -32,7 +34,9 @@
 //=====================================================================================================
 CManager *CGame::m_pManager = NULL;
 CLight*CGame::m_pLight = NULL;
-CPlayerBase::PLAYERTYPE CGame::m_PlayerType[3] = {};
+CTime *CGame::pTime = NULL;
+
+CPlayerBase::PLAYERTYPE CGame::m_PlayerType[2] = {};
 
 //================================================================================================
 // コンストラクタ
@@ -69,12 +73,14 @@ HRESULT CGame::Init(void)
 
 	CHitModel::Load();
 
+	CNumber::Load();
+
 	CModel::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CModel::UNITTYPE_FLOOR);
 
 	//CModel::Create(D3DXVECTOR3(640.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CModel::MODELTYPE_BILL0);
 
 
-	for (int nCnt = 0; nCnt < 3; nCnt++)
+	for (int nCnt = 0; nCnt < 2; nCnt++)
 	{
 		switch (m_PlayerType[nCnt])
 		{
@@ -106,9 +112,14 @@ HRESULT CGame::Init(void)
 
 	//CPlayer_Kangaroo::Create(D3DXVECTOR3(0.0f, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CMaker::MAKERTYPE_2P);
 
-	CGauge::Create(D3DXVECTOR3(200.0f, 600.0f, 0.0f));
+	//CGauge::Create(D3DXVECTOR3(200.0f, 600.0f, 0.0f));
 
 	CPolygon::Create();
+
+
+	{//制限時間の生成
+		pTime = CTime::Create(100);
+	}
 
 	return S_OK;
 }
@@ -152,7 +163,7 @@ void CGame::Draw(void)
 
 void CGame::SetPlayerType(CSelectIcon * type)
 {
-	for (int nCnt = 0; nCnt < 3; nCnt++)
+	for (int nCnt = 0; nCnt < 2; nCnt++)
 	{
 		m_PlayerType[nCnt] = type[nCnt].GetType();
 	}

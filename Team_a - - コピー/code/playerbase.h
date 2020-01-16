@@ -146,10 +146,15 @@ public:
 	void MotionPlayer();
 	void MotionChangePlayer(MOTIONTYPE motionType);
 
+	void KenDamage(CPlayerBase *pPlayer);
+	void KangarooDamage(CPlayerBase *pPlayer);
+	void SwordDamage(CPlayerBase *pPlayer);
+
 	void SetMove(D3DXVECTOR3 move) { m_move += move; }
 
 	int GetLife();
 	D3DXVECTOR3 GetMove() { return m_move; }
+	PLAYERTYPE GetTypeChara() { return m_TypeChara; }
 
 	CMaker::MAKERTYPE GetMaker();
 
