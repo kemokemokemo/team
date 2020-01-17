@@ -19,6 +19,7 @@
 #include "model.h"
 #include "effect.h"
 #include "HitModel.h"
+#include "Game.h"
 
 //=============================================================================
 // ƒ}ƒNƒ’è‹`
@@ -229,6 +230,12 @@ void CPlayerBase::Update(void)
 		break;
 	}
 
+	this->PlayerMove();
+
+	this->PlayerCollisionShape();
+
+	MoveLimit();
+
 	if (MotionInfo[m_MotionType].nHitIdx != -1 &&
 		MotionInfo[m_MotionType].nAtkStar <= MotionInfo[m_MotionType].nNumKey && MotionInfo[m_MotionType].nAtkEnd >= MotionInfo[m_MotionType].nNumKey)
 	{
@@ -239,11 +246,6 @@ void CPlayerBase::Update(void)
 		m_Hitmodel->Uninit();
 		m_Hitmodel = NULL;
 	}
-	this->PlayerMove();
-
-	this->PlayerCollisionShape();
-
-	MoveLimit();
 
 	CScene3D::Update();
 }
@@ -376,11 +378,9 @@ void CPlayerBase::Damage(CPlayerBase *pPlayer, int nDamage)
 
 	}
 
-	if (pPlayer->m_nLife <= 0)
+	if (pPlayer->m_nLife < 0)
 	{
 		pPlayer->m_nLife = 0;
-
-		pPlayer->Release();
 	}
 }
 //========================================================================================================
@@ -472,6 +472,19 @@ void CPlayerBase::PlayerCollision()
 			{
 				m_MotionOld = m_MotionType;
 				PlayerDamage(pPlayer[1]);
+
+				if (pPlayer[1]->GetLife() <= 0)
+				{
+					if (pPlayer[1]->GetID() < pPlayer[0]->GetID())
+					{
+						CGame::DeletePlayer(0);
+					}
+					else
+					{
+						CGame::DeletePlayer(1);
+					}
+					pPlayer[1]->Uninit();
+				}
 			}
 		}
 	}

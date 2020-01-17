@@ -40,6 +40,8 @@ public:
 
 	static CGame * Create();
 
+	static void DeletePlayer(int cnt);
+
 private:
 
 	static CManager*m_pManager;
@@ -49,6 +51,6 @@ private:
 
 	static CPlayerBase::PLAYERTYPE m_PlayerType[];
 
-	CPlayerBase *m_Player[2];
+	static CPlayerBase *m_Player[2];
 };
 #endif

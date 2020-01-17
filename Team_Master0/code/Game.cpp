@@ -38,6 +38,7 @@ CLight*CGame::m_pLight = NULL;
 CTime *CGame::pTime = NULL;
 
 CPlayerBase::PLAYERTYPE CGame::m_PlayerType[2] = {};
+CPlayerBase *CGame::m_Player[2] = {};
 
 //================================================================================================
 // コンストラクタ
@@ -155,11 +156,6 @@ void CGame::Update(void)
 		{
 			m_Player[nCnt]->PlayerPad(nCnt);
 		}
-
-		if (m_Player[nCnt]->GetLife() <= 0)
-		{
-			m_Player[nCnt]->Uninit();
-		}
 	}
 
 	// (pKetybord->GetKeyboardTrigger(DIK_RETURN))
@@ -196,4 +192,12 @@ CGame * CGame::Create(void)
 	pGame->Init();
 
 	return pGame;
+}
+
+void CGame::DeletePlayer(int cnt)
+{
+	if (m_Player[cnt])
+	{
+		m_Player[cnt] = NULL;
+	}
 }
