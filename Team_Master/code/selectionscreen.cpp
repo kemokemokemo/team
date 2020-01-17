@@ -87,6 +87,9 @@ void CSelectionScreen::Update(void)
 {
 	CPad *pPad = CManager::GetPad();
 	D3DXVECTOR3 Selectpos;
+
+
+
 	// アイコンの動き
 	float fH, fV;
 	for (int nCnt = 0; nCnt < 2; nCnt++)
@@ -99,6 +102,7 @@ void CSelectionScreen::Update(void)
 		{
 			Selectpos = D3DXVECTOR3(880.0f, 450.0f, 0.0f);
 		}
+
 		// スティック取得
 		pPad->GetJoypadStickLeft(nCnt, &fH, &fV);
 
@@ -110,28 +114,36 @@ void CSelectionScreen::Update(void)
 		if (pPad->GetJoypadTrigger(nCnt, CPad::JOYPADKEY_B))
 		{
 			D3DXVECTOR3 pos = m_pPlayerIcon[nCnt]->GetPos();
-
+			if (pTexture[nCnt] != NULL)
+			{
+				pTexture[nCnt]->Release();
+			}
 			// ここで何のプレイヤーか分ける
 			m_pPlayerIcon[nCnt]->SetType(CPlayerBase::PLAYERTYPE_KEN);
-			CTexture::Create(Selectpos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 200.0f, 200.0f, CTexture::TYPE_SELECTKENICON);
+			pTexture[nCnt] = CTexture::Create(Selectpos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 200.0f, 200.0f, CTexture::TYPE_SELECTKENICON);
 
 		}
 		if (pPad->GetJoypadTrigger(nCnt, CPad::JOYPADKEY_A))
 		{
 			D3DXVECTOR3 pos = m_pPlayerIcon[nCnt]->GetPos();
-
+			if (pTexture[nCnt] != NULL)
+			{
+				pTexture[nCnt]->Release();
+			}
 			// ここで何のプレイヤーか分ける
 			m_pPlayerIcon[nCnt]->SetType(CPlayerBase::PLAYERTYPE_KANGAROO);
-			CTexture::Create(Selectpos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 200.0f, 200.0f, CTexture::TYPE_SELECTKANGAROOICON);
-
+			pTexture[nCnt] = CTexture::Create(Selectpos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 200.0f, 200.0f, CTexture::TYPE_SELECTKANGAROOICON);
 		}
 		if (pPad->GetJoypadTrigger(nCnt, CPad::JOYPADKEY_Y))
 		{
 			D3DXVECTOR3 pos = m_pPlayerIcon[nCnt]->GetPos();
-
+			if (pTexture[nCnt] != NULL)
+			{
+				pTexture[nCnt]->Release();
+			}
 			// ここで何のプレイヤーか分ける
 			m_pPlayerIcon[nCnt]->SetType(CPlayerBase::PLAYERTYPE_SWORD);
-			CTexture::Create(Selectpos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 200.0f, 200.0f, CTexture::TYPE_SELECTSWORDICON);
+			pTexture[nCnt] = CTexture::Create(Selectpos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 200.0f, 200.0f, CTexture::TYPE_SELECTSWORDICON);
 
 		}
 	}

@@ -13,6 +13,7 @@
 #include"main.h"
 #include"manager.h"
 #include"SelectIcon.h"
+#include"Texture.h"
 
 class CLight;
 
@@ -44,5 +45,7 @@ private:
 	static CLight*m_pLight;
 
 	CSelectIcon *m_pPlayerIcon[4];
+	CTexture *pTexture[2] = {};
+
 };
 #endif
