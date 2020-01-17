@@ -100,7 +100,7 @@ HRESULT CPlayerBase::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CMaker::MAKERTYPE Mo
 	if (m_MokerType == CMaker::MAKERTYPE_2P)
 	{
 		pMaker = CMaker::Create(pos, CMaker::MAKERTYPE_2P, 12);
-		pGauge = CGauge::Create(D3DXVECTOR3(690.0f, 650.0f, 0.0f), 12, CMaker::MAKERTYPE_2P);
+		pGauge = CGauge::Create(D3DXVECTOR3(770.0f, 650.0f, 0.0f), 12, CMaker::MAKERTYPE_2P);
 	}
 	return S_OK;
 }
@@ -404,7 +404,7 @@ void CPlayerBase::PlayerCollision()
 			m_Hitmodel->Uninit();
 			m_Hitmodel = NULL;
 		}
-		m_Hitmodel = CHitModel::Create(pos, D3DXVECTOR3(m_fAttack, m_fAttack, m_fAttack));
+		//m_Hitmodel = CHitModel::Create(pos, D3DXVECTOR3(m_fAttack, m_fAttack, m_fAttack));
 	}
 	else if (m_Hitmodel)
 	{

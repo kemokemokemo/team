@@ -38,6 +38,8 @@ public:
 		TYPE_SELECTKENICON,
 		TYPE_SELECTKANGAROOICON,
 		TYPE_SELECTSWORDICON,
+		TYPE_TITLEBG,
+		TYPE_TITLELOG,
 		TYPE_MAX
 	}TEXTURE_TYPE;
 
@@ -47,7 +49,7 @@ public:
 	CTexture(OBJTYPE type);
 	~CTexture();
 
-	HRESULT Init();
+	HRESULT Init(TEXTURE_TYPE type);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
@@ -65,6 +67,8 @@ private:
 	static LPDIRECT3DTEXTURE9 m_pTextureIcon[];
 
 	CPlayerBase::PLAYERTYPE m_PlayerType;
+
+	TEXTURE_TYPE TexType;
 
 	D3DXVECTOR3 m_move;
 	float Size;

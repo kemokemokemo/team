@@ -9,6 +9,9 @@
 #include"renderer.h"
 #include"input.h"
 #include"keybord.h"
+#include"Texture.h"
+#include "light.h"
+
 
 //================================================================================================
 // マクロ定義
@@ -18,6 +21,7 @@
 // 前方宣言初期化
 //================================================================================================
 CManager *CTitle::m_pManager = NULL;
+CLight*CTitle::m_pLight = NULL;
 
 //================================================================================================
 // コンストラクタ
@@ -40,7 +44,17 @@ CTitle::~CTitle()
 //================================================================================================
 HRESULT CTitle::Init(void)
 {
+	m_pLight = CLight::Create();
+	CTexture::Load();
 
+	CTexture::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(0.9f, 0.9f, 0.9f, 1.0f), 1280.0f, 720.0f, CTexture::TYPE_TITLEBG);
+
+
+	CTexture::Create(D3DXVECTOR3(100.0f, 300.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 300.0f, 300.0f, CTexture::TYPE_SELECTKENICON);
+	CTexture::Create(D3DXVECTOR3(500.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 300.0f, 300.0f, CTexture::TYPE_SELECTKANGAROOICON);
+	CTexture::Create(D3DXVECTOR3(900.0f, 300.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 300.0f, 300.0f, CTexture::TYPE_SELECTSWORDICON);
+
+	CTexture::Create(D3DXVECTOR3(150.0f, 200.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 900.0f, 500.0f, CTexture::TYPE_TITLELOG);
 
 	return S_OK;
 }
@@ -50,6 +64,7 @@ HRESULT CTitle::Init(void)
 //================================================================================================
 void CTitle::Uninit(void)
 {
+	CTexture::Unload();
 
 }
 

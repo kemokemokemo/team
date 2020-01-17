@@ -29,6 +29,9 @@
 #define TEX_09 "DATA/TEX/chara_kangaroo.png"					//読み込むテクスチャファイル名
 #define TEX_010 "DATA/TEX/chara_sword.png"					//読み込むテクスチャファイル名
 
+#define TEX_011 "DATA/TEX/TitleBG.jpg"					//読み込むテクスチャファイル名
+#define TEX_012 "DATA/TEX/TitleLogo.png"					//読み込むテクスチャファイル名
+
 //====================================================================================================
 // プロトタイプ宣言
 //====================================================================================================
@@ -49,10 +52,11 @@ CTexture::CTexture(OBJTYPE type) : CScene2D(type)
 //=============================================================================
 // 初期化処理
 //=============================================================================
-HRESULT CTexture::Init()
+HRESULT CTexture::Init(TEXTURE_TYPE type)
 {
 	CScene2D::Init();
 
+	TexType = type;
 	return S_OK;
 }
 
@@ -69,7 +73,10 @@ void CTexture::Uninit(void)
 //=====================================================================================================
 void CTexture::Update(void)
 {
-
+	if (TexType == TYPE_TITLEBG)
+	{
+		SetAnim(0.1f, 0.0f, 0.5f, 10);
+	}
 }
 //========================================================================================================
 // 描画処理
@@ -84,7 +91,7 @@ CTexture *CTexture::Create(D3DXVECTOR3 pos, D3DXVECTOR3 move, D3DXCOLOR col, flo
 	pTex->SetColor(col);
 	pTex->SetSize(Weight,Height);
 	pTex->BindTexture(m_pTextureIcon[type]);
-	pTex->Init();
+	pTex->Init(type);
 
 	return pTex;
 }
@@ -180,6 +187,18 @@ HRESULT CTexture::Load(void)
 		pDevice,
 		TEX_010,
 		&m_pTextureIcon[TYPE_SELECTSWORDICON]);
+
+	//テクスチャの読み込み
+	D3DXCreateTextureFromFile(
+		pDevice,
+		TEX_011,
+		&m_pTextureIcon[TYPE_TITLEBG]);
+
+	//テクスチャの読み込み
+	D3DXCreateTextureFromFile(
+		pDevice,
+		TEX_012,
+		&m_pTextureIcon[TYPE_TITLELOG]);
 
 	return S_OK;
 }

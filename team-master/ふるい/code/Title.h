@@ -13,6 +13,9 @@
 #include"main.h"
 #include"manager.h"
 
+class CLight;
+
+
 //====================================================================================================
 // プロトタイプ宣言
 //=====================================================================================================
@@ -38,6 +41,9 @@ public:
 	static void Unload(void);
 
 private:
+
 	static CManager*m_pManager;
+	static CLight*m_pLight;
+
 };
 #endif

@@ -140,12 +140,7 @@ void CManager::Uninit(void)
 		delete m_pPad;
 		m_pPad = NULL;
 	}
-	if (m_pSound != NULL)
-	{
-		m_pSound->UninitSound();
-		delete m_pSound;
-		m_pSound = NULL;
-	}
+
 	switch (m_mode)
 	{
 	case MODE_TITLE:
@@ -171,6 +166,13 @@ void CManager::Uninit(void)
 	case MODE_SELECTSCREEN:
 		pSelectionScreen->Uninit();
 		break;
+	}
+
+	if (m_pSound != NULL)
+	{
+		m_pSound->UninitSound();
+		delete m_pPad;
+		m_pSound = NULL;
 	}
 }
 

@@ -12,7 +12,7 @@
 //====================================================================================================
 // プロトタイプ宣言
 //====================================================================================================
-#define POLTGON0_TEX "DATA/TEX/sougen.jpg"				//読み込むテクスチャファイル名
+#define POLTGON0_TEX "DATA/TEX/pipo-battlebg013.jpg"				//読み込むテクスチャファイル名
 
 //====================================================================================================
 // メンバ変数初期化
@@ -52,10 +52,10 @@ HRESULT CPolygonBase::Init(void)
 	// 頂点データの範囲をロックし、頂点バッファへのポインタを取得
 	m_pVtxBuffScene->Lock(0, 0, (void**)&pVtx, 0);
 
-	pVtx[0].pos = m_pos + D3DXVECTOR3(-800.0f, 800.0f, 150.0f);
-	pVtx[1].pos = m_pos + D3DXVECTOR3(800.0f, 800.0f, 150.0f);
-	pVtx[2].pos = m_pos + D3DXVECTOR3(-800.0f, -800.0f, 150.0f);
-	pVtx[3].pos = m_pos + D3DXVECTOR3(800.0f, -800.0f, 150.0f);
+	pVtx[0].pos = m_pos + D3DXVECTOR3(-1000.0f, 800.0f, 680.0f);
+	pVtx[1].pos = m_pos + D3DXVECTOR3(1000.0f, 800.0f, 680.0f);
+	pVtx[2].pos = m_pos + D3DXVECTOR3(-1000.0f, -800.0f, 680.0f);
+	pVtx[3].pos = m_pos + D3DXVECTOR3(1000.0f, -800.0f, 680.0f);
 
 	pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	pVtx[1].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
