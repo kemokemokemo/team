@@ -42,13 +42,13 @@ CGauge::CGauge()
 //=============================================================================
 // èâä˙âªèàóù
 //=============================================================================
-HRESULT CGauge::Init(D3DXVECTOR3 pos,int Life, CPlayerBase::PLAYERTYPE playerType)
+HRESULT CGauge::Init(D3DXVECTOR3 pos,int Life, CMaker::MAKERTYPE MAKERTYPE)
 {
 	CScene2D::Init();
 
 	m_nLife = Life;
 
-	PlayerType = playerType;
+	PlayerType = MAKERTYPE;
 
 	SetPos(pos);
 	SetColor(D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));
@@ -69,48 +69,56 @@ void CGauge::Uninit(void)
 //=====================================================================================================
 void CGauge::Update(void)
 {
-	CScene2D::Update();
+	//CScene2D::Update();
 
-	for (int nCntModel = 0; nCntModel < MAX_POLYGON; nCntModel++)
+	UIUpdate(m_nLife, 33);
+	//for (int nCntModel = 0; nCntModel < MAX_POLYGON; nCntModel++)
+	//{
+	//	CScene *pScene;
+
+	//	pScene = CScene::GetScene(OBJTYPE_PLAYER, nCntModel);
+
+
+
+	//	if (!pScene)
+	//		continue;
+
+	//	CPlayerBase *pPlayer = (CPlayerBase*)pScene;
+
+
+	//	if (pPlayer->GetTypeChara() == PlayerType)
+	//	{
+	//		m_nLife = pPlayer->GetLife();
+	//		break;
+	//	}
+	//}
+
+	if (m_nLife <= 0)
 	{
-		CScene *pScene;
-
-		pScene = CScene::GetScene(OBJTYPE_PLAYER, nCntModel);
-
-		if (!pScene)
-			continue;
-
-		CPlayerBase *pPlayer = (CPlayerBase*)pScene;
-
-
-		if (pPlayer->GetTypeChara() == PlayerType)
-		{
-
-			m_nLife = pPlayer->GetLife();
-			break;
-		}
+		Release();
 	}
-
-	if (m_nLife < 0)
-	{
-		m_nLife = 0;
-	}
-
-	UIUpdate(m_nLife, 45);
 }
 
 //========================================================================================================
 // ï`âÊèàóù
 //========================================================================================================
-CGauge *CGauge::Create(D3DXVECTOR3 pos, int Life, CPlayerBase::PLAYERTYPE playerType)
+void CGauge::GaugeLife(int nDamage)
+{
+	m_nLife -= nDamage;
+}
+
+//========================================================================================================
+// ï`âÊèàóù
+//========================================================================================================
+CGauge *CGauge::Create(D3DXVECTOR3 pos, int Life, CMaker::MAKERTYPE MAKERTYPE)
 {
 	CGauge *pGauge;
 
-	pGauge = new CGauge(OBJTYPE_BG);
+	pGauge = new CGauge(OBJTYPE_ANIMATION);
 
 	pGauge->BindTexture(m_pTextureGauge[0]);
 
-	pGauge->Init(pos, Life, playerType);
+	pGauge->Init(pos, Life, MAKERTYPE);
 
 	return pGauge;
 }

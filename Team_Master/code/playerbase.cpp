@@ -94,11 +94,12 @@ HRESULT CPlayerBase::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CMaker::MAKERTYPE Mo
 	if (m_MokerType == CMaker::MAKERTYPE_1P)
 	{
 		pMaker = CMaker::Create(pos, CMaker::MAKERTYPE_1P, 12);
+		pGauge = CGauge::Create(D3DXVECTOR3(170.0f, 650.0f, 0.0f), 12, CMaker::MAKERTYPE_1P);
 	}
 	if (m_MokerType == CMaker::MAKERTYPE_2P)
 	{
 		pMaker = CMaker::Create(pos, CMaker::MAKERTYPE_2P, 12);
-
+		pGauge = CGauge::Create(D3DXVECTOR3(690.0f, 650.0f, 0.0f), 12, CMaker::MAKERTYPE_2P);
 	}
 	return S_OK;
 }
@@ -353,7 +354,7 @@ void CPlayerBase::PlayerDamage(CPlayerBase *pPlayer)
 void CPlayerBase::Damage(CPlayerBase *pPlayer, int nDamage)
 {
 
-	if (pPlayer->m_PlayerState == PLAYERSTATE_NORMAL)
+	if (pPlayer->m_PlayerState == PLAYERSTATE_NORMAL|| pPlayer->m_PlayerState == PLAYERSTATE_AIRATK|| pPlayer->m_PlayerState == PLAYERSTATE_ATK)
 	{
 		pPlayer->m_nLife -= nDamage;
 		CEffect::SetParticle(pPlayer->GetPos(), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 10, CEffect::EFFECTTYPE_EXPLOSION);
@@ -371,9 +372,9 @@ void CPlayerBase::Damage(CPlayerBase *pPlayer, int nDamage)
 		}
 		pPlayer->m_PlayerState = PLAYERSTATE_DAMAGE;
 		pPlayer->m_PlayerStateCount = 60;
+		pPlayer->pGauge->GaugeLife(nDamage);
 
 		pPlayer->pMaker->MakerLife(nDamage);
-
 	}
 
 	if (pPlayer->m_PlayerState == PLAYERSTATE_GAUDE)
@@ -383,8 +384,6 @@ void CPlayerBase::Damage(CPlayerBase *pPlayer, int nDamage)
 
 	if (pPlayer->m_nLife <= 0)
 	{
-		pPlayer->m_nLife = 0;
-
 		pPlayer->Release();
 	}
 }
@@ -464,11 +463,12 @@ void CPlayerBase::PlayerCollision()
 				pPlayer[1] = pPlayer[0];
 			}
 		}
+
 	}
 
 	if (pPlayer[1] && pPlayer[1]->m_PlayerState != PLAYERSTATE_DAMAGE)
 	{
-		float fRadius =  m_fAttack + pPlayer[1]->m_fRadius;
+		float fRadius = m_fAttack + pPlayer[1]->m_fRadius;
 
 		//円の当たり判定
 		if (fMinLength <= fRadius * fRadius)
@@ -478,6 +478,63 @@ void CPlayerBase::PlayerCollision()
 				m_MotionOld = m_MotionType;
 				PlayerDamage(pPlayer[1]);
 			}
+		}
+	}
+}
+
+//=============================================================================
+// ノックバックの計算
+//=============================================================================
+void CPlayerBase::NocBack()
+{
+
+	CPlayerBase *pPlayer[2] = {};
+
+	D3DXVECTOR3 NocVec;
+	D3DXVECTOR3 Nocmove;
+	D3DXVECTOR3 pos = {};
+
+	float fMinLength = 10000.0f;
+
+
+	for (int nCntScene = 0; nCntScene < MAX_POLYGON; nCntScene++)
+	{
+		CScene *pScene;
+
+		pScene = CScene::GetScene(OBJTYPE_PLAYER, nCntScene);
+
+		if (!pScene || nCntScene == GetID())
+			continue;
+
+		pPlayer[0] = (CPlayerBase*)pScene;
+
+		float fLength = 0.0f;
+
+		for (int nCnt = 0; nCnt < 2; nCnt++)
+		{
+
+			if (fMinLength > fLength)
+			{
+				fMinLength = fLength;
+				pPlayer[1] = pPlayer[0];
+			}
+		}
+
+		pos = GetPos();
+		NocVec = pos - pPlayer[0]->GetPos();
+		Nocmove = pPlayer[0]->GetMove();
+
+		if (pos.x < pPlayer[1]->GetPos().x)
+		{
+			Nocmove.y = 0.0f;
+			Nocmove.x += PLAYER__BLOWAWAY;
+			pPlayer[1]->SetMove(Nocmove);
+		}
+		else
+		{
+			Nocmove.y = 0.0f;
+			Nocmove.x -= PLAYER__BLOWAWAY;
+			pPlayer[1]->SetMove(Nocmove);
 		}
 	}
 }
@@ -667,6 +724,8 @@ void CPlayerBase::KenDamage(CPlayerBase *pPlayer)
 	case MOTIONTYPE_LIGHT1:
 		// 2段目
 		Damage(pPlayer, 2);
+   		CPlayerBase::NocBack();
+
 		break;
 
 	case MOTIONTYPE_LIGHT2:

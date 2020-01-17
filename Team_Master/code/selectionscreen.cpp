@@ -58,6 +58,10 @@ HRESULT CSelectionScreen::Init(void)
 	CTexture::Create(D3DXVECTOR3(100.0f, 350.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 370.0f, 350.0f, CTexture::TYPE_SELECT1);
 	CTexture::Create(D3DXVECTOR3(800.0f, 350.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 370.0f, 350.0f, CTexture::TYPE_SELECT2);
 
+	CTexture::Create(D3DXVECTOR3(100.0f, 100.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 230.0f, 230.0f, CTexture::TYPE_KENICON);
+	CTexture::Create(D3DXVECTOR3(500.0f, 100.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 230.0f, 230.0f, CTexture::TYPE_KANGAROOICON);
+	CTexture::Create(D3DXVECTOR3(900.0f, 100.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 230.0f, 230.0f, CTexture::TYPE_SWORDICON);
+
 
 
 	for (int nCnt = 0; nCnt < 2; nCnt++)
@@ -82,11 +86,19 @@ void CSelectionScreen::Uninit(void)
 void CSelectionScreen::Update(void)
 {
 	CPad *pPad = CManager::GetPad();
-
+	D3DXVECTOR3 Selectpos;
 	// アイコンの動き
 	float fH, fV;
 	for (int nCnt = 0; nCnt < 2; nCnt++)
 	{
+		if (nCnt == 0)
+		{
+			Selectpos = D3DXVECTOR3(180.0f, 450.0f, 0.0f);
+		}
+		if (nCnt == 1)
+		{
+			Selectpos = D3DXVECTOR3(880.0f, 450.0f, 0.0f);
+		}
 		// スティック取得
 		pPad->GetJoypadStickLeft(nCnt, &fH, &fV);
 
@@ -101,6 +113,8 @@ void CSelectionScreen::Update(void)
 
 			// ここで何のプレイヤーか分ける
 			m_pPlayerIcon[nCnt]->SetType(CPlayerBase::PLAYERTYPE_KEN);
+			CTexture::Create(Selectpos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 200.0f, 200.0f, CTexture::TYPE_SELECTKENICON);
+
 		}
 		if (pPad->GetJoypadTrigger(nCnt, CPad::JOYPADKEY_A))
 		{
@@ -108,6 +122,8 @@ void CSelectionScreen::Update(void)
 
 			// ここで何のプレイヤーか分ける
 			m_pPlayerIcon[nCnt]->SetType(CPlayerBase::PLAYERTYPE_KANGAROO);
+			CTexture::Create(Selectpos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 200.0f, 200.0f, CTexture::TYPE_SELECTKANGAROOICON);
+
 		}
 		if (pPad->GetJoypadTrigger(nCnt, CPad::JOYPADKEY_Y))
 		{
@@ -115,6 +131,8 @@ void CSelectionScreen::Update(void)
 
 			// ここで何のプレイヤーか分ける
 			m_pPlayerIcon[nCnt]->SetType(CPlayerBase::PLAYERTYPE_SWORD);
+			CTexture::Create(Selectpos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 200.0f, 200.0f, CTexture::TYPE_SELECTSWORDICON);
+
 		}
 	}
 
@@ -122,7 +140,7 @@ void CSelectionScreen::Update(void)
 	{
 		if (CFade::GetFade() == CFade::FADE_NONE)
 		{
-			CGame::SetPlayerType(m_pPlayerIcon[0]);
+			CGame::SetPlayerType(m_pPlayerIcon);
 
 			CFade::SetFade(m_pManager->MODE_GAME);
 		}

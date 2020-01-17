@@ -17,6 +17,7 @@
 #include "maker.h"
 #include "HitModel.h"
 
+
 //=============================================================================
 // ç\ë¢ëÃíËã`
 //=============================================================================
@@ -190,6 +191,8 @@ protected:
 private:
 
 	void PlayerCollision();
+	void NocBack();
+
 	static MODELNUM m_PlayerType[PLAYERTYPE_MAX];
 	static char *TextLoad[PLAYERTYPE_MAX];
 	
@@ -204,5 +207,6 @@ private:
 
 	CHitModel *m_Hitmodel;
 	CMaker *pMaker;
+	CGauge *pGauge;
 };
 #endif

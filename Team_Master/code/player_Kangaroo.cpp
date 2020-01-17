@@ -67,7 +67,7 @@ HRESULT CPlayer_Kangaroo::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CMaker::MAKERTY
 	m_TypeChara = CPlayer_Kangaroo::PLAYERTYPE_KANGAROO;
 	CPlayerBase::Init(pos, rot, MokerType);
 
-	m_nLife = 5;
+	m_nLife = 12;
 
 	m_fRadius = 100.0f;
 	m_fAttack = 50.0f;

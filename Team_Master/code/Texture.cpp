@@ -21,6 +21,14 @@
 #define TEX_03 "DATA/TEX/arrow_3p.png"					//読み込むテクスチャファイル名
 #define TEX_04 "DATA/TEX/arrow_4p.png"					//読み込むテクスチャファイル名
 
+#define TEX_05 "DATA/TEX/ken_icon.png"					//読み込むテクスチャファイル名
+#define TEX_06 "DATA/TEX/kangaroo_icon.png"					//読み込むテクスチャファイル名
+#define TEX_07 "DATA/TEX/sword_icon.png"					//読み込むテクスチャファイル名
+
+#define TEX_08 "DATA/TEX/chara_ken.png"					//読み込むテクスチャファイル名
+#define TEX_09 "DATA/TEX/chara_kangaroo.png"					//読み込むテクスチャファイル名
+#define TEX_010 "DATA/TEX/chara_sword.png"					//読み込むテクスチャファイル名
+
 //====================================================================================================
 // プロトタイプ宣言
 //====================================================================================================
@@ -70,7 +78,7 @@ CTexture *CTexture::Create(D3DXVECTOR3 pos, D3DXVECTOR3 move, D3DXCOLOR col, flo
 {
 	CTexture *pTex;
 
-	pTex = new CTexture(OBJTYPE_ANIMATION);
+	pTex = new CTexture(OBJTYPE_LIFE);
 
 	pTex->SetPos(pos);
 	pTex->SetColor(col);
@@ -136,6 +144,42 @@ HRESULT CTexture::Load(void)
 		pDevice,
 		"DATA/TEX/life_gauge_2p.png",
 		&m_pTextureIcon[TYPE_LIFE2]);
+
+	//テクスチャの読み込み
+	D3DXCreateTextureFromFile(
+		pDevice,
+		TEX_05,
+		&m_pTextureIcon[TYPE_KENICON]);
+
+	//テクスチャの読み込み
+	D3DXCreateTextureFromFile(
+		pDevice,
+		TEX_06,
+		&m_pTextureIcon[TYPE_KANGAROOICON]);
+
+	//テクスチャの読み込み
+	D3DXCreateTextureFromFile(
+		pDevice,
+		TEX_07,
+		&m_pTextureIcon[TYPE_SWORDICON]);
+
+	//テクスチャの読み込み
+	D3DXCreateTextureFromFile(
+		pDevice,
+		TEX_08,
+		&m_pTextureIcon[TYPE_SELECTKENICON]);
+
+	//テクスチャの読み込み
+	D3DXCreateTextureFromFile(
+		pDevice,
+		TEX_09,
+		&m_pTextureIcon[TYPE_SELECTKANGAROOICON]);
+
+	//テクスチャの読み込み
+	D3DXCreateTextureFromFile(
+		pDevice,
+		TEX_010,
+		&m_pTextureIcon[TYPE_SELECTSWORDICON]);
 
 	return S_OK;
 }

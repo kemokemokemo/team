@@ -84,35 +84,38 @@ HRESULT CGame::Init(void)
 
 
 	for (int nCnt = 0; nCnt < 2; nCnt++)
-	{
-		//switch (m_PlayerType[nCnt])
-		//{
-		//case CPlayerBase::PLAYERTYPE_KEN:
+	{	
 
-		//	CPlayer_KEN::Create(D3DXVECTOR3(-200.0f, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CMaker::MAKERTYPE)nCnt);
+		switch (m_PlayerType[nCnt])
+		{
+		case CPlayerBase::PLAYERTYPE_KEN:
 
-		//	break;
+			m_Player[nCnt] = CPlayer_KEN::Create(D3DXVECTOR3(-200.0f, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CMaker::MAKERTYPE)nCnt);
 
-		//case CPlayerBase::PLAYERTYPE_KANGAROO:
+			break;
 
+		case CPlayerBase::PLAYERTYPE_KANGAROO:
 
-		//	CPlayer_Kangaroo::Create(D3DXVECTOR3(0.0f, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CMaker::MAKERTYPE)nCnt);
+			m_Player[nCnt] = CPlayer_Kangaroo::Create(D3DXVECTOR3(0.0f, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CMaker::MAKERTYPE)nCnt);
+			break;
 
-		//	break;
+		case CPlayerBase::PLAYERTYPE_SWORD:
 
-		//case CPlayerBase::PLAYERTYPE_SWORD:
+			m_Player[nCnt] = CPlayer_SWORD::Create(D3DXVECTOR3(200.0f, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CMaker::MAKERTYPE)nCnt);
 
-		//	CPlayer_SWORD::Create(D3DXVECTOR3(200.0f, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CMaker::MAKERTYPE)nCnt);
+			break;
 
-		//	break;
-
-
-		//}
+		}
 	}
 
-	CPlayer_KEN::Create(D3DXVECTOR3(-200.0f, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CMaker::MAKERTYPE_1P);
+	//CPlayer_KEN::Create(D3DXVECTOR3(-200.0f, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CMaker::MAKERTYPE_1P);
 
-	CPlayer_SWORD::Create(D3DXVECTOR3(200.0f,500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CMaker::MAKERTYPE_2P);
+
+	//CPlayer_SWORD::Create(D3DXVECTOR3(200.0f,500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CMaker::MAKERTYPE_2P);
+	CTexture::Create(D3DXVECTOR3(80.0f, 550.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 510.0f, 200.0f, CTexture::TYPE_LIFE1);
+	CTexture::Create(D3DXVECTOR3(600.0f, 550.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 510.0f, 200.0f, CTexture::TYPE_LIFE2);
+
+
 
 	//CPlayer_Kangaroo::Create(D3DXVECTOR3(0.0f, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CMaker::MAKERTYPE_2P);
 
@@ -124,9 +127,6 @@ HRESULT CGame::Init(void)
 	{//§ŒÀŽžŠÔ‚Ì¶¬
 		pTime = CTime::Create(100);
 	}
-	CTexture::Create(D3DXVECTOR3(80.0f, 550.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 510.0f, 200.0f, CTexture::TYPE_LIFE1);
-	CTexture::Create(D3DXVECTOR3(680.0f, 550.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 510.0f, 200.0f, CTexture::TYPE_LIFE2);
-
 
 	return S_OK;
 }
@@ -169,11 +169,11 @@ void CGame::Draw(void)
 
 }
 
-void CGame::SetPlayerType(CSelectIcon * type)
+void CGame::SetPlayerType(CSelectIcon * type[])
 {
 	for (int nCnt = 0; nCnt < 2; nCnt++)
 	{
-		m_PlayerType[nCnt] = type[nCnt].GetType();
+		m_PlayerType[nCnt] = type[nCnt]->GetType();
 	}
 }
 

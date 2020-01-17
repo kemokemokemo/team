@@ -327,7 +327,7 @@ void CScene2D::UIUpdate(int nLife, int size)
 	VERTEX_2D *pVtx;
 
 	// 頂点データの範囲をロックし、頂点バッファへのポインタを取得
-	m_pVtxBuffScene->Lock(0, 0, (void**)&pVtx, 0);
+ 	m_pVtxBuffScene->Lock(0, 0, (void**)&pVtx, 0);
 
 		pVtx[0].pos = D3DXVECTOR3(m_pos.x, m_pos.y, 0.0f);
 		pVtx[1].pos = D3DXVECTOR3(m_pos.x + (nLife * size), m_pos.y, 0.0f);

@@ -36,7 +36,7 @@ public:
 	void Update(void);
 	void Draw(void);
 
-	static void SetPlayerType(CSelectIcon *type);
+	static void SetPlayerType(CSelectIcon *type[]);
 
 	static CGame * Create();
 
@@ -48,5 +48,7 @@ private:
 	static CTime *pTime;
 
 	static CPlayerBase::PLAYERTYPE m_PlayerType[];
+
+	CPlayerBase *m_Player[2];
 };
 #endif
