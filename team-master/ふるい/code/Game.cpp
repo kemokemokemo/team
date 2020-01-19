@@ -122,7 +122,7 @@ HRESULT CGame::Init(void)
 	//m_Player[1] = CPlayer_Kangaroo::Create(D3DXVECTOR3(0.0f, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CMaker::MAKERTYPE_2P);
 
 	CPolygon::Create();
-
+	CTexture::Create(D3DXVECTOR3(510.0f, -35.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 250.0f, 160.0f, CTexture::TYPE_TIME);
 	{//êßå¿éûä‘ÇÃê∂ê¨
 		pTime = CTime::Create(100);
 	}

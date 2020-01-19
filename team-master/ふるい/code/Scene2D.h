@@ -16,35 +16,7 @@
 //====================================================================================================
 // マクロ定義
 //==================================================================================================== 
-#define TEXTUER_001 "DATA/TEX/player000.png"				//読み込むテクスチャファイル名
-#define TEXTUER_002 "DATA/TEX/bullet001.png"				//読み込むテクスチャファイル名
-#define TEXTUER_003 "DATA/TEX/explosion000.png"				//読み込むテクスチャファイル名
-#define TEXTUER_004 "DATA/TEX/enemy01.png"					//読み込むテクスチャファイル名
-#define TEXTUER_005 "DATA/TEX/bg100.png"					//読み込むテクスチャファイル名
-#define TEXTUER_006 "DATA/TEX/bg101.png"					//読み込むテクスチャファイル名
-#define TEXTUER_007 "DATA/TEX/bg102.png"					//読み込むテクスチャファイル名
-#define TEXTUER_008 "DATA/TEX/Neutral01.png"				//読み込むテクスチャファイル名
-#define TEXTUER_009 "DATA/TEX/pipo-btleffect044.png"		//読み込むテクスチャファイル名
-#define TEXTUER_010 "DATA/TEX/pipo-btleffect018.png"		//読み込むテクスチャファイル名
-#define TEXTUER_011 "DATA/TEX/Life001.png"					//読み込むテクスチャファイル名
-#define TEXTUER_012 "DATA/TEX/pipo-btleffect134.png"		//読み込むテクスチャファイル名
-#define TEXTUER_013 "DATA/TEX/Item000.png"					//読み込むテクスチャファイル名
-#define TEXTUER_014 "DATA/TEX/pipo-btleffect019.png"		//読み込むテクスチャファイル名
-#define TEXTUER_015 "DATA/TEX/title.png"					//読み込むテクスチャファイル名
-#define TEXTUER_016 "DATA/TEX/result.JPG"					//読み込むテクスチャファイル名
-#define TEXTUER_017 "DATA/TEX/1HPbar.png"					//読み込むテクスチャファイル名
-#define TEXTUER_018 "DATA/TEX/boss001.png"					//読み込むテクスチャファイル名
-#define TEXTUER_019 "DATA/TEX/OVER.png"						//読み込むテクスチャファイル名
-#define TEXTUER_020 "DATA/TEX/Neutral002.png"				//読み込むテクスチャファイル名
-#define TEXTUER_021 "DATA/TEX/press_enter.png"				//読み込むテクスチャファイル名
-#define TEXTUER_022 "DATA/TEX/titlelog.png"					//読み込むテクスチャファイル名
-#define TEXTUER_023 "DATA/TEX/tutorial.png"					//読み込むテクスチャファイル名
-#define TEXTUER_024 "DATA/TEX/RankBG.png"					//読み込むテクスチャファイル名
-#define TEXTUER_025 "DATA/TEX/bariya.png"					//読み込むテクスチャファイル名
-#define TEXTUER_026 "DATA/TEX/BulletMove000.png"			//読み込むテクスチャファイル名
-#define TEXTUER_027 "DATA/TEX/tutorial2.png"				//読み込むテクスチャファイル名
-#define TEXTUER_028 "DATA/TEX/bg100.png"					//読み込むテクスチャファイル名
-#define TEXTUER_029 "DATA/TEX/bg101.png"					//読み込むテクスチャファイル名
+
 
 
 //================================================================

@@ -221,6 +221,18 @@ void CPlayerBase::Update(void)
 	case MOTIONTYPE_GAUDE:
 		MotionChangePlayer(MOTIONTYPE_GAUDE);
 		break;
+	case MOTIONTYPE_DOWN:
+		MotionChangePlayer(MOTIONTYPE_DOWN);
+		break;
+	case MOTIONTYPE_STANDUP:
+		MotionChangePlayer(MOTIONTYPE_STANDUP);
+		break;
+	case MOTIONTYPE_WIN:
+		MotionChangePlayer(MOTIONTYPE_WIN);
+		break;
+	case MOTIONTYPE_WINWAIT:
+		MotionChangePlayer(MOTIONTYPE_WINWAIT);
+		break;
 	}
 
 	if (MotionInfo[m_MotionType].nHitIdx != -1 &&

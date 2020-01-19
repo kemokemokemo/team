@@ -44,7 +44,7 @@ HRESULT CTime::Init(void)
 
 	for (int nCntScore = 0; nCntScore < MAX_TIME; nCntScore++)
 	{
-		pos = D3DXVECTOR3(600.0f + (SCORE_SIZE_X +15.0f)*nCntScore, 10.0f + SCORE_SIZE_Y, 0.0f);
+		pos = D3DXVECTOR3(600.0f + (SCORE_SIZE_X +15.0f)*nCntScore, 25.0f + SCORE_SIZE_Y, 0.0f);
 
 		int nDigits = nScore % (int)powf(10.0f,(float)MAX_TIME - nCntScore) / (int)powf(10.0f, (float)MAX_TIME - 1.0f - nCntScore);
 

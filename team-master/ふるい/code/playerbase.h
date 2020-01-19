@@ -87,6 +87,10 @@ public:
 		MOTIONTYPE_SP_UP,		// 特殊上
 		MOTIONTYPE_SP_DOWN,		// 特殊下
 		MOTIONTYPE_GAUDE,		// ガード
+		MOTIONTYPE_DOWN,		// ダウン
+		MOTIONTYPE_STANDUP,		// 起き上がり
+		MOTIONTYPE_WIN,			// 勝利モーション
+		MOTIONTYPE_WINWAIT,		// 勝利ポーズ待機
 		MOTIONTYPE_MAX			// モーションの最大数
 	} MOTIONTYPE;
 

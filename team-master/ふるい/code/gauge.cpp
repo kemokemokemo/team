@@ -134,7 +134,7 @@ HRESULT CGauge::Load(void)
 	//テクスチャの読み込み
 	D3DXCreateTextureFromFile(
 		pDevice,
-		TEXTUER_017,
+		"DATA/TEX/1HPbar.png",
 		&m_pTextureGauge[0]);
 
 	return S_OK;

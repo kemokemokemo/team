@@ -353,7 +353,7 @@ void CManager::SetMode(MODE mode)
 
 	case MODE_GAME:
 		pGame = CGame::Create();
-		m_pSound->PlaySound(CSound::SOUND_LABEL_TITLE);
+		//m_pSound->PlaySound(CSound::SOUND_LABEL_TITLE);
 		break;
 
 	case MODE_RESULT:
@@ -368,7 +368,7 @@ void CManager::SetMode(MODE mode)
 
 	case MODE_SELECTSCREEN:
 		pSelectionScreen = CSelectionScreen::Create();
-		m_pSound->PlaySound(CSound::SOUND_LABEL_TITLE);
+		//m_pSound->PlaySound(CSound::SOUND_LABEL_TITLE);
 		break;
 	}
 }

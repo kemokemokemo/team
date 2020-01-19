@@ -155,6 +155,12 @@ HRESULT CTexture::Load(void)
 	//テクスチャの読み込み
 	D3DXCreateTextureFromFile(
 		pDevice,
+		"DATA/TEX/time.png",
+		&m_pTextureIcon[TYPE_TIME]);
+
+	//テクスチャの読み込み
+	D3DXCreateTextureFromFile(
+		pDevice,
 		TEX_05,
 		&m_pTextureIcon[TYPE_KENICON]);
 

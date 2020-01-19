@@ -94,7 +94,7 @@ HRESULT CUI::Load(void)
 	//テクスチャの読み込み
 	D3DXCreateTextureFromFile(
 		pDevice,
-		TEXTUER_017,
+		"DATA/TEX/1HPbar.png",
 		&m_pTextureUi[0]);
 
 	return S_OK;
