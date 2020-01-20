@@ -157,6 +157,7 @@
     <ClCompile Include="code\Game.cpp" />
     <ClCompile Include="code\Gameover.cpp" />
     <ClCompile Include="code\gauge.cpp" />
+    <ClCompile Include="code\guard.cpp" />
     <ClCompile Include="code\HitModel.cpp" />
     <ClCompile Include="code\HitModelBase.cpp" />
     <ClCompile Include="code\input.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="code\Game.h" />
     <ClInclude Include="code\Gameover.h" />
     <ClInclude Include="code\gauge.h" />
+    <ClInclude Include="code\guard.h" />
     <ClInclude Include="code\HitModel.h" />
     <ClInclude Include="code\HitModelBase.h" />
     <ClInclude Include="code\input.h" />

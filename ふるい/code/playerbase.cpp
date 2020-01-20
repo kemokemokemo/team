@@ -22,6 +22,7 @@
 #include "sound.h"
 #include"Game.h"
 #include "Result.h"
+#include "guard.h"
 //=============================================================================
 // マクロ定義
 //=============================================================================
@@ -80,6 +81,8 @@ HRESULT CPlayerBase::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CMaker::MAKERTYPE Mo
 
 	m_PlayerDownCnt = 60;
 
+	m_Guardold = MOTIONTYPE_WAIT;
+
 	m_MotionType = MOTIONTYPE_WAIT;					// 現在のモーション
 
 	bJump = true;
@@ -125,6 +128,48 @@ void CPlayerBase::Update(void)
 	//モーションの再生
 	MotionPlayer();
 
+	if (m_MokerType == CMaker::MAKERTYPE_1P)
+	{
+		if (m_Guardold == MOTIONTYPE_WAIT)
+		{
+			if (m_MotionType == MOTIONTYPE_GAUDE)
+			{
+				pGuard = CGuard::Create(GetPos(), 10, CMaker::MAKERTYPE_1P);
+				m_Guardold = MOTIONTYPE_GAUDE;
+			}
+		}
+
+		if (m_Guardold == MOTIONTYPE_GAUDE)
+		{
+			if (m_MotionType != MOTIONTYPE_GAUDE)
+			{
+				pGuard->Release();
+				m_Guardold = MOTIONTYPE_WAIT;
+			}
+		}
+	}
+
+	if (m_MokerType == CMaker::MAKERTYPE_2P)
+	{
+		if (m_Guardold == MOTIONTYPE_WAIT)
+		{
+			if (m_MotionType == MOTIONTYPE_GAUDE)
+			{
+				pGuard = CGuard::Create(GetPos(), 10, CMaker::MAKERTYPE_2P);
+				m_Guardold = MOTIONTYPE_GAUDE;
+			}
+		}
+
+		if (m_Guardold == MOTIONTYPE_GAUDE)
+		{
+			if (m_MotionType != MOTIONTYPE_GAUDE)
+			{
+				pGuard->Release();
+				m_Guardold = MOTIONTYPE_WAIT;
+			}
+		}
+
+	}
 	if (m_MotionType ==  MOTIONTYPE_DOWN)
 	{
 		m_PlayerDownCnt++;
@@ -393,12 +438,13 @@ void CPlayerBase::Damage(CPlayerBase *pPlayer, int nDamage)
 		pPlayer->m_PlayerStateCount = 60;
 
 		pPlayer->pMaker->MakerLife(nDamage);
+
 		pPlayer->pGauge->GaugeLife(nDamage);
 	}
 
 	if (pPlayer->m_PlayerState == PLAYERSTATE_GAUDE)
 	{
-
+		pPlayer->pGuard->GuardLife(nDamage);
 	}
 
 	if (pPlayer->m_nLife <= 0)
@@ -525,22 +571,25 @@ void CPlayerBase::PlayerCollision()
 					}
 				}
 			}
-			if (m_MotionType == MOTIONTYPE_LIGHT2 || m_MotionType == MOTIONTYPE_DASHATK || m_MotionType == MOTIONTYPE_CROUCHATK)
+			if (pPlayer[1]->m_MotionType != MOTIONTYPE_GAUDE)
 			{
-				pPlayer[1]->m_MotionType = MOTIONTYPE_DOWN;
+				if (m_MotionType == MOTIONTYPE_LIGHT2 || m_MotionType == MOTIONTYPE_DASHATK || m_MotionType == MOTIONTYPE_CROUCHATK)
+				{
+					pPlayer[1]->m_MotionType = MOTIONTYPE_DOWN;
 
 
-				if (pos.x < pPlayer[1]->GetPos().x)
-				{
-					Nocmove.y = 0.0f;
-					Nocmove.x += PLAYER__BLOWAWAY;
-					pPlayer[1]->SetMove(Nocmove);
-				}
-				else
-				{
-					Nocmove.y = 0.0f;
-					Nocmove.x -= PLAYER__BLOWAWAY;
-					pPlayer[1]->SetMove(Nocmove);
+					if (pos.x < pPlayer[1]->GetPos().x)
+					{
+						Nocmove.y = 0.0f;
+						Nocmove.x += PLAYER__BLOWAWAY;
+						pPlayer[1]->SetMove(Nocmove);
+					}
+					else
+					{
+						Nocmove.y = 0.0f;
+						Nocmove.x -= PLAYER__BLOWAWAY;
+						pPlayer[1]->SetMove(Nocmove);
+					}
 				}
 			}
 		}
@@ -1133,7 +1182,6 @@ void CPlayerBase::PlayerCollisionFloor(void)
 			CScene3D::SetHight(m_pos.y);
 		}
 	}
-
 }
 
 void CPlayerBase::PlayerPad(int cnt)

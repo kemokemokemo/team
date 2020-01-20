@@ -29,6 +29,7 @@
 
 class CGauge;
 class CMaker;
+class CGuard;
 
 //================================================================
 // レンダリングクラス
@@ -202,9 +203,12 @@ private:
 	bool bJump;
 	CMaker::MAKERTYPE m_MokerType;
 
+	MOTIONTYPE m_Guardold;
+
 	CHitModel *m_Hitmodel;
 	CMaker *pMaker;
 	CGauge *pGauge;
+	CGuard *pGuard;
 	static CManager*m_pManager;
 
 };

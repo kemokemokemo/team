@@ -26,6 +26,7 @@
 #include "Number.h"
 #include "time.h"
 #include "Texture.h"
+#include "guard.h"
 //====================================================================================================
 // É}ÉNÉçíËã`
 //==================================================================================================== 
@@ -78,6 +79,8 @@ HRESULT CGame::Init(void)
 	CHitModel::Load();
 
 	CNumber::Load();
+
+	CGuard::Load();
 
 	CModel::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CModel::UNITTYPE_FLOOR);
 
@@ -136,6 +139,7 @@ void CGame::Uninit(void)
 	CTexture::Unload();
 	CEffect::Unload();
 	CHitModel::Unload();
+	CGuard::Unload();
 }
 
 //================================================================================================
