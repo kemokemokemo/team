@@ -37,6 +37,7 @@
 CScene3D::MODELNUM CPlayerBase::m_PlayerType[PLAYERTYPE_MAX] = {};
 CPlayerBase::MOTION_INFO CPlayerBase::aMotionInfo[PLAYERTYPE_MAX][CPlayerBase::MOTIONTYPE_MAX] = {};
 char *CPlayerBase::TextLoad[PLAYERTYPE_MAX];
+CManager*CPlayerBase::m_pManager = NULL;
 
 //=============================================================================
 // コンストラクタ
@@ -76,6 +77,8 @@ HRESULT CPlayerBase::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CMaker::MAKERTYPE Mo
 	m_PlayerStateCount = 2;
 
 	nCountATK = 0;
+
+	m_PlayerDownCnt = 60;
 
 	m_MotionType = MOTIONTYPE_WAIT;					// 現在のモーション
 
@@ -121,6 +124,16 @@ void CPlayerBase::Update(void)
 {
 	//モーションの再生
 	MotionPlayer();
+
+	if (m_MotionType ==  MOTIONTYPE_DOWN)
+	{
+		m_PlayerDownCnt++;
+		if (m_PlayerDownCnt >= 120)
+		{
+			m_MotionType = MOTIONTYPE_STANDUP;
+			m_PlayerDownCnt = 0;
+		}
+	}
 
 	switch (m_PlayerState)
 	{
@@ -402,7 +415,10 @@ void CPlayerBase::PlayerCollision()
 	float fMinLength = 10000.0f;
 	CPlayerBase *pPlayer[2] = {};
 
+
 	D3DXVECTOR3 pos = {};
+	D3DXVECTOR3 NocVec;
+	D3DXVECTOR3 Nocmove;
 
 	// モーションでの座標
 	D3DXMATRIX mtxWorld = GetModel().NumModel[MotionInfo[m_MotionType].nHitIdx].mtxWorld;
@@ -419,7 +435,7 @@ void CPlayerBase::PlayerCollision()
 			m_Hitmodel->Uninit();
 			m_Hitmodel = NULL;
 		}
-#ifdef DEBUG
+#ifdef _DEBUG
 		m_Hitmodel = CHitModel::Create(pos, D3DXVECTOR3(m_fAttack, m_fAttack, m_fAttack));
 #endif // DEBUG
 	}
@@ -472,6 +488,9 @@ void CPlayerBase::PlayerCollision()
 				pPlayer[1] = pPlayer[0];
 			}
 		}
+		pos = GetPos();
+		NocVec = pos - pPlayer[0]->GetPos();
+		Nocmove = pPlayer[0]->GetMove();
 	}
 
 	if (pPlayer[1] && pPlayer[1]->m_PlayerState != PLAYERSTATE_DAMAGE)
@@ -499,6 +518,29 @@ void CPlayerBase::PlayerCollision()
 					CResult::SetWinPlayer(GetTypeChara(), GetMaker());
 
 					pPlayer[1]->Uninit();
+					if (m_PlayerDownCnt <= 0)
+					{
+						CFade::SetFade(m_pManager->MODE_RESULT);
+
+					}
+				}
+			}
+			if (m_MotionType == MOTIONTYPE_LIGHT2 || m_MotionType == MOTIONTYPE_DASHATK || m_MotionType == MOTIONTYPE_CROUCHATK)
+			{
+				pPlayer[1]->m_MotionType = MOTIONTYPE_DOWN;
+
+
+				if (pos.x < pPlayer[1]->GetPos().x)
+				{
+					Nocmove.y = 0.0f;
+					Nocmove.x += PLAYER__BLOWAWAY;
+					pPlayer[1]->SetMove(Nocmove);
+				}
+				else
+				{
+					Nocmove.y = 0.0f;
+					Nocmove.x -= PLAYER__BLOWAWAY;
+					pPlayer[1]->SetMove(Nocmove);
 				}
 			}
 		}
@@ -1099,12 +1141,19 @@ void CPlayerBase::PlayerPad(int cnt)
 	CPad *pGamePad = CManager::GetPad();
 	CKeybord *pKeyboard = CManager::GetKeybord();
 
-	if (m_PlayerState != PLAYERSTATE_ATK && m_MotionType != MOTIONTYPE_DAMAGE)
+	if (m_PlayerState != PLAYERSTATE_ATK && m_MotionType != MOTIONTYPE_DAMAGE && m_MotionType != MOTIONTYPE_STANDUP)
 	{
 		//空中
 		if (GetJump() == false)
 		{
-			if (pKeyboard->GetKeyboardTrigger(DIK_J) || pGamePad->GetJoypadTrigger(cnt, CPad::JOYPADKEY_Y))
+			if (m_MotionType == MOTIONTYPE_DOWN)
+			{
+				if (pKeyboard->GetKeyboardPress(DIK_B) || pGamePad->GetJoypadTrigger(cnt, CPad::JOYPADKEY_A) || pGamePad->GetJoypadPress(cnt, CPad::JOYPADKEY_B))
+				{
+					m_MotionType = MOTIONTYPE_STANDUP;
+				}
+			}
+			else if (pKeyboard->GetKeyboardTrigger(DIK_J) || pGamePad->GetJoypadTrigger(cnt, CPad::JOYPADKEY_Y))
 			{//ジャンプ
 				if (bWJump == false)
 				{

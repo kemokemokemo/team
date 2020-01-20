@@ -165,6 +165,7 @@ void CGame::Update(void)
 				pos[nCnt] = m_Player[nCnt]->GetPos();
 			}
 		}
+
 		D3DXVECTOR3 dis = pos[1] - pos[0];
 
 		pos[0] += dis / 2.0f;

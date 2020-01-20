@@ -16,6 +16,7 @@
 #include "Scene3D.h"
 #include "maker.h"
 #include "HitModel.h"
+#include "manager.h"
 
 //=============================================================================
 // ç\ë¢ëÃíËã`
@@ -194,6 +195,7 @@ private:
 	MOTIONTYPE m_MotionOld;
 
 	int m_PlayerStateCount;
+	int m_PlayerDownCnt;
 	static MOTION_INFO aMotionInfo[PLAYERTYPE_MAX][MOTIONTYPE_MAX];
 	MOTION_INFO MotionInfo[MOTIONTYPE_MAX];
 
@@ -203,6 +205,7 @@ private:
 	CHitModel *m_Hitmodel;
 	CMaker *pMaker;
 	CGauge *pGauge;
+	static CManager*m_pManager;
 
 };
 #endif

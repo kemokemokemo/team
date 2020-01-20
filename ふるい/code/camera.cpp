@@ -217,7 +217,10 @@ void CCamera::SetCameraPos(D3DXVECTOR3 pos, D3DXVECTOR3 dis)
 	m_Camera.posRDest = pos;
 	m_Camera.posRDest.y = m_Camera.posRDest.y + 50.0f;
 
-	m_Camera.posV.x = m_Camera.posR.x;
-	m_Camera.posV.y = m_Camera.posR.y + 50.0f;
-	m_Camera.posV.z = -550.0f - D3DXVec3Length(&dis) * 0.3f;
+	if (dis != D3DXVECTOR3(0.0f,0.0f,0.0f))
+	{
+		m_Camera.posV.x = m_Camera.posR.x;
+		m_Camera.posV.y = m_Camera.posR.y + 50.0f;
+		m_Camera.posV.z = -550.0f - D3DXVec3Length(&dis) * 0.3f;
+	}
 }
