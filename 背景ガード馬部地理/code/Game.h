@@ -43,7 +43,6 @@ public:
 
 private:
 
-	static CManager*m_pManager;
 	static CCamera*m_pCamera;
 	static CLight*m_pLight;
 	static CTime *pTime;

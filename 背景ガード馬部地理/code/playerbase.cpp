@@ -38,7 +38,6 @@
 CScene3D::MODELNUM CPlayerBase::m_PlayerType[PLAYERTYPE_MAX] = {};
 CPlayerBase::MOTION_INFO CPlayerBase::aMotionInfo[PLAYERTYPE_MAX][CPlayerBase::MOTIONTYPE_MAX] = {};
 char *CPlayerBase::TextLoad[PLAYERTYPE_MAX];
-CManager*CPlayerBase::m_pManager = NULL;
 
 //=============================================================================
 // コンストラクタ
@@ -591,11 +590,8 @@ void CPlayerBase::PlayerCollision()
 					CResult::SetWinPlayer(GetTypeChara(), GetMaker());
 
 					pPlayer[1]->Uninit();
-					if (m_PlayerDownCnt <= 0)
-					{
-						CFade::SetFade(m_pManager->MODE_RESULT);
-
-					}
+				
+					CFade::SetFade(CManager::MODE_RESULT);
 				}
 			}
 			if (pPlayer[1]->m_MotionType != MOTIONTYPE_GAUDE)

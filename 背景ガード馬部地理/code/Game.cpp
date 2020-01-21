@@ -34,7 +34,6 @@
 //=====================================================================================================
 // ‘O•ûéŒ¾‰Šú‰»
 //=====================================================================================================
-CManager *CGame::m_pManager = NULL;
 CLight*CGame::m_pLight = NULL;
 CTime *CGame::pTime = NULL;
 
@@ -198,7 +197,7 @@ void CGame::Update(void)
 #ifdef _DEBUG
 	if (pKetybord->GetKeyboardTrigger(DIK_RETURN))
 	{
-		CFade::SetFade(m_pManager->MODE_RESULT);
+		CFade::SetFade(CManager::MODE_RESULT);
 	}
 #endif
 

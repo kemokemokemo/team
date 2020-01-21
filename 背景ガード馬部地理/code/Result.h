@@ -39,8 +39,6 @@ public:
 	static void SetWinPlayer(CPlayerBase::PLAYERTYPE type, CMaker::MAKERTYPE p);
 
 private:
-	static CManager*m_pManager;
-
 	static CMaker::MAKERTYPE m_nRank;
 	static CPlayerBase::PLAYERTYPE m_WinType;
 };

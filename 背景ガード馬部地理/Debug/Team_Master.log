@@ -1,22 +1,3 @@
-﻿  polygonbase.cpp
-  playerbase.cpp
-  gauge.cpp
-  Scene2D.cpp
-  コードを生成中...
-  スキップ中... (関連する変更は検出されませんでした)
-  ui.cpp
-  selectionscreen.cpp
-  player_Sword.cpp
-  player_Ken.cpp
-  player_Kangaroo.cpp
-  manager.cpp
-  maker.cpp
-  guard.cpp
-  billboard.cpp
-  Title.cpp
-  Texture.cpp
-  SelectIcon.cpp
-  Scene3D.cpp
-  Game.cpp
-  Team_Master.vcxproj -> C:\Users\木村洸太\Desktop\攻撃力設定\Debug\Team_Master.exe
-  Team_Master.vcxproj -> C:\Users\木村洸太\Desktop\攻撃力設定\Debug\Team_Master.pdb (Full PDB)
+﻿  Result.cpp
+  Team_Master.vcxproj -> C:\Users\S-Jobi18-051\Desktop\背景ガード馬部地理\Debug\Team_Master.exe
+  Team_Master.vcxproj -> C:\Users\S-Jobi18-051\Desktop\背景ガード馬部地理\Debug\Team_Master.pdb (Full PDB)

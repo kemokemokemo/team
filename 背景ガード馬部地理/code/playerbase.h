@@ -206,7 +206,5 @@ private:
 	CMaker *pMaker;
 	CGauge *pGauge;
 	CGuard *pGuard;
-	static CManager*m_pManager;
-
 };
 #endif

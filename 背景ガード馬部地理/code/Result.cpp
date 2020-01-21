@@ -9,10 +9,12 @@
 #include"renderer.h"
 #include"input.h"
 #include"keybord.h"
+#include "pad.h"
 #include "player_Ken.h"
 #include "player_Sword.h"
 #include "player_Kangaroo.h"
 #include "model.h"
+#include "camera.h"
 
 //====================================================================================================
 // マクロ定義
@@ -21,7 +23,6 @@
 //=====================================================================================================
 // 前方宣言初期化
 //=====================================================================================================
-CManager *CResult::m_pManager = NULL;
 CMaker::MAKERTYPE CResult::m_nRank = {};
 CPlayerBase::PLAYERTYPE CResult::m_WinType = {};
 
@@ -47,8 +48,6 @@ CResult::~CResult()
 HRESULT CResult::Init(void)
 {
 	CPlayerBase::Load();
-	CMaker::Load();
-
 	CModel::Load();
 
 	CModel::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CModel::UNITTYPE_FLOOR);
@@ -56,20 +55,18 @@ HRESULT CResult::Init(void)
 	switch (m_WinType)
 	{
 	case CPlayerBase::PLAYERTYPE_KEN:
-
 		CPlayer_KEN::Create(D3DXVECTOR3(0, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CMaker::MAKERTYPE)m_nRank);
 		break;
 
 	case CPlayerBase::PLAYERTYPE_KANGAROO:
-
 		CPlayer_Kangaroo::Create(D3DXVECTOR3(0, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CMaker::MAKERTYPE)m_nRank);
 		break;
 
 	case CPlayerBase::PLAYERTYPE_SWORD:
-
 		CPlayer_SWORD::Create(D3DXVECTOR3(0, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CMaker::MAKERTYPE)m_nRank);
 		break;
 	}
+
 	return S_OK;
 }
 
@@ -80,7 +77,6 @@ void CResult::Uninit(void)
 {
 	CPlayerBase::Unload();
 	CModel::Unload();
-	CMaker::Unload();
 
 }
 
@@ -90,16 +86,18 @@ void CResult::Uninit(void)
 void CResult::Update(void)
 {
 	CKeybord *pKetybord = CManager::GetKeybord();
-
+	CPad *pGamePad = CManager::GetPad();
 
 
 	if (CFade::GetFade() == CFade::FADE_NONE)
 	{
-		if (pKetybord->GetKeyboardTrigger(DIK_RETURN))
+		if (pKetybord->GetKeyboardTrigger(DIK_RETURN) || pGamePad->GetJoypadTrigger(0, CPad::JOYPADKEY_START))
 		{
-			CFade::SetFade(m_pManager->MODE_RANKING);
+			CFade::SetFade(CManager::MODE_RANKING);
 		}
 	}
+
+	CCamera::SetCameraPos(D3DXVECTOR3(0.0f, 0.0f, 0.0f), &D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 }
 
 //================================================================================================
