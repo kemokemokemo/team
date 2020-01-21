@@ -38,7 +38,7 @@ CGameover *CManager::pGameover = NULL;
 CTutorial *CManager::pTutorial = NULL;
 CSelectionScreen *CManager::pSelectionScreen = NULL;
 CSound *CManager::m_pSound = NULL;
-CManager::MODE CManager::m_mode = CManager::MODE_SELECTSCREEN;
+CManager::MODE CManager::m_mode = CManager::MODE_GAME;
 
 //====================================================================================================
 // コンストラクタ

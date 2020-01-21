@@ -111,6 +111,7 @@ HRESULT CPlayerBase::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife,CMaker::MA
 			pGauge = CGauge::Create(D3DXVECTOR3(770.0f, 650.0f, 0.0f), m_nLife, CMaker::MAKERTYPE_2P);
 		}
 	}
+
 	return S_OK;
 }
 
@@ -765,9 +766,24 @@ void CPlayerBase::MotionPlayer()
 
 	if (!pInfo->bLoop && pInfo->nNumKey + 1 == pInfo->nMaxKey)
 	{// モーションがループしない場合
-			pInfo->nNumKey = 0;
-			pInfo->nCntFrame = 0;
-			m_MotionType = MOTIONTYPE_WAIT;
+		pInfo->nNumKey = 0;
+		pInfo->nCntFrame = 0;
+		m_MotionType = MOTIONTYPE_WAIT;
+
+		if (m_MotionOld == MOTIONTYPE_RAND)
+		{
+			if (CManager::GetMode() == CManager::MODE_RESULT)
+			{
+				if (m_MotionOld == MOTIONTYPE_WIN)
+				{
+					MotionChangePlayer(MOTIONTYPE_WINWAIT);
+				}
+				else
+				{
+					MotionChangePlayer(MOTIONTYPE_WIN);
+				}
+			}
+		}
 	}
 	else if (pInfo->nNumKey == pInfo->nMaxKey)
 	{// モーションが終了した場合
@@ -1223,9 +1239,9 @@ void CPlayerBase::Unload(void)
 		}
 	}
 }
-//=============================================================================
+//========================================================================================================
 // 床の当たり判定
-//=============================================================================
+//========================================================================================================
 void CPlayerBase::PlayerCollisionFloor(void)
 {
 	m_posOld = m_pos;
@@ -1264,7 +1280,7 @@ void CPlayerBase::PlayerPad(int cnt)
 		{
 			if (m_MotionType == MOTIONTYPE_DOWN)
 			{
-				if (pKeyboard->GetKeyboardPress(DIK_B) || pGamePad->GetJoypadTrigger(cnt, CPad::JOYPADKEY_A) || pGamePad->GetJoypadPress(cnt, CPad::JOYPADKEY_B))
+				if (pKeyboard->GetKeyboardPress(DIK_B) || pGamePad->GetJoypadTrigger(cnt, CPad::JOYPADKEY_A) || pGamePad->GetJoypadPress(cnt, CPad::JOYPADKEY_B) || pGamePad->GetJoypadPress(cnt, CPad::JOYPADKEY_X))
 				{
 					m_MotionType = MOTIONTYPE_STANDUP;
 				}

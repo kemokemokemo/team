@@ -41,5 +41,7 @@ public:
 private:
 	static CMaker::MAKERTYPE m_nRank;
 	static CPlayerBase::PLAYERTYPE m_WinType;
+
+	CPlayerBase *m_Player;
 };
 #endif

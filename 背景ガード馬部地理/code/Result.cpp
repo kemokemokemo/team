@@ -55,15 +55,15 @@ HRESULT CResult::Init(void)
 	switch (m_WinType)
 	{
 	case CPlayerBase::PLAYERTYPE_KEN:
-		CPlayer_KEN::Create(D3DXVECTOR3(0, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CMaker::MAKERTYPE)m_nRank);
+		m_Player = CPlayer_KEN::Create(D3DXVECTOR3(0, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CMaker::MAKERTYPE)m_nRank);
 		break;
 
 	case CPlayerBase::PLAYERTYPE_KANGAROO:
-		CPlayer_Kangaroo::Create(D3DXVECTOR3(0, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CMaker::MAKERTYPE)m_nRank);
+		m_Player = CPlayer_Kangaroo::Create(D3DXVECTOR3(0, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CMaker::MAKERTYPE)m_nRank);
 		break;
 
 	case CPlayerBase::PLAYERTYPE_SWORD:
-		CPlayer_SWORD::Create(D3DXVECTOR3(0, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CMaker::MAKERTYPE)m_nRank);
+		m_Player = CPlayer_SWORD::Create(D3DXVECTOR3(0, 500.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CMaker::MAKERTYPE)m_nRank);
 		break;
 	}
 
@@ -87,7 +87,6 @@ void CResult::Update(void)
 {
 	CKeybord *pKetybord = CManager::GetKeybord();
 	CPad *pGamePad = CManager::GetPad();
-
 
 	if (CFade::GetFade() == CFade::FADE_NONE)
 	{
