@@ -1,0 +1,391 @@
+//=============================================================================
+//
+// プレイヤー処理 [player.cpp]
+// Author : KOUTA KIMURA
+//
+//=============================================================================
+
+//=============================================================================
+// インクルードファイル
+//=============================================================================
+#include "player_kangaroo.h"
+#include "camera.h"
+#include "manager.h"
+#include "renderer.h"
+#include "keybord.h"
+#include "pad.h"
+#include "gauge.h"
+#include "Scene2D.h"
+
+//=============================================================================
+// マクロ定義
+//=============================================================================
+#define ROOPLAYER_SPEED	(1.5f)					//プレイヤーの速さ
+#define ROOPLAYER_AIRSPEED	(1.5f)					//空中でのプレイヤーの速さ
+#define ROOPLAYER_AIRATKSPEED	(0.5f)					//空中でのプレイヤーの速さ
+#define ROOPLAYER_JUMP (120.0f)					//ジャンプの高さ
+#define ROOPLAYER_AIRJUMP (90.0f)					//空中ジャンプの高さ
+#define ROOLIGHT_ATK (9)					//弱攻撃に派生できるフレーム
+
+//=============================================================================
+// メンバ変数初期化
+//=============================================================================
+
+//=============================================================================
+// コンストラクタ
+//=============================================================================
+CPlayer_Kangaroo::CPlayer_Kangaroo(OBJTYPE type) : CPlayerBase(type)
+{
+
+}
+
+//=============================================================================
+// デストラクタ
+//=============================================================================
+CPlayer_Kangaroo::~CPlayer_Kangaroo()
+{
+
+}
+
+//=============================================================================
+// モデルの生成
+//=============================================================================
+CPlayer_Kangaroo * CPlayer_Kangaroo::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CMaker::MAKERTYPE MokerType)
+{
+	CPlayer_Kangaroo *pPlayer;
+	pPlayer = new CPlayer_Kangaroo(OBJTYPE_PLAYER);
+
+	pPlayer->Init(pos, rot, MokerType);
+	return pPlayer;
+}
+
+//=============================================================================
+// 初期化処理
+//=============================================================================
+HRESULT CPlayer_Kangaroo::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CMaker::MAKERTYPE MokerType)
+{
+	m_TypeChara = CPlayer_Kangaroo::PLAYERTYPE_KANGAROO;
+	CPlayerBase::Init(pos, rot, MokerType);
+
+	m_nLife = 5;
+
+	m_fRadius = 70.0f;
+	m_fAttack = 60.0f;
+
+	m_fSpeed = ROOPLAYER_SPEED;
+	m_fAirSpeed = ROOPLAYER_AIRSPEED;
+	m_fAirAtkSpeed = ROOPLAYER_AIRATKSPEED;
+	m_fJump = ROOPLAYER_JUMP;
+	m_fAirJump = ROOPLAYER_AIRJUMP;
+	m_fLightAtk = ROOLIGHT_ATK;
+
+	return S_OK;
+}
+//=============================================================================
+// 終了処理
+//=============================================================================
+void CPlayer_Kangaroo::Uninit(void)
+{
+	CPlayerBase::Uninit();
+}
+
+//=============================================================================
+// 更新処理
+//=============================================================================
+void CPlayer_Kangaroo::Update(void)
+{
+	CKeybord *pKeyboard = CManager::GetKeybord();
+
+	//if (m_PlayerState != PLAYERSTATE_ATK)
+	//{
+	//	if (GetJump() == false)
+	//	{
+	//		if (pKeyboard->GetKeyboardTrigger(DIK_J))
+	//		{//ジャンプ
+	//			if (bWJump == false)
+	//			{
+	//				SetJump(true);
+	//				bWJump = true;
+	//				m_move.y += PLAYER_JUMP;
+	//			}
+	//		}
+	//		else if (pKeyboard->GetKeyboardPress(DIK_A))
+	//		{//  A キー操作
+				//m_move.x += D3DX_PI*-0.5f* PLAYER_SPEED;
+	//			m_fDiffrot.y = D3DX_PI*0.5f;
+	//			MotionChangePlayer(MOTIONTYPE_RUN);
+	//			if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+	//			{
+	//				MotionChangePlayer(MOTIONTYPE_DASHATK);
+	//			}
+	//			else if (pKeyboard->GetKeyboardTrigger(DIK_B))
+	//			{//特殊攻撃ニュートラル
+	//				MotionChangePlayer(MOTIONTYPE_SP_N);
+	//			}
+	//		}
+	//		else if (pKeyboard->GetKeyboardPress(DIK_D))
+	//		{//  D キー操作
+	//			m_move.x += D3DX_PI*0.5f * PLAYER_SPEED;
+	//			m_fDiffrot.y = D3DX_PI*-0.5f;
+	//			MotionChangePlayer(MOTIONTYPE_RUN);
+	//			if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+	//			{
+	//				MotionChangePlayer(MOTIONTYPE_DASHATK);
+	//			}
+	//			else if (pKeyboard->GetKeyboardTrigger(DIK_B))
+	//			{//特殊攻撃ニュートラル
+	//				MotionChangePlayer(MOTIONTYPE_SP_N);
+	//			}
+	//		}
+	//		else if (m_MotionType == MOTIONTYPE_RUN)
+	//		{// 移動をやめた場合
+	//		 // モーションの切り替え
+	//			MotionChangePlayer(MOTIONTYPE_WAIT);
+	//		}
+
+	//		else if (pKeyboard->GetKeyboardPress(DIK_W))
+	//		{// W キー操作
+	//			if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+	//			{
+	//				MotionChangePlayer(MOTIONTYPE_UPATK);
+	//			}
+	//			else if (pKeyboard->GetKeyboardTrigger(DIK_B))
+	//			{//特殊攻撃上
+	//				MotionChangePlayer(MOTIONTYPE_SP_UP);
+	//			}
+	//		}
+
+	//		else if (pKeyboard->GetKeyboardPress(DIK_S))
+	//		{
+	//			MotionChangePlayer(MOTIONTYPE_CROUCHWAIT);
+	//			if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+	//			{
+	//				MotionChangePlayer(MOTIONTYPE_CROUCHATK);
+	//			}
+	//			else if (pKeyboard->GetKeyboardTrigger(DIK_B))
+	//			{//特殊攻撃下
+	//				MotionChangePlayer(MOTIONTYPE_SP_DOWN);
+	//			}
+	//		}
+
+	//		else if (m_MotionType == MOTIONTYPE_CROUCHWAIT)
+	//		{// 移動をやめた場合
+	//		 // モーションの切り替え
+	//			m_MotionType = MOTIONTYPE_WAIT;
+	//		}
+	//		else if (pKeyboard->GetKeyboardTrigger(DIK_B))
+	//		{//特殊攻撃ニュートラル
+	//			MotionChangePlayer(MOTIONTYPE_SP_N);
+	//		}
+	//		else if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+	//		{
+	//			//2段攻撃
+	//			if (m_MotionType == MOTIONTYPE_LIGHT0)
+	//			{
+	//				MotionChangePlayer(MOTIONTYPE_LIGHT1);
+	//			}
+	//			else
+	//			{
+	//				MotionChangePlayer(MOTIONTYPE_LIGHT0);
+	//			}
+	//		}
+	//		else if (pKeyboard->GetKeyboardPress(DIK_G))
+	//		{
+	//			MotionChangePlayer(MOTIONTYPE_GAUDE);
+	//		}
+	//	}
+
+	//	//空中
+	//	else
+	//	{
+	//		if (m_PlayerState != PLAYERSTATE_AIRATK)
+	//		{
+	//			if (m_MotionType != MOTIONTYPE_DOUBLEJUMP)
+	//			{
+	//				MotionChangePlayer(MOTIONTYPE_JUMP);
+	//			}
+	//			if (bWJump == true)
+	//			{
+	//				if (pKeyboard->GetKeyboardTrigger(DIK_J))
+	//				{//二段ジャンプ
+	//					MotionChangePlayer(MOTIONTYPE_DOUBLEJUMP);
+	//					bWJump = false;
+	//					m_move.y = 0.0f;
+	//					m_move.y += PLAYER_AIRJUMP;
+	//				}
+	//			}
+	//			if (pKeyboard->GetKeyboardPress(DIK_A))
+	//			{//  A キー操作
+	//				m_move.x += D3DX_PI*-0.5f* PLAYER_AIRSPEED;
+
+	//				if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+	//				{
+	//					if (m_fDiffrot.y == D3DX_PI*0.5f)
+	//					{
+	//						m_MotionType = MOTIONTYPE_AIR_F;
+	//					}
+	//					else
+	//					{
+	//						m_MotionType = MOTIONTYPE_AIR_B;
+	//					}
+	//				}
+	//			}
+	//			else if (pKeyboard->GetKeyboardPress(DIK_D))
+	//			{//  D キー操作
+	//				m_move.x += D3DX_PI*0.5f * PLAYER_AIRSPEED;
+	//				if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+	//				{
+	//					if (m_fDiffrot.y == D3DX_PI*-0.5f)
+	//					{
+	//						m_MotionType = MOTIONTYPE_AIR_F;
+	//					}
+	//					else
+	//					{
+	//						m_MotionType = MOTIONTYPE_AIR_B;
+	//					}
+	//				}
+	//			}
+	//			else if (pKeyboard->GetKeyboardPress(DIK_W))
+	//			{
+	//				if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+	//				{
+	//					m_MotionType = MOTIONTYPE_AIR_U;
+	//				}
+	//			}
+	//			else if (pKeyboard->GetKeyboardPress(DIK_S))
+	//			{
+	//				m_move.y -= 1.2f;
+	//				if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+	//				{
+	//					m_MotionType = MOTIONTYPE_AIR_D;
+	//				}
+	//			}
+	//			else if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+	//			{
+	//				m_MotionType = MOTIONTYPE_AIR_N;
+	//			}
+	//		}
+	//	}
+	//}
+
+	//switch (m_MotionType)
+	//{
+	//case MOTIONTYPE_LIGHT0:
+	//	nCountATK++;
+	//	if (nCountATK >= ROOLIGHT_ATK)
+	//	{
+	//		if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+	//		{
+	//			nCountATK = 0;
+	//			MotionChangePlayer(MOTIONTYPE_LIGHT1);
+	//		}
+	//	}
+	//	break;
+	//case MOTIONTYPE_LIGHT1:
+	//	nCountATK++;
+	//	if (nCountATK >= 0 && nCountATK <= 5)
+	//	{
+	//		if (m_fDiffrot.y == D3DX_PI*0.5f)
+	//		{
+	//			m_move.x -= 1.5f;
+	//		}
+	//		else
+	//		{
+	//			m_move.x += 1.5f;
+	//		}
+	//	}
+	//	break;
+	//case MOTIONTYPE_DASHATK:
+	//	nCountATK++;
+	//	if (nCountATK >= 1 && nCountATK <= 24)
+	//	{
+	//		if (m_fDiffrot.y == D3DX_PI*0.5f)
+	//		{
+	//			m_move.x -= 1.5f;
+	//		}
+	//		else
+	//		{
+	//			m_move.x += 1.5f;
+	//		}
+	//	}
+	//	break;
+	//case MOTIONTYPE_CROUCHATK:
+	//	nCountATK++;
+	//	if (nCountATK >= 4 && nCountATK <= 8)
+	//	{
+	//		if (m_fDiffrot.y == D3DX_PI*0.5f)
+	//		{
+	//			m_move.x -= 3.5f;
+	//		}
+	//		else
+	//		{
+	//			m_move.x += 3.5f;
+	//		}
+	//	}
+	//	break;
+	//case MOTIONTYPE_SP_N:
+	//	nCountATK++;
+	//	if (nCountATK >= 15 && nCountATK <= 38)
+	//	{
+	//		if (m_fDiffrot.y == D3DX_PI*0.5f)
+	//		{
+	//			m_move.x -= 3.5f;
+	//		}
+	//		else
+	//		{
+	//			m_move.x += 3.5f;
+	//		}
+	//	}
+	//	break;
+	//case MOTIONTYPE_SP_UP:
+	//	nCountATK++;
+	//	if (nCountATK >= 4 && nCountATK <= 23)
+	//	{
+	//		if (m_fDiffrot.y == D3DX_PI*0.5f)
+	//		{
+	//			m_move.x -= 3.5f;
+	//		}
+	//		else
+	//		{
+	//			m_move.x += 3.5f;
+	//		}
+	//	}
+	//	break;
+	//case MOTIONTYPE_AIR_N:
+	//case MOTIONTYPE_AIR_F:
+	//case MOTIONTYPE_AIR_B:
+	//case MOTIONTYPE_AIR_U:
+	//case MOTIONTYPE_AIR_D:
+	//	if (pKeyboard->GetKeyboardPress(DIK_D))
+	//	{
+	//		m_move.x += D3DX_PI*0.5f* ROOPLAYER_AIRATKSPEED;
+	//	}
+	//	else if (pKeyboard->GetKeyboardPress(DIK_A))
+	//	{
+	//		m_move.x += D3DX_PI*-0.5f* ROOPLAYER_AIRATKSPEED;
+	//	}
+	//	if (pKeyboard->GetKeyboardPress(DIK_S))
+	//	{
+	//		m_move.y -= 1.2f;
+	//	}
+	//	break;
+	//case MOTIONTYPE_GAUDE:
+	//	if (pKeyboard->GetKeyboardPress(DIK_G))
+	//	{
+	//		m_PlayerState = PLAYERSTATE_GAUDE;
+	//	}
+	//	else
+	//	{
+	//		MotionChangePlayer(MOTIONTYPE_WAIT);
+	//	}
+	//}
+	CPlayerBase::Update();
+}
+
+//=============================================================================
+// 描画処理
+//=============================================================================
+void CPlayer_Kangaroo::Draw(void)
+{
+	CPlayerBase::Draw();
+}
