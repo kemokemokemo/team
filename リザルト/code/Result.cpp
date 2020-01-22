@@ -15,6 +15,7 @@
 #include "player_Kangaroo.h"
 #include "model.h"
 #include "camera.h"
+#include "Texture.h"
 
 //====================================================================================================
 // ƒ}ƒNƒ’è‹`
@@ -49,6 +50,7 @@ HRESULT CResult::Init(void)
 {
 	CPlayerBase::Load();
 	CModel::Load();
+	CTexture::Load();
 
 	CModel::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CModel::UNITTYPE_FLOOR);
 
@@ -77,6 +79,7 @@ void CResult::Uninit(void)
 {
 	CPlayerBase::Unload();
 	CModel::Unload();
+	CTexture::Unload();
 
 }
 
@@ -96,7 +99,7 @@ void CResult::Update(void)
 		}
 	}
 
-	CCamera::SetCameraPos(D3DXVECTOR3(0.0f, 0.0f, 0.0f), &D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	CCamera::SetCameraPos(m_Player->GetPos(), &m_Player->GetPos());
 }
 
 //================================================================================================

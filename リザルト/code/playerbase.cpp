@@ -107,11 +107,13 @@ HRESULT CPlayerBase::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife,CMaker::MA
 		{
 			pMaker = CMaker::Create(pos, CMaker::MAKERTYPE_1P, m_nLife);
 			pGauge = CGauge::Create(D3DXVECTOR3(170.0f, 650.0f, 0.0f), m_nLife, CMaker::MAKERTYPE_1P);
+			m_fDiffrot.y = -D3DX_PI*0.5f;
 		}
 		if (m_MokerType == CMaker::MAKERTYPE_2P)
 		{
 			pMaker = CMaker::Create(pos, CMaker::MAKERTYPE_2P, m_nLife);
 			pGauge = CGauge::Create(D3DXVECTOR3(770.0f, 650.0f, 0.0f), m_nLife, CMaker::MAKERTYPE_2P);
+			m_fDiffrot.y = D3DX_PI*0.5f;
 		}
 	}
 

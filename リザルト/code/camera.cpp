@@ -224,4 +224,9 @@ void CCamera::SetCameraPos(D3DXVECTOR3 pos, D3DXVECTOR3 *dis)
 	{
 		m_Camera.posV.z = -550.0f - D3DXVec3Length(dis) * 0.3f;
 	}
+	else if(CManager::GetMode() == CManager::MODE_RESULT)
+	{
+		m_Camera.posV.z = -380.0f;
+		m_Camera.posRDest.y = m_Camera.posRDest.y - 20.0f;
+	}
 }

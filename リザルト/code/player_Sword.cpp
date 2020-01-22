@@ -68,7 +68,6 @@ HRESULT CPlayer_SWORD::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CMaker::MAKERTYPE 
 	m_nLife = 100;
 	m_TypeChara = CPlayer_SWORD::PLAYERTYPE_SWORD;
 	CPlayerBase::Init(pos, rot, m_nLife, MokerType);
-	//m_fDiffrot.y = D3DX_PI*0.5f;
 
 	m_fRadius = 25.0f;
 	m_fAttack = 50.0f;
