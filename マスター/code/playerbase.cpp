@@ -24,6 +24,7 @@
 #include "Result.h"
 #include "guard.h"
 #include "bullet.h"
+#include "Texture.h"
 //=============================================================================
 // マクロ定義
 //=============================================================================
@@ -93,6 +94,10 @@ HRESULT CPlayerBase::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife,CMaker::MA
 
 	bWJump = true;
 
+	m_bSet = false;
+
+	m_SetCnt = 0;
+
 	pMaker = NULL;
 	m_Hitmodel = NULL;
 
@@ -137,6 +142,11 @@ void CPlayerBase::Update(void)
 {
 	//モーションの再生
 	MotionPlayer();
+
+	if (m_bSet == true)
+	{
+		m_SetCnt++;
+	}
 
 	if (m_MokerType == CMaker::MAKERTYPE_1P)
 	{
@@ -340,6 +350,12 @@ void CPlayerBase::Update(void)
 	this->PlayerCollisionFloor();
 
 	D3DXVECTOR3 pos = GetPos();
+
+	if (m_nLife <= 0)
+	{
+		MotionChangePlayer(MOTIONTYPE_DOWN);
+
+	}
 	if (pos.x <= -500.0f)
 	{
 		pos.x = -499.0f;
@@ -353,8 +369,13 @@ void CPlayerBase::Update(void)
 	}
 	SetPos(pos);
 
+	if (m_SetCnt == 120)
+	{
+		CFade::SetFade(CManager::MODE_RESULT);
+	}
 
 	CScene3D::Update();
+
 }
 
 //=============================================================================
@@ -593,6 +614,10 @@ void CPlayerBase::PlayerCollision()
 
 				if (pPlayer[1]->GetLife() <= 0)
 				{
+					m_bSet = true;
+
+					CTexture::Create(D3DXVECTOR3(100.0f, 150.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 1000.0f, 300.0f, CTexture::TYPE_GAMESET);
+
 					if (pPlayer[1]->GetID() < GetID())
 					{
 						CGame::DeletePlayer(0);
@@ -601,11 +626,8 @@ void CPlayerBase::PlayerCollision()
 					{
 						CGame::DeletePlayer(1);
 					}
+
 					CResult::SetWinPlayer(GetTypeChara(), GetMaker());
-
-					pPlayer[1]->Uninit();
-
-					CFade::SetFade(CManager::MODE_RESULT);
 				}
 			}
 			if (pPlayer[1]->m_MotionType != MOTIONTYPE_GAUDE)
@@ -1877,5 +1899,11 @@ void CPlayerBase::PlayerPad(int cnt)
 
 		break;
 	}
+}
+
+bool CPlayerBase::SetDawn()
+{
+	m_bSet = true;
+	return m_bSet;
 }
 

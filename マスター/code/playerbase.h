@@ -157,6 +157,8 @@ public:
 
 	void PlayerPad(int cnt);
 
+	bool SetDawn();
+
 protected:
 	void PlayerCollisionShape();
 
@@ -200,6 +202,8 @@ private:
 	MOTION_INFO MotionInfo[MOTIONTYPE_MAX];
 
 	bool bJump;
+	bool m_bSet;
+	int m_SetCnt;
 	CMaker::MAKERTYPE m_MokerType;
 
 	MOTIONTYPE m_Guardold;
@@ -208,5 +212,6 @@ private:
 	CMaker *pMaker;
 	CGauge *pGauge;
 	CGuard *pGuard;
+
 };
 #endif

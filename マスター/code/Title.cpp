@@ -79,7 +79,7 @@ void CTitle::Update(void)
 	{
 		if (pKetybord->GetKeyboardTrigger(DIK_RETURN))
 		{
-			CFade::SetFade(m_pManager->MODE_TUTRIAL);
+			CFade::SetFade(m_pManager->MODE_SELECTSCREEN);
 		}
 	}
 }

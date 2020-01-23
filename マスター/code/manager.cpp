@@ -347,28 +347,28 @@ void CManager::SetMode(MODE mode)
 
 	case MODE_TUTRIAL:
 		pTutorial = CTutorial::Create();
-		m_pSound->PlaySound(CSound::SOUND_LABEL_TITLE);
+		//m_pSound->PlaySound(CSound::SOUND_LABEL_TITLE);
 
 		break;
 
 	case MODE_GAME:
 		pGame = CGame::Create();
-		//m_pSound->PlaySound(CSound::SOUND_LABEL_TITLE);
+		m_pSound->PlaySound(CSound::SOUND_LABEL_BATTLE);
 		break;
 
 	case MODE_RESULT:
 		pResult = CResult::Create();
-		//m_pSound->PlaySound(CSound::SOUND_LABEL_TITLE);
+		m_pSound->PlaySound(CSound::SOUND_LABEL_VICTORY);
 		break;
 
 	case MODE_GAMEOVER:
 		pGameover = CGameover::Create();
-		m_pSound->PlaySound(CSound::SOUND_LABEL_TITLE);
+		//m_pSound->PlaySound(CSound::SOUND_LABEL_TITLE);
 		break;
 
 	case MODE_SELECTSCREEN:
 		pSelectionScreen = CSelectionScreen::Create();
-		//m_pSound->PlaySound(CSound::SOUND_LABEL_TITLE);
+		m_pSound->PlaySound(CSound::SOUND_LABEL_SELECT);
 		break;
 	}
 }

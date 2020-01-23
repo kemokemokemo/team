@@ -32,6 +32,12 @@
 #define TEX_011 "DATA/TEX/TitleBG.jpg"					//読み込むテクスチャファイル名
 #define TEX_012 "DATA/TEX/TitleLogo.png"					//読み込むテクスチャファイル名
 
+#define TEX_013 "DATA/TEX/Game_set.png"					//読み込むテクスチャファイル名
+
+#define TEX_014 "DATA/TEX/moai.png"					//読み込むテクスチャファイル名
+#define TEX_015 "DATA/TEX/heart.png"					//読み込むテクスチャファイル名
+#define TEX_016 "DATA/TEX/bed.png"					//読み込むテクスチャファイル名
+
 //====================================================================================================
 // プロトタイプ宣言
 //====================================================================================================
@@ -77,6 +83,7 @@ void CTexture::Update(void)
 	{
 		SetAnim(0.1f, 0.0f, 0.5f, 10);
 	}
+
 	CScene2D::Update();
 }
 //========================================================================================================
@@ -224,6 +231,31 @@ HRESULT CTexture::Load(void)
 		pDevice,
 		"DATA/TEX/ready.png",
 		&m_pTextureIcon[TYPE_READY]);
+
+
+	//テクスチャの読み込み
+	D3DXCreateTextureFromFile(
+		pDevice,
+		TEX_013,
+		&m_pTextureIcon[TYPE_GAMESET]);
+
+	//テクスチャの読み込み
+	D3DXCreateTextureFromFile(
+		pDevice,
+		TEX_014,
+		&m_pTextureIcon[TYPE_MOAI]);
+
+	//テクスチャの読み込み
+	D3DXCreateTextureFromFile(
+		pDevice,
+		TEX_015,
+		&m_pTextureIcon[TYPE_HEART]);
+
+	//テクスチャの読み込み
+	D3DXCreateTextureFromFile(
+		pDevice,
+		TEX_016,
+		&m_pTextureIcon[TYPE_BET]);
 
 	return S_OK;
 }

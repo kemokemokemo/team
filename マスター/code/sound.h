@@ -24,6 +24,7 @@ public:
 	typedef enum
 	{
 		SOUND_LABEL_TITLE = 0,		// BGMタイトル	
+		SOUND_LABEL_SELECT,			// BGM選択		
 		SOUND_LABEL_BATTLE,			// BGM戦闘		
 		SOUND_LABEL_VICTORY,		// BGMリザルト
 		SOUND_LABEL_SE_ATK,			// 攻撃			
@@ -42,9 +43,10 @@ public:
 	// 各音素材のパラメータ
 	SOUNDPARAM m_aParam[SOUND_LABEL_MAX] =
 	{
-		{ "DATA/BGM/bgm000.wav", -1 },		// BGM0(-1で繰り返し）
-		{ "DATA/BGM/bgm001.wav", -1 },		// BGM1
-		{ "DATA/BGM/bgm001.wav", -1 },		// BGM2
+		{ "DATA/BGM/Title.wav", -1 },		// BGM0(-1で繰り返し）
+		{ "DATA/BGM/Select.wav", -1 },		// BGM1
+		{ "DATA/BGM/Game.wav", -1 },		// BGM2
+		{ "DATA/BGM/Result.wav", -1 },		// BGM2
 		{ "DATA/SE/punch-high1.wav", 0 },	// 撃破
 	};
 

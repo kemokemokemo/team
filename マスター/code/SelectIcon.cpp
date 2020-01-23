@@ -80,6 +80,26 @@ void CSelectIcon::Update(void)
 	m_move.x += (0 - m_move.x) * 1 / 4;
 	m_move.y += (0 - m_move.y) * 1 / 4;
 
+	if (pos.x <= -50)
+	{
+		pos.x = -50;
+	}
+
+	if (pos.x >= 1100)
+	{
+		pos.x = 1100;
+	}
+
+	if (pos.y <= -56)
+	{
+		pos.y = -56;
+	}
+
+	if (pos.y >= 544)
+	{
+		pos.y = 544;
+	}
+
 	CScene2D::SetPos(pos);
 
 	CScene2D::Update();

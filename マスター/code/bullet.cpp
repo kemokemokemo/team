@@ -9,6 +9,8 @@
 #include "manager.h"
 #include "effect.h"
 #include "Game.h"
+#include"Result.h"
+#include"Texture.h"
 
 //====================================================================================================
 // ƒ}ƒNƒ’è‹`
@@ -140,6 +142,69 @@ void CBullet::PlayerCollision()
 				this->Release();
 			}
 		}
+
+
+	}
+
+	CPlayerBase *pPlayer[2] = {};
+
+	for (int nCntScene = 0; nCntScene < MAX_POLYGON; nCntScene++)
+	{
+		CScene *pScene;
+
+		pScene = CScene::GetScene(OBJTYPE_PLAYER, nCntScene);
+
+		if (!pScene)
+			continue;
+
+		pPlayer[0] = (CPlayerBase*)pScene;
+
+		for (int nCnt = nCntScene + 1; nCnt < MAX_POLYGON; nCnt++)
+		{
+			pScene = CScene::GetScene(OBJTYPE_PLAYER, nCnt);
+
+			if (!pScene)
+				continue;
+
+			pPlayer[1] = (CPlayerBase*)pScene;
+
+			break;
+		}
+		break;
+	}
+
+	if (pPlayer[0]->GetLife() <= 0)
+	{
+		CTexture::Create(D3DXVECTOR3(100.0f, 150.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 1000.0f, 300.0f, CTexture::TYPE_GAMESET);
+
+		if (pPlayer[0]->GetID() < GetID())
+		{
+			CGame::DeletePlayer(0);
+		}
+		else
+		{
+			CGame::DeletePlayer(1);
+		}
+		pPlayer[0]->SetDawn();
+
+		CResult::SetWinPlayer(pPlayer[1]->GetTypeChara(), pPlayer[1]->GetMaker());
+	}
+
+	if (pPlayer[1]->GetLife() <= 0)
+	{
+		CTexture::Create(D3DXVECTOR3(100.0f, 150.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 1000.0f, 300.0f, CTexture::TYPE_GAMESET);
+
+		if (pPlayer[1]->GetID() < GetID())
+		{
+			CGame::DeletePlayer(0);
+		}
+		else
+		{
+			CGame::DeletePlayer(1);
+		}
+		pPlayer[1]->SetDawn();
+
+		CResult::SetWinPlayer(pPlayer[0]->GetTypeChara(), pPlayer[0]->GetMaker());
 	}
 }
 

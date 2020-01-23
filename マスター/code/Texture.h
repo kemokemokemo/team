@@ -43,8 +43,12 @@ public:
 		TYPE_WIN1P,
 		TYPE_WIN2P,
 		TYPE_READY,
+		TYPE_GAMESET,
+		TYPE_MOAI,
+		TYPE_BET,
+		TYPE_HEART,
 		TYPE_MAX
-	}TEXTURE_TYPE;
+	}TEXTURE_TYPE; 
 
 	//================================================================
 	// プロトタイプ宣言

@@ -57,15 +57,19 @@ HRESULT CResult::Init(void)
 	switch (m_WinType)
 	{
 	case CPlayerBase::PLAYERTYPE_KEN:
+
 		m_Player = CPlayer_KEN::Create(D3DXVECTOR3(0, 50.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CMaker::MAKERTYPE)m_nRank);
+
 		break;
 
 	case CPlayerBase::PLAYERTYPE_KANGAROO:
 		m_Player = CPlayer_Kangaroo::Create(D3DXVECTOR3(0, 50.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CMaker::MAKERTYPE)m_nRank);
+
 		break;
 
 	case CPlayerBase::PLAYERTYPE_SWORD:
 		m_Player = CPlayer_SWORD::Create(D3DXVECTOR3(0, 50.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CMaker::MAKERTYPE)m_nRank);
+
 		break;
 	}
 	switch (m_nRank)
