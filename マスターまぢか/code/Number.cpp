@@ -31,7 +31,7 @@ LPDIRECT3DTEXTURE9 CNumber::m_pTextureNumber = NULL;
 //=============================================================================
 // コンストラクタ
 //=============================================================================
-CNumber::CNumber()
+CNumber::CNumber() : CScene::CScene(OBJTYPE_ANIMATION)
 {
 	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_Size_X = 0;
@@ -100,6 +100,8 @@ void CNumber::Uninit(void)
 		m_pVtxBuffNumber->Release();
 		m_pVtxBuffNumber = NULL;
 	}
+
+	this->Release();
 }
 
 //=============================================================================

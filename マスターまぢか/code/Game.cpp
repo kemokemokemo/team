@@ -32,6 +32,7 @@
 //====================================================================================================
 // マクロ定義
 //==================================================================================================== 
+#define COUNTDOWN		(3)
 
 //=====================================================================================================
 // 前方宣言初期化
@@ -86,7 +87,7 @@ HRESULT CGame::Init(void)
 	CBullet::Load();
 
 	CModel::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CModel::UNITTYPE_FLOOR);
-
+	CNumber::Load();
 
 	for (int nCnt = 0; nCnt < 2; nCnt++)
 	{
@@ -122,11 +123,17 @@ HRESULT CGame::Init(void)
 	CPolygon::Create();
 	CTexture::Create(D3DXVECTOR3(510.0f, -35.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 250.0f, 160.0f, CTexture::TYPE_TIME);
 
-	{//制限時間の生成
-		pTime = CTime::Create(100);
-	}
+	//{//制限時間の生成
+	//	pTime = CTime::Create(100);
+	//}
+
 	CTexture::Create(D3DXVECTOR3(80.0f, 550.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 510.0f, 200.0f, CTexture::TYPE_LIFE1);
 	CTexture::Create(D3DXVECTOR3(680.0f, 550.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 510.0f, 200.0f, CTexture::TYPE_LIFE2);
+
+
+	m_nCnt = 60 * COUNTDOWN;
+	m_Count = CNumber::Create(D3DXVECTOR3(640.0f, 360.0f, 0.0f), 100.0f, 100.0f, 3);
+	m_nCntState = COUNTSTATE_READY;
 
 	return S_OK;
 }
@@ -147,6 +154,7 @@ void CGame::Uninit(void)
 	CHitModel::Unload();
 	CGuard::Unload();
 	CBullet::Unload();
+	CNumber::Unload();
 }
 
 //================================================================================================
@@ -158,12 +166,45 @@ void CGame::Update(void)
 
 	CKeybord *pKetybord = CManager::GetKeybord();
 
-	for (int nCnt = 0; nCnt < 2; nCnt++)
+	switch (m_nCntState)
 	{
-		if (m_Player[nCnt])
+	case CGame::COUNTSTATE_NORMAL:
+
+		for (int nCnt = 0; nCnt < 2; nCnt++)
 		{
-			m_Player[nCnt]->PlayerPad(nCnt);
+			if (m_Player[nCnt])
+			{
+				m_Player[nCnt]->PlayerPad(nCnt);
+			}
 		}
+		break;
+
+	case CGame::COUNTSTATE_READY:
+
+		if (--m_nCnt <= 0)
+		{
+			if (m_Count)
+			{
+				m_Count->Uninit();
+				m_Count = NULL;
+			}
+
+			{//制限時間の生成
+				pTime = CTime::Create(100);
+			}
+
+			m_nCnt = 0;
+			m_nCntState = COUNTSTATE_NORMAL;
+		}
+		else if (m_nCnt % 60 == 0)
+		{
+			if (m_Count)
+			{
+				m_Count->SetNumber(m_nCnt / 60);
+				m_Count->SetTex(m_nCnt / 60);
+			}
+		}
+		break;
 	}
 
 	{// カメラ

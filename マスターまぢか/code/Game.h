@@ -20,6 +20,7 @@ class CCamera;
 class CLight;
 class CTime;
 class CTexture;
+class CNumber;
 //================================================================
 // レンダリングクラス
 //================================================================
@@ -43,6 +44,12 @@ public:
 
 private:
 
+	enum COUNTSTATE
+	{
+		COUNTSTATE_READY,
+		COUNTSTATE_NORMAL
+	};
+
 	static CCamera*m_pCamera;
 	static CLight*m_pLight;
 	static CTime *pTime;
@@ -50,5 +57,9 @@ private:
 	static CPlayerBase::PLAYERTYPE m_PlayerType[];
 
 	static CPlayerBase *m_Player[2];
+
+	CNumber *m_Count;
+	COUNTSTATE m_nCntState;
+	int m_nCnt;
 };
 #endif
