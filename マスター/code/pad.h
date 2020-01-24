@@ -18,7 +18,7 @@
 #define	COUNT_WAIT_REPEAT	(20)	// リピート開始までの待ち時間
 #define	INTERVAL_REPEAT		(1)		// リピート間隔
 
-#define NUM_JOYPAD_MAX		(4)		// パッド最大数
+#define NUM_JOYPAD_MAX		(2)		// パッド最大数
 #define JOY_MAX_RANGE		(1024)	// パッド有効範囲
 
 //======================================================================================================================

@@ -11,7 +11,7 @@
 #include"keybord.h"
 #include"Texture.h"
 #include "light.h"
-
+#include "pad.h"
 
 //================================================================================================
 // ƒ}ƒNƒ’è‹`
@@ -74,10 +74,11 @@ void CTitle::Uninit(void)
 void CTitle::Update(void)
 {
 	CKeybord *pKetybord = CManager::GetKeybord();
+	CPad *pGamePad = CManager::GetPad();
 
 	if (CFade::GetFade() == CFade::FADE_NONE)
 	{
-		if (pKetybord->GetKeyboardTrigger(DIK_RETURN))
+		if (pKetybord->GetKeyboardTrigger(DIK_RETURN) || pGamePad->GetJoypadPress(0, CPad::JOYPADKEY_X))
 		{
 			CFade::SetFade(m_pManager->MODE_SELECTSCREEN);
 		}

@@ -1330,7 +1330,7 @@ void CPlayerBase::PlayerPad(int cnt)
 						m_MotionType = MOTIONTYPE_STANDUP;
 					}
 				}
-				else if (pKeyboard->GetKeyboardTrigger(DIK_J) || pGamePad->GetJoypadTrigger(cnt, CPad::JOYPADKEY_Y))
+				else if (pKeyboard->GetKeyboardTrigger(DIK_J) || pGamePad->GetJoypadTrigger(cnt, CPad::JOYPADKEY_Y) || pGamePad->GetJoypadTrigger(cnt, CPad::JOYPADKEY_X))
 				{//ジャンプ
 					bJump = true;
 					bWJump = true;
@@ -1410,7 +1410,7 @@ void CPlayerBase::PlayerPad(int cnt)
 				{
 					MotionChangePlayer(MOTIONTYPE_LIGHT0);
 				}
-				else if (pKeyboard->GetKeyboardPress(DIK_G) || pGamePad->GetJoypadPress(cnt, CPad::JOYPADKEY_X))
+				else if (pKeyboard->GetKeyboardPress(DIK_G) || pGamePad->GetJoypadPress(cnt, CPad::JOYPADKEY_LEFT_SHOULDER) || pGamePad->GetJoypadPress(cnt, CPad::JOYPADKEY_RIGHT_SHOULDER))
 				{
 					MotionChangePlayer(MOTIONTYPE_GAUDE);
 				}
@@ -1428,7 +1428,7 @@ void CPlayerBase::PlayerPad(int cnt)
 				}
 				if (bWJump == true)
 				{
-					if (pKeyboard->GetKeyboardPress(DIK_J) || pGamePad->GetJoypadTrigger(cnt, CPad::JOYPADKEY_Y))
+					if (pKeyboard->GetKeyboardPress(DIK_J) || pGamePad->GetJoypadTrigger(cnt, CPad::JOYPADKEY_Y) || pGamePad->GetJoypadTrigger(cnt, CPad::JOYPADKEY_X))
 					{//二段ジャンプ
 						MotionChangePlayer(MOTIONTYPE_DOUBLEJUMP);
 						bWJump = false;
@@ -1642,7 +1642,7 @@ void CPlayerBase::PlayerPad(int cnt)
 			}
 			break;
 		case MOTIONTYPE_GAUDE:
-			if (pKeyboard->GetKeyboardPress(DIK_G) || pGamePad->GetJoypadPress(cnt, CPad::JOYPADKEY_X))
+			if (pKeyboard->GetKeyboardPress(DIK_G) || pGamePad->GetJoypadPress(cnt, CPad::JOYPADKEY_LEFT_SHOULDER) || pGamePad->GetJoypadPress(cnt, CPad::JOYPADKEY_RIGHT_SHOULDER))
 			{
 				m_PlayerState = PLAYERSTATE_GAUDE;
 			}
@@ -1755,7 +1755,7 @@ void CPlayerBase::PlayerPad(int cnt)
 			}
 			break;
 		case MOTIONTYPE_GAUDE:
-			if (pGamePad->GetJoypadPress(cnt, CPad::JOYPADKEY_X))
+			if (pGamePad->GetJoypadPress(cnt, CPad::JOYPADKEY_LEFT_SHOULDER) || pGamePad->GetJoypadPress(cnt, CPad::JOYPADKEY_RIGHT_SHOULDER))
 			{
 				m_PlayerState = PLAYERSTATE_GAUDE;
 			}
@@ -1858,13 +1858,13 @@ void CPlayerBase::PlayerPad(int cnt)
 			{
 				if (cnt == 0)
 				{
-					CBullet::Create(GetPos(), D3DXVECTOR3(-10, 0.0f, 0.0f), CBullet::BULLETTEX_KANGAROO, CMaker::MAKERTYPE_1P, 8);
-					CBullet::Create(GetPos(), D3DXVECTOR3(10, 0.0f, 0.0f), CBullet::BULLETTEX_KANGAROO, CMaker::MAKERTYPE_1P, 8);
+					CBullet::Create(GetPos(), D3DXVECTOR3(-10, 0.0f, 0.0f), CBullet::BULLETTEX_KANGAROO, CMaker::MAKERTYPE_1P, 10);
+					CBullet::Create(GetPos(), D3DXVECTOR3(10, 0.0f, 0.0f), CBullet::BULLETTEX_KANGAROO, CMaker::MAKERTYPE_1P, 10);
 				}
 				if (cnt == 1)
 				{
-					CBullet::Create(GetPos(), D3DXVECTOR3(-10, 0.0f, 0.0f), CBullet::BULLETTEX_KANGAROO, CMaker::MAKERTYPE_2P, 8);
-					CBullet::Create(GetPos(), D3DXVECTOR3(10, 0.0f, 0.0f), CBullet::BULLETTEX_KANGAROO, CMaker::MAKERTYPE_2P, 8);
+					CBullet::Create(GetPos(), D3DXVECTOR3(-10, 0.0f, 0.0f), CBullet::BULLETTEX_KANGAROO, CMaker::MAKERTYPE_2P, 10);
+					CBullet::Create(GetPos(), D3DXVECTOR3(10, 0.0f, 0.0f), CBullet::BULLETTEX_KANGAROO, CMaker::MAKERTYPE_2P, 10);
 				}
 			}
 
@@ -1887,7 +1887,7 @@ void CPlayerBase::PlayerPad(int cnt)
 			}
 			break;
 		case MOTIONTYPE_GAUDE:
-			if (pGamePad->GetJoypadPress(cnt, CPad::JOYPADKEY_X))
+			if (pGamePad->GetJoypadPress(cnt, CPad::JOYPADKEY_LEFT_SHOULDER) || pGamePad->GetJoypadPress(cnt, CPad::JOYPADKEY_RIGHT_SHOULDER))
 			{
 				m_PlayerState = PLAYERSTATE_GAUDE;
 			}
